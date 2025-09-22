@@ -25,7 +25,6 @@ class Conversation extends Model
     {
         return $this->belongsTo(Service::class, 'product_id');
     }
-
     public function chats()
     {
         return $this->hasMany(Chat::class);

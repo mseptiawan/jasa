@@ -13,19 +13,18 @@ class OrderController extends Controller
     public function index()
     {
         if (auth()->user()->role === 'customer') {
-            $orders = Order::with('service', 'seller')
+            $orders = Order::with(['service.reviews', 'seller'])
                 ->where('customer_id', auth()->id())
-                ->latest()
                 ->get();
         } else { // seller
-            $orders = Order::with('service', 'customer')
+            $orders = Order::with(['service.reviews', 'customer'])
                 ->where('seller_id', auth()->id())
-                ->latest()
                 ->get();
         }
 
         return view('orders.index', compact('orders'));
     }
+
 
     // Simpan order baru (langsung completed)
     public function store(Request $request)
@@ -45,15 +44,15 @@ class OrderController extends Controller
             'seller_id' => $service->user_id,
             'service_id' => $service->id,
             'price' => $service->price,
-            'status' => 'completed', // langsung selesai
+            'status' => 'pending', // status awal pesanan
             'payment_method' => $request->payment_method,
             'customer_address' => $request->customer_address,
             'customer_phone' => $request->customer_phone,
             'note' => $request->note,
         ]);
-
+        $service->user->notify(new \App\Notifications\NewOrderNotification($order));
         return redirect()->route('orders.index')
-            ->with('success', 'Order berhasil dibuat & dibayar! Total: Rp ' . number_format($service->price, 0, ',', '.'));
+            ->with('success', 'Order berhasil dibuat! Status: Pending. Total: Rp ' . number_format($service->price, 0, ',', '.'));
     }
 
     // Opsional: khusus customer lihat order-nya
@@ -69,7 +68,7 @@ class OrderController extends Controller
     // CUSTOMER CANCEL
     public function cancel(Order $order)
     {
-        $this->authorize('update', $order); // pastikan ada policy
+        // $this->authorize('update', $order); // pastikan ada policy
         if (Auth::id() !== $order->customer_id) {
             abort(403);
         }
@@ -87,7 +86,7 @@ class OrderController extends Controller
     // SELLER ACCEPT
     public function accept(Order $order)
     {
-        $this->authorize('update', $order);
+        // $this->authorize('update', $order);
         if (Auth::id() !== $order->seller_id) {
             abort(403);
         }
@@ -105,7 +104,7 @@ class OrderController extends Controller
     // SELLER REJECT
     public function reject(Order $order)
     {
-        $this->authorize('update', $order);
+        // $this->authorize('update', $order);
         if (Auth::id() !== $order->seller_id) {
             abort(403);
         }
@@ -123,7 +122,7 @@ class OrderController extends Controller
     // CUSTOMER COMPLETE
     public function complete(Order $order)
     {
-        $this->authorize('update', $order);
+        // $this->authorize('update', $order);
         if (Auth::id() !== $order->customer_id) {
             abort(403);
         }

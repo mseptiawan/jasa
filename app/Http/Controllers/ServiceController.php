@@ -86,9 +86,18 @@ class ServiceController extends Controller
     public function edit($slug)
     {
         $service = Service::where('slug', $slug)->firstOrFail();
+
+        // Cek apakah service sedang dipesan
+        $activeOrders = $service->orders()->whereIn('status', ['pending', 'in_progress'])->count();
+        if ($activeOrders > 0) {
+            return redirect()->route('services.index')
+                ->with('error', 'Service tidak bisa diedit karena sedang ada order aktif.');
+        }
+
         $subcategories = Subcategory::all();
         return view('services.edit', compact('service', 'subcategories'));
     }
+
 
     // Update service
     public function update(Request $request, $slug)
@@ -151,6 +160,14 @@ class ServiceController extends Controller
     {
         $service = Service::where('slug', $slug)->firstOrFail();
 
+        // Cek apakah service sedang dipesan
+        $activeOrders = $service->orders()->whereIn('status', ['pending', 'in_progress'])->count();
+        if ($activeOrders > 0) {
+            return redirect()->route('services.index')
+                ->with('error', 'Service tidak bisa dihapus karena sedang ada order aktif.');
+        }
+
+        // Hapus gambar kalau mau, optional karena soft delete data masih ada
         if ($service->images) {
             foreach (json_decode($service->images) as $oldImage) {
                 if (Storage::disk('public')->exists($oldImage)) {
@@ -159,10 +176,14 @@ class ServiceController extends Controller
             }
         }
 
+        // Soft delete
         $service->delete();
 
-        return redirect()->route('services.index')->with('success', 'Service berhasil dihapus.');
+        return redirect()->route('services.index')
+            ->with('success', 'Service berhasil dihapus (soft delete).');
     }
+
+
     public function nearby(Request $request)
     {
 
@@ -180,5 +201,30 @@ class ServiceController extends Controller
             ->get();
 
         return view('services.nearby', compact('services'));
+    }
+    public function toggleFavorite(Service $service)
+    {
+        $user = auth()->user();
+
+        if ($user->favoriteServices()->where('service_id', $service->id)->exists()) {
+            $user->favoriteServices()->detach($service->id); // hapus favorit
+            $status = 'removed';
+        } else {
+            $user->favoriteServices()->attach($service->id); // tambah favorit
+            $status = 'added';
+        }
+
+        return back()->with('success', "Service favorit $status");
+    }
+    public function favorites()
+    {
+        $services = Auth::user()->favoriteServices()->with('user', 'reviews')->get();
+
+        // hitung rata-rata rating setiap service
+        foreach ($services as $service) {
+            $service->avg_rating = $service->reviews()->avg('rating') ?? 0;
+        }
+
+        return view('services.favorites', compact('services'));
     }
 }

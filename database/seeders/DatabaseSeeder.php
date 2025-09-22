@@ -13,11 +13,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::query()->delete();
+        // User::query()->delete();
         $this->call([
             AdminUserSeeder::class,
             CustomerUserSeeder::class,
             SellerUserSeeder::class,
+            CategorySeeder::class
+
         ]);
     }
 }

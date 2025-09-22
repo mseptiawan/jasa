@@ -126,6 +126,31 @@
             <p style="color: green; font-weight: bold; margin-top: auto">
                 Rp {{ number_format($service->price, 0, ',', '.') }}
             </p>
+            <div class="flex mt-1">
+                @for ($i = 1; $i <= 5;
+                   $i++)
+                   @if($i
+                   <=floor($service->avg_rating))
+                    <span class="text-yellow-400">&#9733;</span> {{-- bintang penuh --}}
+                    @elseif($i - $service->avg_rating < 1)
+                      <span
+                      class="text-yellow-400">&#9733;</span> {{-- bintang setengah bisa custom --}}
+                        @else
+                        <span class="text-gray-300">&#9733;</span> {{-- bintang kosong --}}
+                        @endif
+                        @endfor
+            </div>
+            <form action="{{ route('services.toggleFavorite', $service->slug) }}"
+                  method="POST">
+                @csrf
+                @method('PATCH')
+                <button type="submit"
+                        class="px-2 py-1 rounded
+        {{ auth()->user()->favoriteServices->contains($service->id) ? 'bg-red-500' : 'bg-gray-300' }}">
+                    {{ auth()->user()->favoriteServices->contains($service->id) ? 'Unfavorite' : 'Favorite' }}
+                </button>
+            </form>
+
 
         </a>
         @empty

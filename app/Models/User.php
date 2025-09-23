@@ -28,7 +28,16 @@ class User extends Authenticatable
         'instagram',
         'profile_photo',
     ];
+    public function ordersAsCustomer()
+    {
+        return $this->hasMany(Order::class, 'customer_id');
+    }
 
+    // relasi untuk seller
+    public function ordersAsSeller()
+    {
+        return $this->hasManyThrough(Order::class, Service::class, 'user_id', 'service_id');
+    }
 
     /**
      * The attributes that should be hidden for serialization.

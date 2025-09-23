@@ -14,6 +14,8 @@ class Order extends Model
         'customer_id',
         'seller_id',
         'price',
+        'platform_fee',
+        'total_price',
         'status',
         'payment_method',
         'customer_address', // tambahkan ini

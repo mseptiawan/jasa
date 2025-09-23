@@ -12,11 +12,19 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // ambil semua service aktif, include user, subcategory, dan reviews
-        $services = Service::with(['user', 'subcategory', 'reviews'])
-            ->where('status', 'active') // filter service aktif
-            ->orderBy('created_at', 'desc')
-            ->get();
+        // ambil query service aktif, include relasi
+        $query = \App\Models\Service::with(['user', 'subcategory.category', 'reviews'])
+            ->where('status', 'active')
+            ->orderBy('created_at', 'desc');
+
+        // filter berdasarkan kategori kalo ada request
+        if ($categoryId = request('category')) {
+            $query->whereHas('subcategory', function ($q) use ($categoryId) {
+                $q->where('category_id', $categoryId);
+            });
+        }
+
+        $services = $query->get();
 
         // hitung rata-rata rating tiap service
         $services->map(function ($service) {
@@ -25,9 +33,9 @@ class DashboardController extends Controller
         });
 
         // stats opsional
-        $totalUsers = Auth::check() ? User::count() : null;
-        $totalServices = Service::where('status', 'active')->count(); // hanya yang aktif
-        $pendingOrders = Auth::check() ? Order::where('status', 'pending')->count() : null;
+        $totalUsers = Auth::check() ? \App\Models\User::count() : null;
+        $totalServices = \App\Models\Service::where('status', 'active')->count();
+        $pendingOrders = Auth::check() ? \App\Models\Order::where('status', 'pending')->count() : null;
 
         return view('dashboard', compact('services', 'totalUsers', 'totalServices', 'pendingOrders'));
     }

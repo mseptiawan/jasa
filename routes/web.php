@@ -37,8 +37,21 @@ Route::prefix('admin')->middleware(['auth', 'can:admin-access'])->group(function
 });
 Route::patch('services/{slug}/toggle-status', [AdminServiceController::class, 'toggleStatus'])
     ->name('admin.services.toggleStatus');
+Route::get('/services/highlight', [App\Http\Controllers\ServiceController::class, 'highlight'])
+    ->name('services.highlight');
+
+Route::get('/services/{service:slug}/highlight/pay', [App\Http\Controllers\ServiceController::class, 'showPayHighlight'])
+    ->name('services.highlight.showPay');
+
+Route::post('/services/{service:slug}/highlight/pay', [App\Http\Controllers\ServiceController::class, 'payHighlight'])
+    ->name('services.highlight.pay');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/orders/create/{service:slug}', [OrderController::class, 'create'])
+        ->name('orders.create');
+    Route::get('/orders/{order}/invoice', [OrderController::class, 'downloadInvoice'])->name('orders.invoice');
+
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('orders.myOrders');
     Route::get('/services/nearby', [ServiceController::class, 'nearby'])->name('services.nearby');

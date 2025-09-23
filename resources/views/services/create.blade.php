@@ -2,78 +2,201 @@
     <div class="container mx-auto py-6 max-w-2xl">
         <h1 class="text-2xl font-bold mb-4">Tambah Layanan</h1>
 
-        <form action="{{ route('services.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('services.store') }}"
+              method="POST"
+              enctype="multipart/form-data">
             @csrf
 
             <label class="block mb-2">Judul</label>
-            <input type="text" name="title" value="{{ old('title') }}" class="border px-2 py-1 w-full mb-4">
+            <input type="text"
+                   name="title"
+                   value="{{ old('title') }}"
+                   class="border px-2 py-1 w-full mb-4">
+            @error('title')
+            <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+            @enderror
 
             <label class="block mb-2">Deskripsi</label>
-            <textarea name="description" class="border px-2 py-1 w-full mb-4">{{ old('description') }}</textarea>
-
+            <textarea name="description"
+                      class="border px-2 py-1 w-full mb-4">{{ old('description') }}</textarea>
+            @error('description')
+            <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+            @enderror
             <label class="block mb-2">Harga</label>
-            <input type="number" name="price" value="{{ old('price') }}" class="border px-2 py-1 w-full mb-4">
-
+            <input type="number"
+                   name="price"
+                   value="{{ old('price') }}"
+                   class="border px-2 py-1 w-full mb-4">
+            @error('price')
+            <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+            @enderror
             <label class="block mb-2">Kategori</label>
-            <select name="subcategory_id" class="border px-2 py-1 w-full mb-4">
+            <select name="subcategory_id"
+                    class="border px-2 py-1 w-full mb-4">
                 <option value="">Pilih Kategori</option>
                 @foreach($subcategories as $sub)
-                <option value="{{ $sub->id }}" {{ old('subcategory_id') == $sub->id ? 'selected' : '' }}>{{ $sub->name }}</option>
+                <option value="{{ $sub->id }}"
+                        {{
+                        old('subcategory_id')==$sub->id ? 'selected' : '' }}>{{ $sub->name }}</option>
                 @endforeach
             </select>
-
+            @error('subcategory_id')
+            <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+            @enderror
             <label class="block mb-2">Lokasi (Klik di peta / Search)</label>
-            <input type="hidden" name="latitude" id="latitude" value="{{ old('latitude') }}">
-            <input type="hidden" name="longitude" id="longitude" value="{{ old('longitude') }}">
-            <div id="map" style="height: 300px;" class="mb-4"></div>
+            <input type="hidden"
+                   name="latitude"
+                   id="latitude"
+                   value="{{ old('latitude') }}">
+            @error('latitude')
+            <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+            @enderror
+            <input type="hidden"
+                   name="longitude"
+                   id="longitude"
+                   value="{{ old('longitude') }}">
+            @error('longitude')
+            <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+            @enderror
+            <div id="map"
+                 style="height: 300px;"
+                 class="mb-4"></div>
 
             <label class="block mb-2">Jenis Pekerjaan</label>
-            <select name="job_type" class="border px-2 py-1 w-full mb-4">
+            <select name="job_type"
+                    class="border px-2 py-1 w-full mb-4">
                 <option value="">Pilih Jenis Pekerjaan</option>
-                <option value="Full Time" {{ old('job_type') == 'Full Time' ? 'selected' : '' }}>Full Time</option>
-                <option value="Part Time" {{ old('job_type') == 'Part Time' ? 'selected' : '' }}>Part Time</option>
-                <option value="Freelance" {{ old('job_type') == 'Freelance' ? 'selected' : '' }}>Freelance</option>
+                <option value="Full Time"
+                        {{
+                        old('job_type')=='Full Time'
+                        ? 'selected'
+                        : ''
+                        }}>Full Time</option>
+                <option value="Part Time"
+                        {{
+                        old('job_type')=='Part Time'
+                        ? 'selected'
+                        : ''
+                        }}>Part Time</option>
+                <option value="Freelance"
+                        {{
+                        old('job_type')=='Freelance'
+                        ? 'selected'
+                        : ''
+                        }}>Freelance</option>
             </select>
+            @error('job_type')
+            <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+            @enderror
 
             <label class="block mb-2">Pengalaman</label>
-            <select name="experience" class="border px-2 py-1 w-full mb-4">
+            <select name="experience"
+                    class="border px-2 py-1 w-full mb-4">
                 <option value="">Pilih Pengalaman</option>
-                <option value="0-1 Tahun" {{ old('experience') == '0-1 Tahun' ? 'selected' : '' }}>0-1 Tahun</option>
-                <option value="1-3 Tahun" {{ old('experience') == '1-3 Tahun' ? 'selected' : '' }}>1-3 Tahun</option>
-                <option value="3-5 Tahun" {{ old('experience') == '3-5 Tahun' ? 'selected' : '' }}>3-5 Tahun</option>
-                <option value=">5 Tahun" {{ old('experience') == '>5 Tahun' ? 'selected' : '' }}>>5 Tahun</option>
+                <option value="0-1 Tahun"
+                        {{
+                        old('experience')=='0-1 Tahun'
+                        ? 'selected'
+                        : ''
+                        }}>0-1 Tahun</option>
+                <option value="1-3 Tahun"
+                        {{
+                        old('experience')=='1-3 Tahun'
+                        ? 'selected'
+                        : ''
+                        }}>1-3 Tahun</option>
+                <option value="3-5 Tahun"
+                        {{
+                        old('experience')=='3-5 Tahun'
+                        ? 'selected'
+                        : ''
+                        }}>3-5 Tahun</option>
+                <option value=">5 Tahun"
+                        {{
+                        old('experience')=='>5 Tahun'
+                        ? 'selected'
+                        : ''
+                        }}>>5 Tahun</option>
             </select>
-
+            @error('experience')
+            <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+            @enderror
             <label class="block mb-2">Industri</label>
-            <select name="industry" class="border px-2 py-1 w-full mb-4">
+            <select name="industry"
+                    class="border px-2 py-1 w-full mb-4">
                 <option value="">Pilih Industri</option>
-                <option value="IT" {{ old('industry') == 'IT' ? 'selected' : '' }}>IT</option>
-                <option value="Kesehatan" {{ old('industry') == 'Kesehatan' ? 'selected' : '' }}>Kesehatan</option>
-                <option value="Pendidikan" {{ old('industry') == 'Pendidikan' ? 'selected' : '' }}>Pendidikan</option>
-                <option value="Jasa" {{ old('industry') == 'Jasa' ? 'selected' : '' }}>Jasa</option>
-                <option value="Lainnya" {{ old('industry') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                <option value="IT"
+                        {{
+                        old('industry')=='IT'
+                        ? 'selected'
+                        : ''
+                        }}>IT</option>
+                <option value="Kesehatan"
+                        {{
+                        old('industry')=='Kesehatan'
+                        ? 'selected'
+                        : ''
+                        }}>Kesehatan</option>
+                <option value="Pendidikan"
+                        {{
+                        old('industry')=='Pendidikan'
+                        ? 'selected'
+                        : ''
+                        }}>Pendidikan</option>
+                <option value="Jasa"
+                        {{
+                        old('industry')=='Jasa'
+                        ? 'selected'
+                        : ''
+                        }}>Jasa</option>
+                <option value="Lainnya"
+                        {{
+                        old('industry')=='Lainnya'
+                        ? 'selected'
+                        : ''
+                        }}>Lainnya</option>
             </select>
-
+            @error('industry')
+            <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+            @enderror
             <label class="block mb-2">Kontak</label>
-            <input type="text" name="contact" value="{{ old('contact') }}" class="border px-2 py-1 w-full mb-4">
-
+            <input type="text"
+                   name="contact"
+                   value="{{ old('contact') }}"
+                   class="border px-2 py-1 w-full mb-4"
+                   placeholder="0812xxxxxxx / email@example.com">
+            @error('contact')
+            <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+            @enderror
             <label class="block mb-2">Alamat lengkap</label>
-            <textarea name="address" class="border px-2 py-1 w-full mb-4">{{ old('address') }}</textarea>
+            <textarea name="address"
+                      class="border px-2 py-1 w-full mb-4">{{ old('address') }}</textarea>
 
-
+            @error('address')
+            <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+            @enderror
             <label class="block mb-2">Upload Gambar (boleh lebih dari 1)</label>
-            <input type="file" name="images[]" multiple class="mb-4">
+            <input type="file"
+                   name="images[]"
+                   multiple
+                   class="mb-4">
+            @error('images')
+            <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+            @enderror
 
-            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Simpan</button>
+            <button type="submit"
+                    class="bg-green-500 text-white px-4 py-2 rounded">Simpan</button>
         </form>
     </div>
 
     <!-- Leaflet CSS & JS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
     <!-- Leaflet Geocoder CSS & JS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
     <script>
@@ -94,7 +217,7 @@
         }
 
         // Klik di map buat pasang marker
-        map.on('click', function(e) {
+        map.on('click', function (e) {
             var latlng = e.latlng;
             if (marker) {
                 marker.setLatLng(latlng);
@@ -107,11 +230,11 @@
 
         // Tambahin search control setelah map dibuat
         L.Control.geocoder({
-                defaultMarkGeocode: false,
-                collapsed: false, // supaya search box terlihat
-                placeholder: 'Cari lokasi...'
-            })
-            .on('markgeocode', function(e) {
+            defaultMarkGeocode: false,
+            collapsed: false, // supaya search box terlihat
+            placeholder: 'Cari lokasi...'
+        })
+            .on('markgeocode', function (e) {
                 var center = e.geocode.center;
                 if (marker) {
                     marker.setLatLng(center);

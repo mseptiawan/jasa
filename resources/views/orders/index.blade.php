@@ -26,7 +26,12 @@
             <tbody>
                 @foreach($orders as $order)
                 <tr class="align-top">
-                    <td class="border px-4 py-2">{{ $order->service->title ?? '-' }}</td>
+                    <td class="border px-4 py-2">
+                        <a href="{{ route('orders.show', $order->id) }}"
+                           class="text-blue-500 hover:underline">
+                            {{ $order->service->title ?? '-' }}
+                        </a>
+                    </td>
                     <td class="border px-4 py-2">
                         @if(auth()->user()->role === 'customer')
                         {{ $order->seller->full_name ?? '-' }}

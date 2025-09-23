@@ -60,14 +60,25 @@ class ProviderApplicationController extends Controller
     {
         $request->validate([
             'phone_number' => 'required|string|max:20',
-            'address' => 'nullable|string|max:255',
-            'skills' => 'nullable|string|max:255',
-            'experience' => 'nullable|string|max:255',
-            'portfolio' => 'nullable|string|max:255',
-            'education' => 'nullable|string|max:255',
-            'id_card' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:10240',
-            'selfie' => 'nullable|file|mimes:jpg,jpeg,png|max:10240',
-            'cv' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
+            'address' => 'required|string|max:255',
+            'skills' => 'required|string|max:40',
+            'experience' => 'required|string|max:100',
+            'portfolio' => 'nullable|string|max:100',
+            'education' => 'required|string|max:50',
+            'id_card' => 'required|file|mimes:jpg,jpeg,png,pdf|max:10240',
+            'selfie' => 'required|file|mimes:jpg,jpeg,png|max:10240',
+            'cv' => 'required|file|mimes:pdf,doc,docx|max:10240',
+        ], [
+            'phone_number.required' => 'Nomor HP wajib diisi.',
+            'address.required' => 'Alamat wajib diisi.',
+            'skills.required' => 'Skill utama wajib diisi.',
+            'experience.required' => 'Pilih pengalaman kerja.',
+            'education.required' => 'Pilih pendidikan terakhir.',
+            'id_card.required' => 'Upload KTP / SIM wajib.',
+            'selfie.required' => 'Upload selfie dengan KTP wajib.',
+            'cv.required' => 'Upload CV wajib.',
+            'file.mimes' => 'Format file harus sesuai: :values.',
+            'file.max' => 'Ukuran file maksimal :max KB.',
         ]);
 
         $user = Auth::user();

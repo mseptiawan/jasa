@@ -57,6 +57,21 @@ class CategorySeeder extends Seeder
                 'Whiteboard & Explainer Videos',
                 'Intros & Outros'
             ],
+            'Lifestyle' => [
+                'Online Lessons',
+                'Gaming',
+                'Fitness Lessons',
+                'Cooking & Recipes',
+                'Les Musik', // Tambahan
+            ],
+            'Les Musik' => [ // Bisa juga bikin kategori baru khusus musik
+                'Piano',
+                'Gitar',
+                'Biola',
+                'Drum',
+                'Vokal / Singing'
+            ],
+
             'Music & Audio' => [
                 'Voice Over',
                 'Mixing & Mastering',

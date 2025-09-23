@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Service;
 use App\Models\Subcategory;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -33,17 +34,44 @@ class ServiceController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'description' => 'required|string',
             'price' => 'required|numeric|min:0',
-            'subcategory_id' => 'nullable|exists:subcategories,id',
-            'job_type' => 'nullable|string|max:255',
-            'experience' => 'nullable|string|max:255',
-            'industry' => 'nullable|string|max:255',
-            'contact' => 'nullable|string|max:255',
-            'address' => 'nullable|string',
-            'images.*' => 'nullable|image|max:2048',
-            'latitude' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
+            'subcategory_id' => 'required|exists:subcategories,id',
+            'job_type' => 'required|string|max:50',
+            'experience' => 'required|string|max:50',
+            'industry' => 'required|string|max:50',
+            'contact' => 'required|string|max:100',
+            'address' => 'required|string',
+            'images' => 'required|array|min:1',
+            'images.*' => 'required|image|max:2048',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+        ], [
+            'title.required' => 'Judul wajib diisi.',
+            'title.max' => 'Judul maksimal :max karakter.',
+            'description.required' => 'Deskripsi wajib diisi.',
+            'price.required' => 'Harga wajib diisi.',
+            'price.numeric' => 'Harga harus berupa angka.',
+            'price.min' => 'Harga minimal :min.',
+            'subcategory_id.required' => 'Kategori wajib dipilih.',
+            'subcategory_id.exists' => 'Kategori tidak valid.',
+            'job_type.required' => 'Jenis pekerjaan wajib diisi.',
+            'job_type.max' => 'Jenis pekerjaan maksimal :max karakter.',
+            'experience.required' => 'Pengalaman wajib diisi.',
+            'experience.max' => 'Pengalaman maksimal :max karakter.',
+            'industry.required' => 'Industri wajib diisi.',
+            'industry.max' => 'Industri maksimal :max karakter.',
+            'contact.required' => 'Kontak wajib diisi.',
+            'contact.max' => 'Kontak maksimal :max karakter.',
+            'address.required' => 'Alamat lengkap wajib diisi.',
+            'images.required' => 'Minimal satu gambar harus diupload.',
+            'images.*.required' => 'Gambar wajib diupload.',
+            'images.*.image' => 'File harus berupa gambar.',
+            'images.*.max' => 'Ukuran gambar maksimal :max KB.',
+            'latitude.required' => 'Latitude wajib diisi.',
+            'latitude.numeric' => 'Latitude harus berupa angka.',
+            'longitude.required' => 'Longitude wajib diisi.',
+            'longitude.numeric' => 'Longitude harus berupa angka.',
         ]);
 
 
@@ -78,8 +106,30 @@ class ServiceController extends Controller
     // Detail service
     public function show($slug)
     {
-        $service = Service::where('slug', $slug)->firstOrFail();
-        return view('services.show', compact('service'));
+        // Ambil service utama dengan relasi user, subcategory.category, reviews
+        $service = \App\Models\Service::with(['user', 'subcategory.category', 'reviews'])
+            ->where('slug', $slug)
+            ->firstOrFail();
+
+        // Hitung rata-rata rating service utama
+        $service->avg_rating = $service->reviews->avg('rating') ?? 0;
+
+        // Ambil jasa lain dari subkategori sama atau dari seller sama (kecuali service ini)
+        $services = \App\Models\Service::with(['user', 'reviews'])
+            ->where('slug', '!=', $service->slug)
+            ->where(function ($q) use ($service) {
+                $q->where('subcategory_id', $service->subcategory_id)
+                    ->orWhere('user_id', $service->user_id);
+            })
+            ->get();
+
+        // Hitung rata-rata rating tiap jasa lain
+        $services->map(function ($s) {
+            $s->avg_rating = $s->reviews->avg('rating') ?? 0;
+            return $s;
+        });
+
+        return view('services.show', compact('service', 'services'));
     }
 
     // Form edit service
@@ -114,9 +164,31 @@ class ServiceController extends Controller
             'industry' => 'nullable|string|max:255',
             'contact' => 'nullable|string|max:255',
             'address' => 'nullable|string',
+
             'images.*' => 'nullable|image|max:2048',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
+        ], [
+            'title.required' => 'Judul wajib diisi.',
+            'title.max' => 'Judul maksimal :max karakter.',
+            'description.string' => 'Deskripsi harus berupa teks.',
+            'price.required' => 'Harga wajib diisi.',
+            'price.numeric' => 'Harga harus berupa angka.',
+            'price.min' => 'Harga minimal :min.',
+            'subcategory_id.exists' => 'Kategori tidak valid.',
+            'job_type.string' => 'Jenis pekerjaan harus berupa teks.',
+            'job_type.max' => 'Jenis pekerjaan maksimal :max karakter.',
+            'experience.string' => 'Pengalaman harus berupa teks.',
+            'experience.max' => 'Pengalaman maksimal :max karakter.',
+            'industry.string' => 'Industri harus berupa teks.',
+            'industry.max' => 'Industri maksimal :max karakter.',
+            'contact.string' => 'Kontak harus berupa teks.',
+            'contact.max' => 'Kontak maksimal :max karakter.',
+            'address.string' => 'Alamat harus berupa teks.',
+            'images.*.image' => 'File harus berupa gambar.',
+            'images.*.max' => 'Ukuran gambar maksimal :max KB.',
+            'latitude.numeric' => 'Latitude harus berupa angka.',
+            'longitude.numeric' => 'Longitude harus berupa angka.',
         ]);
 
 
@@ -196,7 +268,7 @@ class ServiceController extends Controller
         }
 
         $services = Service::selectRaw("*, (6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude)))) AS distance", [$userLat, $userLng, $userLat])
-            ->having('distance', '<', 10) // radius km, misal 50km50km
+            ->having('distance', '<', 5) // radius km, misal 50km50km
             ->orderBy('distance', 'asc')
             ->get();
 
@@ -226,5 +298,47 @@ class ServiceController extends Controller
         }
 
         return view('services.favorites', compact('services'));
+    }
+    public function highlight()
+    {
+        $userId = auth()->id();
+        $services = Service::where('user_id', $userId)->get();
+        return view('services.highlight', compact('services'));
+    }
+
+    // Tampilkan form simulasi pembayaran highlight
+    public function showPayHighlight(Service $service)
+    {
+        if ($service->user_id !== auth()->id()) abort(403);
+
+        $highlightFee = 50000;     // fee dummy
+        $highlightDuration = 3;    // hari
+
+        return view('services.highlight_pay', compact('service', 'highlightFee', 'highlightDuration'));
+    }
+
+    // Bayar highlight (simulasi)
+    public function payHighlight(Request $request, Service $service)
+    {
+        if ($service->user_id !== auth()->id()) abort(403);
+
+        $request->validate([
+            'payment_method' => 'required|in:bank_transfer,e_wallet,dummy_gateway'
+        ]);
+
+        $highlightFee     = 50000;
+        $highlightDuration = 3;
+        $highlightUntil   = now()->addDays($highlightDuration);
+
+        $service->update([
+            'is_highlight'     => true,
+            'highlight_until'  => $highlightUntil,
+            'highlight_fee'    => $highlightFee,
+            'highlight_method' => $request->payment_method, // simpan metode pilihan
+        ]);
+
+        return redirect()->route('services.highlight')
+            ->with('success', "Highlight '{$service->title}' aktif {$highlightDuration} hari. " .
+                "Metode: {$request->payment_method}. Fee: Rp " . number_format($highlightFee, 0, ',', '.'));
     }
 }

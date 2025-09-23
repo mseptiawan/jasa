@@ -1,19 +1,33 @@
 <x-app-layout>
     <!-- <h2>Dashboard</h2> -->
-    @auth
-    @if(auth()->user()->role === 'admin')
-    <div class="mb-4 flex gap-2">
-        <a href="{{ route('categories.index') }}"
-           class="text-blue-700 bg-gray-200 p-4">
-            Kelola Kategori
-        </a>
+    @php
+        $categories = \App\Models\Category::all();
+    @endphp
 
-        <a href="{{ route('subcategories.index') }}"
-           class="text-blue-700 bg-gray-200 p-4">
-            Kelola Subkategori
-        </a>
+    <div style="margin-bottom:20px; display:flex; gap:10px;">
+        @foreach ($categories as $cat)
+            <a href="{{ route('dashboard', ['category' => $cat->id]) }}"
+               style="padding:5px 10px; border:1px solid #ccc; border-radius:4px;
+                  background-color: {{ request('category') == $cat->id ? '#ddd' : '#fff' }};">
+                {{ $cat->name }}
+            </a>
+        @endforeach
     </div>
-    @endif
+
+    @auth
+        @if (auth()->user()->role === 'admin')
+            <div class="mb-4 flex gap-2">
+                <a href="{{ route('categories.index') }}"
+                   class="text-blue-700 bg-gray-200 p-4">
+                    Kelola Kategori
+                </a>
+
+                <a href="{{ route('subcategories.index') }}"
+                   class="text-blue-700 bg-gray-200 p-4">
+                    Kelola Subkategori
+                </a>
+            </div>
+        @endif
     @endauth
 
     <div class="mb-4"
@@ -50,11 +64,27 @@
         </form>
     </div>
 
-    <div style="display: flex; flex-wrap: wrap; gap: 20px">
-        @forelse($services as $service)
-        <a href="{{ route('services.show', $service->slug) }}"
-           style="
-                border: 1px solid #ccc;
+    {{-- Baris Highlight --}}
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px;">
+        @php
+            $highlightServices = $services->filter(function ($s) {
+                return $s->is_highlight && $s->highlight_until && now()->lte($s->highlight_until);
+            });
+        @endphp
+
+        @forelse($highlightServices as $service)
+            @php
+                $images = json_decode($service->images, true);
+                $mainImage = !empty($images) && count($images) > 0 ? asset('storage/' . $images[0]) : null;
+                $profilePhoto =
+                    $service->user && $service->user->profile_photo
+                        ? asset('storage/' . $service->user->profile_photo)
+                        : asset('images/profile-user.png');
+            @endphp
+
+            <a href="{{ route('services.show', $service->slug) }}"
+               style="
+                border: 2px gold solid;
                 border-radius: 6px;
                 width: 200px;
                 text-decoration: none;
@@ -62,99 +92,136 @@
                 padding: 10px;
                 display: flex;
                 flex-direction: column;
+                background: #fff8dc;
+                box-shadow: 0 0 10px rgba(218,165,32,0.5);
+                position: relative;
             ">
-            @php
-            // Ambil gambar utama service
-            $images = json_decode($service->images, true);
-            $mainImage = (!empty($images) && count($images) > 0)
-            ? asset('storage/' . $images[0])
-            : null;
+                <div
+                     style="
+                position: absolute;
+                top: 8px;
+                left: 8px;
+                background: gold;
+                color: #000;
+                font-weight: bold;
+                padding: 2px 6px;
+                border-radius: 4px;
+                font-size: 12px;
+            ">
+                    HIGHLIGHT</div>
 
-            // Ambil foto profil user dengan fallback
-            $profilePhoto = ($service->user && $service->user->profile_photo)
-            ? asset('storage/' . $service->user->profile_photo)
-            : asset('images/profile-user.png');
+                @if ($mainImage)
+                    <img src="{{ $mainImage }}"
+                         alt="{{ $service->title }}"
+                         style="width: 100%; height: 120px; object-fit: cover; border-radius: 4px; margin-bottom: 8px;" />
+                @else
+                    <div
+                         style="width: 100%; height: 120px; background: #eee; display: flex; align-items: center; justify-content: center; border-radius: 4px; margin-bottom: 8px;">
+                        No Image
+                    </div>
+                @endif
+
+                <h3 style="margin: 0 0 8px 0; font-weight: bold">{{ $service->title }}</h3>
+
+                <div style="display: flex; align-items: center; margin-bottom: 6px">
+                    <img src="{{ $profilePhoto }}"
+                         alt="{{ $service->user->full_name ?? 'N/A' }}"
+                         style="width: 24px; height: 24px; border-radius: 50%; margin-right: 6px; object-fit: cover;" />
+                    <span style="font-size: 14px">{{ $service->user->full_name ?? 'N/A' }}</span>
+                </div>
+
+                <p style="color: green; font-weight: bold; margin-top: auto">
+                    Rp {{ number_format($service->price, 0, ',', '.') }}
+                </p>
+
+                <div class="flex mt-1">
+                    @for ($i = 1; $i <= 5; $i++)
+                        @if ($i <= floor($service->avg_rating))
+                            <span class="text-yellow-400">&#9733;</span>
+                        @elseif($i - $service->avg_rating < 1)
+                            <span class="text-yellow-400">&#9733;</span>
+                        @else
+                            <span class="text-gray-300">&#9733;</span>
+                        @endif
+                    @endfor
+                </div>
+            </a>
+        @empty
+            {{-- Kosong, tidak ada highlight --}}
+        @endforelse
+    </div>
+
+    {{-- Baris Normal --}}
+    <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+        @php
+            $normalServices = $services->filter(function ($s) {
+                return !($s->is_highlight && $s->highlight_until && now()->lte($s->highlight_until));
+            });
+        @endphp
+
+        @forelse($normalServices as $service)
+            @php
+                $images = json_decode($service->images, true);
+                $mainImage = !empty($images) && count($images) > 0 ? asset('storage/' . $images[0]) : null;
+                $profilePhoto =
+                    $service->user && $service->user->profile_photo
+                        ? asset('storage/' . $service->user->profile_photo)
+                        : asset('images/profile-user.png');
             @endphp
 
+            <a href="{{ route('services.show', $service->slug) }}"
+               style="
+                border: 2px #ccc solid;
+                border-radius: 6px;
+                width: 200px;
+                text-decoration: none;
+                color: #000;
+                padding: 10px;
+                display: flex;
+                flex-direction: column;
+                background: #fff;
+                box-shadow: none;
+                position: relative;
+            ">
 
-            {{-- Gambar utama --}}
-            @if($mainImage)
-            <img src="{{ $mainImage }}"
-                 alt="{{ $service->title }}"
-                 style="
-                    width: 100%;
-                    height: 120px;
-                    object-fit: cover;
-                    border-radius: 4px;
-                    margin-bottom: 8px;
-                " />
-            @else
-            <div style="
-                    width: 100%;
-                    height: 120px;
-                    background: #eee;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    border-radius: 4px;
-                    margin-bottom: 8px;
-                ">
-                No Image
-            </div>
-            @endif
+                @if ($mainImage)
+                    <img src="{{ $mainImage }}"
+                         alt="{{ $service->title }}"
+                         style="width: 100%; height: 120px; object-fit: cover; border-radius: 4px; margin-bottom: 8px;" />
+                @else
+                    <div
+                         style="width: 100%; height: 120px; background: #eee; display: flex; align-items: center; justify-content: center; border-radius: 4px; margin-bottom: 8px;">
+                        No Image
+                    </div>
+                @endif
 
-            {{-- Judul --}}
-            <h3 style="margin: 0 0 8px 0; font-weight: bold">
-                {{ $service->title }}
-            </h3>
+                <h3 style="margin: 0 0 8px 0; font-weight: bold">{{ $service->title }}</h3>
 
-            {{-- Pembuat --}}
-            <div style="display: flex; align-items: center; margin-bottom: 6px">
-                <img src="{{ $profilePhoto }}"
-                     alt="{{ $service->user->full_name ?? 'N/A' }}"
-                     style="
-                        width: 24px;
-                        height: 24px;
-                        border-radius: 50%;
-                        margin-right: 6px;
-                        object-fit: cover;
-                    " />
-                <span style="font-size: 14px">{{ $service->user->full_name ?? 'N/A' }}</span>
-            </div>
+                <div style="display: flex; align-items: center; margin-bottom: 6px">
+                    <img src="{{ $profilePhoto }}"
+                         alt="{{ $service->user->full_name ?? 'N/A' }}"
+                         style="width: 24px; height: 24px; border-radius: 50%; margin-right: 6px; object-fit: cover;" />
+                    <span style="font-size: 14px">{{ $service->user->full_name ?? 'N/A' }}</span>
+                </div>
 
-            {{-- Harga --}}
-            <p style="color: green; font-weight: bold; margin-top: auto">
-                Rp {{ number_format($service->price, 0, ',', '.') }}
-            </p>
-            <div class="flex mt-1">
-                @for ($i = 1; $i <= 5;
-                   $i++)
-                   @if($i
-                   <=floor($service->avg_rating))
-                    <span class="text-yellow-400">&#9733;</span> {{-- bintang penuh --}}
-                    @elseif($i - $service->avg_rating < 1)
-                      <span
-                      class="text-yellow-400">&#9733;</span> {{-- bintang setengah bisa custom --}}
+                <p style="color: green; font-weight: bold; margin-top: auto">
+                    Rp {{ number_format($service->price, 0, ',', '.') }}
+                </p>
+
+                <div class="flex mt-1">
+                    @for ($i = 1; $i <= 5; $i++)
+                        @if ($i <= floor($service->avg_rating))
+                            <span class="text-yellow-400">&#9733;</span>
+                        @elseif($i - $service->avg_rating < 1)
+                            <span class="text-yellow-400">&#9733;</span>
                         @else
-                        <span class="text-gray-300">&#9733;</span> {{-- bintang kosong --}}
+                            <span class="text-gray-300">&#9733;</span>
                         @endif
-                        @endfor
-            </div>
-            <form action="{{ route('services.toggleFavorite', $service->slug) }}"
-                  method="POST">
-                @csrf
-                @method('PATCH')
-                <button type="submit"
-                        class="px-2 py-1 rounded
-        {{ auth()->user()->favoriteServices->contains($service->id) ? 'bg-red-500' : 'bg-gray-300' }}">
-                    {{ auth()->user()->favoriteServices->contains($service->id) ? 'Unfavorite' : 'Favorite' }}
-                </button>
-            </form>
-
-
-        </a>
+                    @endfor
+                </div>
+            </a>
         @empty
-        <p>Tidak ada service untuk ditampilkan.</p>
+            <p>Tidak ada service untuk ditampilkan.</p>
         @endforelse
     </div>
 
@@ -178,7 +245,8 @@
             }
 
             timeout = setTimeout(() => {
-                fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1`)
+                fetch(
+                        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1`)
                     .then(res => res.json())
                     .then(data => {
                         resultsList.innerHTML = '';
@@ -235,7 +303,6 @@
                 alert('Browser tidak mendukung geolocation');
             }
         });
-
     </script>
 
 </x-app-layout>

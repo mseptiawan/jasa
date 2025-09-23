@@ -16,186 +16,212 @@
                     <!-- Beranda -->
                     <x-nav-link :href="route('dashboard')"
                                 :active="request()->routeIs('dashboard')">
-                        {{ __("Beranda") }}
+                        {{ __('Beranda') }}
                     </x-nav-link>
 
                     <!-- Untuk User Biasa -->
                     @auth
-                    @if(!auth()->user()->isAdmin() && auth()->user()->role !== 'seller')
-                    <x-nav-link :href="route('service.apply')"
-                                :active="request()->routeIs('service.apply')">
-                        {{ __("Apply Become Service Provider") }}
-                    </x-nav-link>
+                        @if (!auth()->user()->isAdmin() && auth()->user()->role !== 'seller')
+                            <x-nav-link :href="route('service.apply')"
+                                        :active="request()->routeIs('service.apply')">
+                                {{ __('Apply Become Service Provider') }}
+                            </x-nav-link>
 
-                    @php
-                    $hasPendingApplication = \App\Models\ProviderApplication::where('user_id', auth()->id())
-                    ->where('status', 'pending')
-                    ->exists();
-                    @endphp
+                            @php
+                                $hasPendingApplication = \App\Models\ProviderApplication::where('user_id', auth()->id())
+                                    ->where('status', 'pending')
+                                    ->exists();
+                            @endphp
 
-                    @if($hasPendingApplication)
-                    <x-nav-link :href="route('provider.applications')"
-                                :active="request()->routeIs('provider.applications')">
-                        {{ __("Pengajuan Saya") }}
-                    </x-nav-link>
-                    @endif
-                    @endif
+                            @if ($hasPendingApplication)
+                                <x-nav-link :href="route('provider.applications')"
+                                            :active="request()->routeIs('provider.applications')">
+                                    {{ __('Pengajuan Saya') }}
+                                </x-nav-link>
+                            @endif
+                        @endif
                     @endauth
 
                     <!-- Untuk Admin -->
                     @auth
-                    @can('admin')
-                    <x-nav-link :href="route('admin.provider.applications')"
-                                :active="request()->routeIs('admin.provider.applications')">
-                        {{ __("Semua Pengajuan") }}
-                    </x-nav-link>
-                    @endcan
+                        @can('admin')
+                            <x-nav-link :href="route('admin.provider.applications')"
+                                        :active="request()->routeIs('admin.provider.applications')">
+                                {{ __('Semua Pengajuan') }}
+                            </x-nav-link>
+                        @endcan
                     @endauth
 
-                    <!-- Post Jasa untuk User Approved -->
                     @auth
-                    @if(!auth()->user()->isAdmin())
-                    @php
-                    $application = \App\Models\ProviderApplication::where('user_id', auth()->id())->first();
-                    @endphp
-                    @if($application && $application->status === 'approved')
-                    <x-nav-link :href="route('services.create')"
-                                :active="request()->routeIs('services.create')">
-                        {{ __("Post Jasa") }}
-                    </x-nav-link>
-                    @endif
-                    @endif
+                        @if (auth()->user()->role === 'seller')
+                            {{-- cuma seller --}}
+                            @php
+                                $application = \App\Models\ProviderApplication::where('user_id', auth()->id())->first();
+                            @endphp
+
+                            @if ($application && $application->status === 'approved')
+                                <x-nav-link :href="route('services.create')"
+                                            :active="request()->routeIs('services.create')">
+                                    {{ __('Post Jasa') }}
+                                </x-nav-link>
+                            @endif
+                        @endif
                     @endauth
+
 
                     <!-- Kelola Jasa untuk Admin -->
                     @auth
-                    @if(auth()->user()->isAdmin())
-                    <x-nav-link :href="route('admin.services.index')"
-                                :active="request()->routeIs('admin.services.*')">
-                        {{ __("Kelola Jasa") }}
-                    </x-nav-link>
-                    @endif
+                        @if (auth()->user()->isAdmin())
+                            <x-nav-link :href="route('admin.services.index')"
+                                        :active="request()->routeIs('admin.services.*')">
+                                {{ __('Kelola Jasa') }}
+                            </x-nav-link>
+                        @endif
                     @endauth
-
                     <!-- Chat Menu -->
                     @auth
-                    @php
-                    $unreadChatCount = \App\Models\Conversation::where(function($q) {
-                    $q->where('customer_id', auth()->id())
-                    ->orWhere('seller_id', auth()->id());
-                    })->whereHas('chats', function($q) {
-                    $q->where('is_read', 0); // hanya cek is_read
-                    })->count();
-                    @endphp
+                        @php
+                            $roles = ['customer', 'seller']; // role yang boleh liat chat
+                        @endphp
 
-                    <x-nav-link :href="route('conversations.index')"
-                                :active="request()->routeIs('conversations.*')">
-                        {{ __("Chat") }}
+                        @if (in_array(auth()->user()->role, $roles))
+                            @php
+                                $unreadChatCount = \App\Models\Conversation::where(function ($q) {
+                                    $q->where('customer_id', auth()->id())->orWhere('seller_id', auth()->id());
+                                })
+                                    ->whereHas('chats', function ($q) {
+                                        $q->where('is_read', 0); // hanya cek is_read
+                                    })
+                                    ->count();
+                            @endphp
 
-                        @if($unreadChatCount > 0)
-                        <span class="ml-1 bg-red-500 text-white text-xs rounded-full px-2">
-                            {{ $unreadChatCount }}
-                        </span>
+                            <x-nav-link :href="route('conversations.index')"
+                                        :active="request()->routeIs('conversations.*')">
+                                {{ __('Chat') }}
+
+                                @if ($unreadChatCount > 0)
+                                    <span class="ml-1 bg-red-500 text-white text-xs rounded-full px-2">
+                                        {{ $unreadChatCount }}
+                                    </span>
+                                @endif
+                            </x-nav-link>
                         @endif
-                    </x-nav-link>
-
                     @endauth
 
-                    <!-- Pesanan / Orders -->
                     @auth
-                    @php
-                    $pendingCount = \App\Models\Order::where('seller_id', auth()->id())
-                    ->where('status', 'pending')
-                    ->count();
-                    @endphp
+                        @php
+                            $user = auth()->user();
+                        @endphp
 
-                    <x-nav-link :href="route('orders.index')"
-                                :active="request()->routeIs('orders.*')">
-                        {{ __('Pesanan') }}
-                        @if($pendingCount > 0)
-                        <span class="ml-1 bg-red-500 text-white text-xs rounded-full px-2">
-                            {{ $pendingCount }}
-                        </span>
+                        @if ($user->role !== 'admin') {{-- cuma customer & seller --}}
+                            <x-nav-link :href="route('orders.index')"
+                                        :active="request()->routeIs('orders.*')">
+                                {{ __('Pesanan') }}
+
+                                {{-- badge merah cuma buat seller --}}
+                                @if ($user->role === 'seller')
+                                    @php
+                                        $pendingCount = \App\Models\Order::whereHas(
+                                            'service',
+                                            fn($q) => $q->where('user_id', $user->id),
+                                        )
+                                            ->where('status', 'pending')
+                                            ->count();
+                                    @endphp
+                                    @if ($pendingCount > 0)
+                                        <span class="ml-1 bg-red-500 text-white text-xs rounded-full px-2">
+                                            {{ $pendingCount }}
+                                        </span>
+                                    @endif
+                                @endif
+                            </x-nav-link>
                         @endif
-                    </x-nav-link>
                     @endauth
+
 
                     <!-- Favorit Saya -->
                     @auth
-                    @if(in_array(auth()->user()->role, ['customer','seller']))
-                    <x-nav-link :href="route('services.favorites')"
-                                :active="request()->routeIs('services.favorites')">
-                        {{ __("Favorit Saya") }}
-                    </x-nav-link>
-                    @endif
+                        @if (in_array(auth()->user()->role, ['customer', 'seller']))
+                            <x-nav-link :href="route('services.favorites')"
+                                        :active="request()->routeIs('services.favorites')">
+                                {{ __('Favorit Saya') }}
+                            </x-nav-link>
+                        @endif
                     @endauth
 
                     <!-- Jasa Saya -->
                     @auth
-                    @if(!auth()->user()->isAdmin())
-                    @php
-                    $servicesCount = \App\Models\Service::where('user_id', auth()->id())->count();
-                    @endphp
-                    @if($servicesCount > 0)
-                    <x-nav-link :href="route('services.index')"
-                                :active="request()->routeIs('services.index')">
-                        {{ __("Jasa Saya") }}
-                    </x-nav-link>
-                    @endif
-                    @endif
+                        @if (!auth()->user()->isAdmin())
+                            @php
+                                $servicesCount = \App\Models\Service::where('user_id', auth()->id())->count();
+                            @endphp
+                            @if ($servicesCount > 0)
+                                <x-nav-link :href="route('services.index')"
+                                            :active="request()->routeIs('services.index')">
+                                    {{ __('Jasa Saya') }}
+                                </x-nav-link>
+                            @endif
+                            {{-- Menu Highlight Service --}}
+                            @if ($servicesCount > 0)
+                                <x-nav-link :href="route('services.highlight')"
+                                            :active="request()->routeIs('services.highlight')">
+                                    {{ __('Highlight Service') }}
+                                </x-nav-link>
+                            @endif
+                        @endif
                     @endauth
 
                     <!-- Notifikasi Bell -->
                     @auth
-                    <div x-data="{ open: false }"
-                         class="relative">
-                        <button @click="open = !open"
-                                class="relative focus:outline-none">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                 class="w-6 h-6 mt-7 text-gray-700 hover:text-blue-600"
-                                 fill="none"
-                                 viewBox="0 0 24 24"
-                                 stroke="currentColor">
-                                <path stroke-linecap="round"
-                                      stroke-linejoin="round"
-                                      stroke-width="1.5"
-                                      d="M14.857 17.081A4.001 4.001 0 0112 20a4.001 4.001 0 01-2.857-2.919M5 8a7 7 0 0114 0v4l1.5 2.5H3.5L5 12V8z" />
-                            </svg>
+                        <div x-data="{ open: false }"
+                             class="relative">
+                            <button @click="open = !open"
+                                    class="relative focus:outline-none">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     class="w-6 h-6 mt-7 text-gray-700 hover:text-blue-600"
+                                     fill="none"
+                                     viewBox="0 0 24 24"
+                                     stroke="currentColor">
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          stroke-width="1.5"
+                                          d="M14.857 17.081A4.001 4.001 0 0112 20a4.001 4.001 0 01-2.857-2.919M5 8a7 7 0 0114 0v4l1.5 2.5H3.5L5 12V8z" />
+                                </svg>
 
-                            @if(auth()->user()->unreadNotifications->count() > 0)
-                            <span class="absolute top-5 -right-1 bg-red-500 text-white text-xs rounded-full px-1">
-                                {{ auth()->user()->unreadNotifications->count() }}
-                            </span>
-                            @endif
-                        </button>
+                                @if (auth()->user()->unreadNotifications->count() > 0)
+                                    <span class="absolute top-5 -right-1 bg-red-500 text-white text-xs rounded-full px-1">
+                                        {{ auth()->user()->unreadNotifications->count() }}
+                                    </span>
+                                @endif
+                            </button>
 
-                        <div x-show="open"
-                             @click.away="open = false"
-                             x-transition
-                             class="absolute right-0 mt-2 w-72 bg-white border border-gray-200 rounded shadow-lg z-50">
-                            <div class="p-2 font-semibold border-b flex justify-between items-center">
-                                <span>Notifikasi</span>
-                                <form action="{{ route('notifications.read') }}"
-                                      method="POST">
-                                    @csrf
-                                    <button type="submit"
-                                            class="text-xs text-blue-600 hover:underline">
-                                        Tandai Dibaca
-                                    </button>
-                                </form>
+                            <div x-show="open"
+                                 @click.away="open = false"
+                                 x-transition
+                                 class="absolute right-0 mt-2 w-72 bg-white border border-gray-200 rounded shadow-lg z-50">
+                                <div class="p-2 font-semibold border-b flex justify-between items-center">
+                                    <span>Notifikasi</span>
+                                    <form action="{{ route('notifications.read') }}"
+                                          method="POST">
+                                        @csrf
+                                        <button type="submit"
+                                                class="text-xs text-blue-600 hover:underline">
+                                            Tandai Dibaca
+                                        </button>
+                                    </form>
+                                </div>
+
+                                @forelse(auth()->user()->unreadNotifications as $notif)
+                                    <a href="{{ $notif->data['url'] ?? '#' }}"
+                                       class="block px-4 py-2 hover:bg-gray-100">
+                                        <div class="text-sm font-medium">{{ $notif->data['title'] ?? 'Notifikasi' }}</div>
+                                        <div class="text-xs text-gray-500">{{ $notif->data['message'] ?? '' }}</div>
+                                    </a>
+                                @empty
+                                    <div class="p-3 text-gray-500">Belum ada notifikasi</div>
+                                @endforelse
                             </div>
-
-                            @forelse(auth()->user()->unreadNotifications as $notif)
-                            <a href="{{ $notif->data['url'] ?? '#' }}"
-                               class="block px-4 py-2 hover:bg-gray-100">
-                                <div class="text-sm font-medium">{{ $notif->data['title'] ?? 'Notifikasi' }}</div>
-                                <div class="text-xs text-gray-500">{{ $notif->data['message'] ?? '' }}</div>
-                            </a>
-                            @empty
-                            <div class="p-3 text-gray-500">Belum ada notifikasi</div>
-                            @endforelse
                         </div>
-                    </div>
                     @endauth
                 </div>
 
@@ -224,7 +250,7 @@
 
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile.edit')">
-                            {{ __("Profil") }}
+                            {{ __('Profil') }}
                         </x-dropdown-link>
 
                         <!-- Authentication -->
@@ -235,7 +261,7 @@
                             <x-dropdown-link :href="route('logout')"
                                              onclick="event.preventDefault();
                                                 this.closest('form').submit();">
-                                {{ __("Keluar") }}
+                                {{ __('Keluar') }}
                             </x-dropdown-link>
                         </form>
                     </x-slot>
@@ -250,13 +276,13 @@
                          stroke="currentColor"
                          fill="none"
                          viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }"
+                        <path :class="{ 'hidden': open, 'inline-flex': !open }"
                               class="inline-flex"
                               stroke-linecap="round"
                               stroke-linejoin="round"
                               stroke-width="2"
                               d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }"
+                        <path :class="{ 'hidden': !open, 'inline-flex': open }"
                               class="hidden"
                               stroke-linecap="round"
                               stroke-linejoin="round"
@@ -269,12 +295,12 @@
     </div>
 
     <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}"
+    <div :class="{ 'block': open, 'hidden': !open }"
          class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')"
                                    :active="request()->routeIs('dashboard')">
-                {{ __("Dashboard") }}
+                {{ __('Dashboard') }}
             </x-responsive-nav-link>
         </div>
 
@@ -291,7 +317,7 @@
 
             <div class="mt-3 space-y-1">
                 <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __("Profile") }}
+                    {{ __('Profile') }}
                 </x-responsive-nav-link>
 
                 <!-- Authentication -->
@@ -302,7 +328,7 @@
                     <x-responsive-nav-link :href="route('logout')"
                                            onclick="event.preventDefault();
                                         this.closest('form').submit();">
-                        {{ __("Log Out") }}
+                        {{ __('Log Out') }}
                     </x-responsive-nav-link>
                 </form>
             </div>

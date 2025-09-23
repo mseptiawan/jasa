@@ -25,7 +25,12 @@ class Service extends Model
         'latitude',
         'longitude',
         'slug', // jangan lupa tambahkan slug
+        'is_highlight',      // untuk status highlight
+        'highlight_until',   // tanggal habis highlight
+        'highlight_fee',     // fee yang dibayarkan
     ];
+
+
     protected static function booted()
     {
         static::creating(function ($service) {
@@ -41,6 +46,8 @@ class Service extends Model
     // Jika pakai JSON di images/tags, otomatis cast ke array
     protected $casts = [
         'images' => 'array',
+        'highlight_until' => 'datetime', // ini penting
+
     ];
 
     // Relasi ke user

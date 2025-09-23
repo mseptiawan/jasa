@@ -80,13 +80,13 @@ class OrderController extends Controller
             'customer_phone' => $request->customer_phone,
             'note' => $request->note,
         ]);
-
         // Kirim notifikasi ke seller
         $service->user->notify(new \App\Notifications\NewOrderNotification($order));
+        // return view('orders.show', compact('order', 'service'));
+        return redirect()->route('orders.infoPayment', $order->id);
 
-        // Redirect ke invoice/show langsung
-        return redirect()->route('orders.show', $order)
-            ->with('success', 'Order berhasil dibuat (simulasi).');
+        // return redirect()->route('orders.show', $order)
+        //     ->with('success', 'Order berhasil dibuat (simulasi).');
     }
 
 
@@ -189,5 +189,10 @@ class OrderController extends Controller
     {
         $pdf = Pdf::loadView('orders.invoice_fancy', compact('order'));
         return $pdf->download('Invoice_Order_' . $order->id . '.pdf');
+    }
+    public function infoPayment(Order $order)
+    {
+        $service = $order->service; // ambil service terkait
+        return view('orders.info-payment', compact('order', 'service'));
     }
 }

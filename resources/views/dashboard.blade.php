@@ -13,6 +13,17 @@
             </a>
         @endforeach
     </div>
+    <form action="{{ route('dashboard') }}"
+          method="GET"
+          class="mb-4">
+        <input type="text"
+               name="search"
+               placeholder="Search services..."
+               value="{{ request('search') }}"
+               class="border rounded px-3 py-2 w-full max-w-sm">
+        <button type="submit"
+                class="bg-blue-600 text-white px-3 py-2 rounded ml-2">Search</button>
+    </form>
 
     @auth
         @if (auth()->user()->role === 'admin')
@@ -82,8 +93,8 @@
                         : asset('images/profile-user.png');
             @endphp
 
-            <a href="{{ route('services.show', $service->slug) }}"
-               style="
+            <div
+                 style="
                 border: 2px gold solid;
                 border-radius: 6px;
                 width: 200px;
@@ -96,6 +107,25 @@
                 box-shadow: 0 0 10px rgba(218,165,32,0.5);
                 position: relative;
             ">
+                @php
+                    $userFavorites = auth()->user()->favoriteServices ?? collect();
+                    $isFavorited = $userFavorites->contains($service->id);
+                @endphp
+
+                <form action="{{ route('services.toggleFavorite', $service->slug) }}"
+                      method="POST"
+                      style="position: absolute; top: 8px; right: 8px;">
+                    @csrf
+                    @method('PATCH')
+                    <button type="submit"
+                            class="focus:outline-none">
+                        @if ($isFavorited)
+                            <span class="text-yellow-500 text-xl">&#9733;</span> {{-- bintang terisi --}}
+                        @else
+                            <span class="text-gray-400 text-xl">&#9734;</span> {{-- bintang kosong --}}
+                        @endif
+                    </button>
+                </form>
                 <div
                      style="
                 position: absolute;
@@ -120,8 +150,8 @@
                         No Image
                     </div>
                 @endif
-
-                <h3 style="margin: 0 0 8px 0; font-weight: bold">{{ $service->title }}</h3>
+                <a href="{{ route('services.show', $service->slug) }}"
+                   class="text-gray-600 hover:underline">{{ $service->title }}</a>
 
                 <div style="display: flex; align-items: center; margin-bottom: 6px">
                     <img src="{{ $profilePhoto }}"
@@ -145,7 +175,7 @@
                         @endif
                     @endfor
                 </div>
-            </a>
+            </div>
         @empty
             {{-- Kosong, tidak ada highlight --}}
         @endforelse
@@ -169,8 +199,8 @@
                         : asset('images/profile-user.png');
             @endphp
 
-            <a href="{{ route('services.show', $service->slug) }}"
-               style="
+            <div
+                 style="
                 border: 2px #ccc solid;
                 border-radius: 6px;
                 width: 200px;
@@ -183,6 +213,27 @@
                 box-shadow: none;
                 position: relative;
             ">
+                @auth
+                    @php
+                        $userFavorites = auth()->user()->favoriteServices ?? collect();
+                        $isFavorited = $userFavorites->contains($service->id);
+                    @endphp
+
+                    <form action="{{ route('services.toggleFavorite', $service->slug) }}"
+                          method="POST"
+                          style="position: absolute; top: 8px; right: 8px;">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit"
+                                class="focus:outline-none">
+                            @if ($isFavorited)
+                                <span class="text-yellow-500 text-xl">&#9733;</span> {{-- bintang terisi --}}
+                            @else
+                                <span class="text-gray-400 text-xl">&#9734;</span> {{-- bintang kosong --}}
+                            @endif
+                        </button>
+                    </form>
+                @endauth
 
                 @if ($mainImage)
                     <img src="{{ $mainImage }}"
@@ -195,7 +246,8 @@
                     </div>
                 @endif
 
-                <h3 style="margin: 0 0 8px 0; font-weight: bold">{{ $service->title }}</h3>
+                <a href="{{ route('services.show', $service->slug) }}"
+                   class="text-gray-600 hover:underline">{{ $service->title }}</a>
 
                 <div style="display: flex; align-items: center; margin-bottom: 6px">
                     <img src="{{ $profilePhoto }}"
@@ -219,7 +271,7 @@
                         @endif
                     @endfor
                 </div>
-            </a>
+            </div>
         @empty
             <p>Tidak ada service untuk ditampilkan.</p>
         @endforelse
@@ -246,7 +298,8 @@
 
             timeout = setTimeout(() => {
                 fetch(
-                        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1`)
+                        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1`
+                    )
                     .then(res => res.json())
                     .then(data => {
                         resultsList.innerHTML = '';

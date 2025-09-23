@@ -8,26 +8,26 @@
 
     <div class="container mx-auto py-6 max-w-3xl">
         <h1 class="text-2xl font-bold mb-4">Chat dengan
-            @if(auth()->id() === $conversation->customer_id)
-            {{ $conversation->seller->full_name }}
+            @if (auth()->id() === $conversation->customer_id)
+                {{ $conversation->seller->full_name }}
             @else
-            {{ $conversation->customer->full_name }}
+                {{ $conversation->customer->full_name }}
             @endif
         </h1>
 
         <div id="messages"
              class="border p-4 h-96 overflow-y-auto mb-4 bg-gray-50 rounded">
-            @foreach($chats as $chat)
-            <div data-chat-id="{{ $chat->id }}"
-                 class="mb-2 {{ $chat->sender_id == auth()->id() ? 'text-right' : 'text-left' }}">
-                <div
-                     class="{{ $chat->sender_id == auth()->id() ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black' }} inline-block px-3 py-2 rounded-lg max-w-[70%] break-words">
-                    {!! $chat->message !!}
+            @foreach ($chats as $chat)
+                <div data-chat-id="{{ $chat->id }}"
+                     class="mb-2 {{ $chat->sender_id == auth()->id() ? 'text-right' : 'text-left' }}">
+                    <div
+                         class="{{ $chat->sender_id == auth()->id() ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black' }} inline-block px-3 py-2 rounded-lg max-w-[70%] break-words">
+                        {!! $chat->message !!}
+                    </div>
+                    <div class="text-gray-400 text-xs mt-1">
+                        {{ $chat->created_at->format('d-m-Y H:i') }}
+                    </div>
                 </div>
-                <div class="text-gray-400 text-xs mt-1">
-                    {{ $chat->created_at->format('d-m-Y H:i') }}
-                </div>
-            </div>
             @endforeach
         </div>
 
@@ -54,16 +54,16 @@
         const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
         const messages = document.querySelector("#messages");
 
-        // Initialize Pusher
-        const pusher = new Pusher('{{ env("PUSHER_APP_KEY") }}', {
-            cluster: '{{ env("PUSHER_APP_CLUSTER") }}',
+        // Initialize 
+        const pusher = new Pusher('{{ env('PUSHER_APP_KEY') }}', {
+            cluster: '{{ env('PUSHER_APP_CLUSTER') }}',
             forceTLS: false
         });
 
         // Subscribe ke channel conversation
         const channel = pusher.subscribe("conversation." + conversationId);
 
-        // Bind event ChatSent
+        // bind event
         channel.bind("ChatSent", (data) => {
             if (!messages.querySelector(`[data-chat-id='${data.chat.id}']`)) {
                 const div = document.createElement("div");
@@ -86,13 +86,13 @@
             if (!input.value.trim()) return;
 
             fetch(e.target.action, {
-                method: "POST",
-                headers: {
-                    "X-CSRF-TOKEN": csrfToken,
-                    Accept: "application/json",
-                },
-                body: new FormData(e.target),
-            })
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": csrfToken,
+                        Accept: "application/json",
+                    },
+                    body: new FormData(e.target),
+                })
                 .then(() => input.value = "")
                 .catch(err => console.error(err));
         });

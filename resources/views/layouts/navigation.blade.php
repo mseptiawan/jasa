@@ -14,10 +14,13 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <!-- Beranda -->
-                    <x-nav-link :href="route('dashboard')"
-                                :active="request()->routeIs('dashboard')">
-                        {{ __('Beranda') }}
-                    </x-nav-link>
+                    @if (auth()->check())
+                        <x-nav-link :href="route('dashboard')"
+                                    :active="request()->routeIs('dashboard')">
+                            {{ __('Beranda') }}
+                        </x-nav-link>
+                    @endif
+
 
                     <!-- Untuk User Biasa -->
                     @auth
@@ -85,25 +88,9 @@
                         @endphp
 
                         @if (in_array(auth()->user()->role, $roles))
-                            @php
-                                $unreadChatCount = \App\Models\Conversation::where(function ($q) {
-                                    $q->where('customer_id', auth()->id())->orWhere('seller_id', auth()->id());
-                                })
-                                    ->whereHas('chats', function ($q) {
-                                        $q->where('is_read', 0); // hanya cek is_read
-                                    })
-                                    ->count();
-                            @endphp
-
                             <x-nav-link :href="route('conversations.index')"
                                         :active="request()->routeIs('conversations.*')">
                                 {{ __('Chat') }}
-
-                                @if ($unreadChatCount > 0)
-                                    <span class="ml-1 bg-red-500 text-white text-xs rounded-full px-2">
-                                        {{ $unreadChatCount }}
-                                    </span>
-                                @endif
                             </x-nav-link>
                         @endif
                     @endauth
@@ -170,7 +157,11 @@
                             @endif
                         @endif
                     @endauth
-
+                    @if (optional(auth()->user())->role === 'seller')
+                        <a href="{{ route('bank-accounts.index') }}"
+                           class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">Bank
+                            Accounts</a>
+                    @endif
                     <!-- Notifikasi Bell -->
                     @auth
                         <div x-data="{ open: false }"
@@ -234,7 +225,8 @@
                     <x-slot name="trigger">
                         <button
                                 class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->full_name }}</div>
+
+                            <div>{{ optional(Auth::user())->full_name ?? 'Guest' }}</div>
 
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4"
@@ -308,10 +300,10 @@
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="px-4">
                 <div class="font-medium text-base text-gray-800">
-                    {{ Auth::user()->full_name }}
+                    {{ optional(Auth::user())->full_name ?? 'Guest' }}
                 </div>
                 <div class="font-medium text-sm text-gray-500">
-                    {{ Auth::user()->email }}
+                    {{ optional(Auth::user())->email ?? 'Guest' }}
                 </div>
             </div>
 

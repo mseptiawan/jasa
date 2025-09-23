@@ -77,4 +77,8 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Service::class, 'favorites')->withTimestamps();
     }
+    public function bankAccounts()
+    {
+        return $this->hasMany(UserBankAccount::class);
+    }
 }

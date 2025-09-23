@@ -24,6 +24,11 @@ class DashboardController extends Controller
             });
         }
 
+        // filter berdasarkan search
+        if ($search = request('search')) {
+            $query->where('title', 'like', '%' . $search . '%');
+        }
+
         $services = $query->get();
 
         // hitung rata-rata rating tiap service

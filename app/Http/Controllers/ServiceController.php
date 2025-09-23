@@ -341,4 +341,26 @@ class ServiceController extends Controller
             ->with('success', "Highlight '{$service->title}' aktif {$highlightDuration} hari. " .
                 "Metode: {$request->payment_method}. Fee: Rp " . number_format($highlightFee, 0, ',', '.'));
     }
+
+    public function guestIndex()
+    {
+        $query = \App\Models\Service::with(['user', 'subcategory.category', 'reviews'])
+            ->where('status', 'active')
+            ->orderBy('created_at', 'desc');
+
+        // search
+        if ($search = request('search')) {
+            $query->where('title', 'like', '%' . $search . '%');
+        }
+
+        $services = $query->get();
+
+        // hitung rata-rata rating tiap service
+        $services->map(function ($service) {
+            $service->avg_rating = $service->reviews->avg('rating') ?? 0;
+            return $service;
+        });
+
+        return view('welcome', compact('services'));
+    }
 }

@@ -16,6 +16,16 @@ use Illuminate\Support\Facades\Route;
 // landing
 Route::get('/', [ServiceController::class, 'guestIndex'])->name('home');
 
+Route::get('/services/highlight', [App\Http\Controllers\ServiceController::class, 'highlight'])
+    ->name('services.highlight');
+
+Route::get('/services/{service:slug}/highlight/pay', [App\Http\Controllers\ServiceController::class, 'showPayHighlight'])
+    ->name('services.highlight.showPay');
+
+Route::post('/services/{service:slug}/highlight/pay', [App\Http\Controllers\ServiceController::class, 'payHighlight'])
+    ->name('services.highlight.pay');
+Route::get('/services/favorites', [ServiceController::class, 'favorites'])
+    ->name('services.favorites');
 Route::get('/services/nearby', [ServiceController::class, 'nearby'])->name('services.nearby');
 
 Route::get('services/{slug}', [ServiceController::class, 'show'])
@@ -39,6 +49,7 @@ Route::prefix('admin')->middleware(['auth', 'can:admin-access'])->group(function
 // cuma untuk seller
 Route::middleware(['auth', 'seller'])->group(function () {
 
+
     Route::get('/bank-accounts', [UserBankAccountController::class, 'index'])->name('bank-accounts.index');
 
     Route::get('/bank-accounts/create', [UserBankAccountController::class, 'create'])->name('bank-accounts.create');
@@ -50,18 +61,7 @@ Route::middleware(['auth', 'seller'])->group(function () {
     Route::put('/bank-accounts/{id}', [UserBankAccountController::class, 'update'])->name('bank-accounts.update');
 
     Route::delete('/bank-accounts/{id}', [UserBankAccountController::class, 'destroy'])->name('bank-accounts.destroy');
-
-    Route::get('/services/highlight', [App\Http\Controllers\ServiceController::class, 'highlight'])
-        ->name('services.highlight');
-
-    Route::get('/services/{service:slug}/highlight/pay', [App\Http\Controllers\ServiceController::class, 'showPayHighlight'])
-        ->name('services.highlight.showPay');
-
-    Route::post('/services/{service:slug}/highlight/pay', [App\Http\Controllers\ServiceController::class, 'payHighlight'])
-        ->name('services.highlight.pay');
 });
-
-
 
 
 
@@ -83,8 +83,6 @@ Route::middleware('auth')->group(function () {
         ->name('services.toggleFavorite');
 
 
-    Route::get('/services/favorites', [ServiceController::class, 'favorites'])
-        ->name('services.favorites');
 
     Route::get('services', [ServiceController::class, 'index'])
         ->name('services.index');

@@ -16,6 +16,9 @@ use Illuminate\Support\Facades\Route;
 // landing
 Route::get('/', [ServiceController::class, 'guestIndex'])->name('home');
 
+Route::get('services/create', [ServiceController::class, 'create'])
+    ->name('services.create');
+
 Route::get('/services/highlight', [App\Http\Controllers\ServiceController::class, 'highlight'])
     ->name('services.highlight');
 
@@ -30,6 +33,8 @@ Route::get('/services/nearby', [ServiceController::class, 'nearby'])->name('serv
 
 Route::get('services/{slug}', [ServiceController::class, 'show'])
     ->name('services.show');
+Route::patch('services/{slug}/toggle-status', [AdminServiceController::class, 'toggleStatus'])
+    ->name('admin.services.toggleStatus');
 
 Route::prefix('admin')->middleware(['auth', 'can:admin-access'])->group(function () {
 
@@ -75,21 +80,13 @@ Route::middleware('auth')->group(function () {
 
     Route::patch('/reviews/{service:slug}', [ReviewController::class, 'store'])->name('reviews.store');
 
+
     Route::get('/service/apply', [ProviderApplicationController::class, 'create'])->name('service.apply');
 
     Route::post('/service/apply', [ProviderApplicationController::class, 'store'])->name('service.apply.submit');
 
     Route::patch('/services/{service:slug}/favorite', [ServiceController::class, 'toggleFavorite'])
         ->name('services.toggleFavorite');
-
-
-
-    Route::get('services', [ServiceController::class, 'index'])
-        ->name('services.index');
-
-    // Create → form tambah service
-    Route::get('services/create', [ServiceController::class, 'create'])
-        ->name('services.create');
 
     // Store → simpan service baru
     Route::post('services', [ServiceController::class, 'store'])
@@ -102,6 +99,12 @@ Route::middleware('auth')->group(function () {
     // Update → simpan perubahan
     Route::put('services/{slug}', [ServiceController::class, 'update'])
         ->name('services.update');
+
+
+    Route::get('services', [ServiceController::class, 'index'])
+        ->name('services.index');
+
+    // Create → form tambah service
 
     Route::get('/orders/{order}/info-payment', [OrderController::class, 'infoPayment'])->name('orders.infoPayment');
 
@@ -158,8 +161,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'can:admin'])->group
     Route::delete('/services/{service}', [AdminServiceController::class, 'destroy'])->name('services.destroy');
 
     // untuk suspend
-    Route::patch('services/{slug}/toggle-status', [AdminServiceController::class, 'toggleStatus'])
-        ->name('admin.services.toggleStatus');
+
 });
 
 Route::middleware(['auth', 'can:admin'])->group(function () {

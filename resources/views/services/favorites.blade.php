@@ -1,65 +1,62 @@
 <x-app-layout>
-    <div style="display: flex; flex-wrap: wrap; gap: 20px">
-        @forelse($services as $service)
-            <div
-                 style="border:1px solid #ccc; border-radius:6px; width:200px; text-decoration:none; color:#000; padding:10px; display:flex; flex-direction:column;">
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+        <h2 class="text-2xl font-bold mb-6 text-gray-900">Layanan Favorit Anda</h2>
 
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            @forelse($services as $service)
                 @php
                     $images = json_decode($service->images, true);
-                    $mainImage = !empty($images) ? asset('storage/' . $images[0]) : null;
-                    $profilePhoto =
-                        $service->user && $service->user->profile_photo
-                            ? asset('storage/' . $service->user->profile_photo)
-                            : asset('images/profile-user.png');
+                    $mainImage = !empty($images) && count($images) > 0 ? asset('storage/' . $images[0]) : null;
+                    $profilePhoto = $service->user && $service->user->profile_photo ? asset('storage/' . $service->user->profile_photo) : asset('images/profile-user.png');
+                    $isFavorited = auth()->user() && auth()->user()->favoriteServices->contains($service->id);
                 @endphp
+                <div class="bg-white rounded-lg border border-gray-200 overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 relative">
+                    <form action="{{ route('services.toggleFavorite', $service->slug) }}" method="POST" class="absolute top-2 right-2 z-10">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="focus:outline-none bg-white p-1 rounded-full shadow-md">
+                            @if ($isFavorited)
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
+                                </svg>
+                            @else
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                </svg>
+                            @endif
+                        </button>
+                    </form>
 
-                @if ($mainImage)
-                    <img src="{{ $mainImage }}"
-                         alt="{{ $service->title }}"
-                         style="width:100%; height:120px; object-fit:cover; border-radius:4px; margin-bottom:8px;">
-                @else
-                    <div
-                         style="width:100%; height:120px; background:#eee; display:flex; align-items:center; justify-content:center; border-radius:4px; margin-bottom:8px;">
-                        No Image</div>
-                @endif
-                <a href="{{ route('services.show', $service->slug) }}"
-                   class="text-gray-600 hover:underline">{{ $service->title }}</a>
-
-                <div style="display:flex; align-items:center; margin-bottom:6px">
-                    <img src="{{ $profilePhoto }}"
-                         alt="{{ $service->user->full_name ?? 'N/A' }}"
-                         style="width:24px; height:24px; border-radius:50%; margin-right:6px; object-fit:cover;">
-                    <span style="font-size:14px">{{ $service->user->full_name ?? 'N/A' }}</span>
-                </div>
-
-                <p style="color:green; font-weight:bold; margin-top:auto">Rp
-                    {{ number_format($service->price, 0, ',', '.') }}
-                </p>
-
-                <div class="flex mt-1">
-                    @for ($i = 1; $i <= 5; $i++)
-                        @if ($i <= floor($service->avg_rating))
-                            <span class="text-yellow-400">&#9733;</span>
+                    <a href="{{ route('services.show', $service->slug) }}">
+                        @if ($mainImage)
+                            <img src="{{ $mainImage }}" alt="{{ $service->title }}" class="w-full h-40 object-cover">
                         @else
-                            <span class="text-gray-300">&#9733;</span>
+                            <div class="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500">Tidak Ada Gambar</div>
                         @endif
-                    @endfor
+                    </a>
+
+                    <div class="p-4">
+                        <a href="{{ route('services.show', $service->slug) }}" class="block font-bold text-lg mb-2 text-gray-900 hover:text-primary truncate transition-colors">{{ $service->title }}</a>
+
+                        <p class="text-lg font-semibold text-green-600 mb-3">Rp {{ number_format($service->price, 0, ',', '.') }}</p>
+
+                        <div class="flex items-center gap-2 text-sm text-gray-600 mb-3">
+                            <img src="{{ $profilePhoto }}" alt="{{ $service->user->full_name ?? 'N/A' }}" class="w-7 h-7 rounded-full object-cover">
+                            <span>{{ $service->user->full_name ?? 'N/A' }}</span>
+                        </div>
+
+                        <div class="flex items-center">
+                            @for ($i = 1; $i <= 5; $i++)
+                                <svg class="w-5 h-5 {{ $i <= round($service->avg_rating) ? 'text-yellow-400' : 'text-gray-300' }}" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                </svg>
+                            @endfor
+                        </div>
+                    </div>
                 </div>
-
-                <form action="{{ route('services.toggleFavorite', $service->slug) }}"
-                      method="POST"
-                      class="mt-2">
-                    @csrf
-                    @method('PATCH')
-                    <button type="submit"
-                            class="px-2 py-1 rounded {{ auth()->user()->favoriteServices->contains($service->id) ? 'bg-red-500 text-white' : 'bg-gray-300' }}">
-                        {{ auth()->user()->favoriteServices->contains($service->id) ? 'Unfavorite' : 'Favorite' }}
-                    </button>
-                </form>
-
-            </div>
-        @empty
-            <p>Tidak ada favorit.</p>
-        @endforelse
+            @empty
+                <p class="col-span-full text-center text-gray-500 py-10">Tidak ada layanan favorit yang tersedia saat ini.</p>
+            @endforelse
+        </div>
     </div>
 </x-app-layout>

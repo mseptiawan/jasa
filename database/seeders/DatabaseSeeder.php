@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -15,10 +14,9 @@ class DatabaseSeeder extends Seeder
     {
         // User::query()->delete();
         $this->call([
-            AdminUserSeeder::class,
-            CustomerUserSeeder::class,
-            SellerUserSeeder::class,
-            CategorySeeder::class
+            UserSeeder::class,
+            CategorySeeder::class,
+            ServiceSeeder::class
 
         ]);
     }

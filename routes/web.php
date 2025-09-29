@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 // landing
 Route::get('/', [ServiceController::class, 'guestIndex'])->name('home');
+Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 
 Route::get('services/create', [ServiceController::class, 'create'])
     ->name('services.create');
@@ -111,12 +112,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('services/{slug}', [ServiceController::class, 'destroy'])
         ->name('services.destroy');
 
+
     Route::get('/orders/create/{service:slug}', [OrderController::class, 'create'])
         ->name('orders.create');
 
+
     Route::get('/orders/{order}/invoice', [OrderController::class, 'downloadInvoice'])->name('orders.invoice');
 
-    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
 

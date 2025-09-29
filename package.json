@@ -19,6 +19,7 @@
         "vite": "^7.0.4"
     },
     "dependencies": {
-        "react-icons": "^5.5.0"
+        "react-icons": "^5.5.0",
+        "tom-select": "^2.4.3"
     }
 }

@@ -33,14 +33,14 @@ class ServiceController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
+            'title' => 'required|string|max:50',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'subcategory_id' => 'required|exists:subcategories,id',
             'job_type' => 'required|string|max:50',
             'experience' => 'required|string|max:50',
             'industry' => 'required|string|max:50',
-            'contact' => 'required|string|max:100',
+            'contact' => 'required|string|max:40',
             'address' => 'required|string',
             'images' => 'required|array|min:1',
             'images.*' => 'required|image|max:2048',
@@ -155,14 +155,14 @@ class ServiceController extends Controller
         $service = Service::where('slug', $slug)->firstOrFail();
 
         $request->validate([
-            'title' => 'required|string|max:255',
+            'title' => 'required|string|max:50',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'subcategory_id' => 'nullable|exists:subcategories,id',
-            'job_type' => 'nullable|string|max:255',
-            'experience' => 'nullable|string|max:255',
-            'industry' => 'nullable|string|max:255',
-            'contact' => 'nullable|string|max:255',
+            'job_type' => 'nullable|string|max:40',
+            'experience' => 'nullable|string|max:40',
+            'industry' => 'nullable|string|max:40',
+            'contact' => 'nullable|string|max:40',
             'address' => 'nullable|string',
 
             'images.*' => 'nullable|image|max:2048',

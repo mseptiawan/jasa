@@ -27,7 +27,7 @@ class SubcategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:50',
             'category_id' => 'required|exists:categories,id', // wajib pilih category
             'description' => 'nullable|string',
         ]);
@@ -61,7 +61,7 @@ class SubcategoryController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:50',
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
         ]);

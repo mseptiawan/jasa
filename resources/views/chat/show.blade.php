@@ -1,13 +1,26 @@
 <x-app-layout>
-    <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <meta name="auth-id" content="{{ auth()->id() }}" />
-    <meta name="conversation-id" content="{{ $conversation->id }}" />
+    <meta name="csrf-token"
+          content="{{ csrf_token() }}" />
+    <meta name="auth-id"
+          content="{{ auth()->id() }}" />
+    <meta name="conversation-id"
+          content="{{ $conversation->id }}" />
 
     <style>
         /* CSS Kustom Konsisten */
-        body { font-family: 'Montserrat', sans-serif; background-color: #f0f4f8; }
-        .bg-primary { background-color: #2b3cd7; }
-        .text-primary { color: #2b3cd7; }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        .bg-primary {
+            background-color: #2b3cd7;
+        }
+
+        .text-primary {
+            color: #2b3cd7;
+        }
+
         .chat-bubble {
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
             line-height: 1.4;
@@ -15,15 +28,25 @@
         }
 
         /* Scrollbar styling */
-        #messages::-webkit-scrollbar { width: 8px; }
-        #messages::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
+        #messages::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #messages::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 4px;
+        }
 
         /* Responsivitas bubble */
-        .chat-bubble-width-mine, .chat-bubble-width-other {
+        .chat-bubble-width-mine,
+        .chat-bubble-width-other {
             max-width: 90%;
         }
+
         @media (min-width: 640px) {
-            .chat-bubble-width-mine, .chat-bubble-width-other {
+
+            .chat-bubble-width-mine,
+            .chat-bubble-width-other {
                 max-width: 75%;
             }
         }
@@ -37,10 +60,22 @@
     <div class="container mx-auto p-0 md:p-8 max-w-4xl">
 
         {{-- Header Chat --}}
-        <div class="bg-white p-4 rounded-t-lg shadow-md flex items-center justify-between border-b border-gray-200 sticky top-0 z-10">
+        <div
+             class="bg-white p-4 rounded-t-lg shadow-md flex items-center justify-between border-b border-gray-200 sticky top-0 z-10">
             <h1 class="text-xl font-bold text-gray-800 flex items-center gap-3">
-                <a href="#" onclick="history.back(); return false;" class="text-gray-500 hover:text-primary transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                <a href="#"
+                   onclick="history.back(); return false;"
+                   class="text-gray-500 hover:text-primary transition">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="h-6 w-6"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke="currentColor"
+                         stroke-width="2">
+                        <path stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
                 </a>
                 Chat dengan
                 <span class="text-primary truncate">
@@ -53,7 +88,8 @@
             </h1>
 
             @if ($conversation->service)
-                <a href="{{ route('services.show', $conversation->service->slug) }}" class="text-sm text-gray-600 hover:text-primary transition-colors hover:underline hidden sm:block">
+                <a href="{{ route('services.show', $conversation->service->slug) }}"
+                   class="text-sm text-gray-600 hover:text-primary transition-colors hover:underline hidden sm:block">
                     Membahas: <span class="font-medium">{{ Str::limit($conversation->service->title, 15) }}</span>
                 </a>
             @endif
@@ -68,10 +104,12 @@
                 @php
                     $chatDate = $chat->created_at->format('Y-m-d');
                     $isSender = $chat->sender_id == auth()->id();
-                    $bubbleClass = $isSender ? 'bg-primary text-white ml-auto rounded-tr-none' : 'bg-gray-100 text-gray-800 mr-auto rounded-tl-none';
+                    $bubbleClass = $isSender
+                        ? 'bg-primary text-white ml-auto rounded-tr-none'
+                        : 'bg-gray-100 text-gray-800 mr-auto rounded-tl-none';
                     $alignmentClass = $isSender ? 'justify-end' : 'justify-start';
 
-                    $showDateSeparator = ($lastDate !== $chatDate);
+                    $showDateSeparator = $lastDate !== $chatDate;
                     $lastDate = $chatDate;
 
                     $timeDisplay = $chat->created_at->format('H:i');
@@ -86,10 +124,11 @@
                     </div>
                 @endif
 
-                <div data-chat-id="{{ $chat->id }}" class="flex mb-3 {{ $alignmentClass }}">
+                <div data-chat-id="{{ $chat->id }}"
+                     class="flex mb-3 {{ $alignmentClass }}">
                     <div class="chat-bubble-width-mine chat-bubble-width-other">
 
-                        @if(isset($chat->is_product) && $chat->is_product)
+                        @if (isset($chat->is_product) && $chat->is_product)
                             <div class="bg-white rounded-xl shadow-md overflow-hidden flex gap-3 p-3">
                                 <img src="{{ $chat->product_image ?? 'https://via.placeholder.com/80' }}"
                                      alt="Produk"
@@ -98,7 +137,7 @@
                                 <div class="flex flex-col justify-between">
                                     <a href="{{ $chat->product_link ?? '#' }}"
                                        class="font-semibold text-primary hover:underline">
-                                       {{ $chat->product_name ?? 'Nama Produk' }}
+                                        {{ $chat->product_name ?? 'Nama Produk' }}
                                     </a>
                                     <p class="text-lg font-bold text-green-600">
                                         Rp {{ number_format($chat->product_price ?? 0, 0, ',', '.') }}
@@ -108,7 +147,7 @@
                                     </p>
                                     <a href="{{ $chat->product_link ?? '#' }}"
                                        class="mt-2 inline-block text-xs font-medium text-white bg-primary px-3 py-1 rounded-md hover:bg-opacity-90 transition">
-                                       Lihat Produk
+                                        Lihat Produk
                                     </a>
                                 </div>
                             </div>
@@ -127,21 +166,29 @@
         </div>
 
         {{-- Form Input Pesan --}}
-        <form id="chatForm" action="{{ route('conversations.send', $conversation->id) }}" class="p-4 bg-white rounded-b-lg shadow-lg border-t border-gray-200">
+        <form id="chatForm"
+              action="{{ route('conversations.send', $conversation->id) }}"
+              class="p-4 bg-white rounded-b-lg shadow-lg border-t border-gray-200">
             @csrf
 
             {{-- Template Text Buttons --}}
-            <div class="mb-4 flex flex-wrap gap-2">
-                <button type="button" class="template-btn text-xs font-medium text-gray-700 bg-gray-100 rounded-full px-3 py-1.5 hover:bg-gray-200 transition">
-                    Halo, apakah jasa ini masih tersedia?
-                </button>
-                <button type="button" class="template-btn text-xs font-medium text-gray-700 bg-gray-100 rounded-full px-3 py-1.5 hover:bg-gray-200 transition">
-                    Bisakah saya mendapatkan penawaran khusus?
-                </button>
-                <button type="button" class="template-btn text-xs font-medium text-gray-700 bg-gray-100 rounded-full px-3 py-1.5 hover:bg-gray-200 transition">
-                    Berapa lama waktu pengerjaannya?
-                </button>
-            </div>
+            {{-- Template Text Buttons --}}
+            @if (auth()->id() === $conversation->customer_id)
+                <div class="mb-4 flex flex-wrap gap-2">
+                    <button type="button"
+                            class="template-btn text-xs font-medium text-gray-700 bg-gray-100 rounded-full px-3 py-1.5 hover:bg-gray-200 transition">
+                        Halo, apakah jasa ini masih tersedia?
+                    </button>
+                    <button type="button"
+                            class="template-btn text-xs font-medium text-gray-700 bg-gray-100 rounded-full px-3 py-1.5 hover:bg-gray-200 transition">
+                        Bisakah saya mendapatkan penawaran khusus?
+                    </button>
+                    <button type="button"
+                            class="template-btn text-xs font-medium text-gray-700 bg-gray-100 rounded-full px-3 py-1.5 hover:bg-gray-200 transition">
+                        Berapa lama waktu pengerjaannya?
+                    </button>
+                </div>
+            @endif
 
             <div class="flex gap-3">
                 <input type="text"
@@ -153,7 +200,16 @@
                 <button type="submit"
                         class="bg-primary text-white font-semibold px-6 py-3 rounded-md hover:bg-opacity-90 transition duration-150 flex items-center gap-1"
                         id="sendButton">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="h-5 w-5 rotate-90"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke="currentColor"
+                         stroke-width="2">
+                        <path stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    </svg>
                     Kirim
                 </button>
             </div>
@@ -177,7 +233,10 @@
             };
 
             const getTimeDisplay = (date) => {
-                return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                return date.toLocaleTimeString('id-ID', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
             };
 
             const pusher = new Pusher('{{ env('PUSHER_APP_KEY') }}', {
@@ -190,7 +249,8 @@
             channel.bind("ChatSent", (data) => {
                 if (!messagesContainer.querySelector(`[data-chat-id='${data.chat.id}']`)) {
                     const isSender = data.chat.sender_id === authId;
-                    const bubbleClass = isSender ? 'bg-primary text-white ml-auto rounded-tr-none' : 'bg-gray-100 text-gray-800 mr-auto rounded-tl-none';
+                    const bubbleClass = isSender ? 'bg-primary text-white ml-auto rounded-tr-none' :
+                        'bg-gray-100 text-gray-800 mr-auto rounded-tl-none';
                     const alignmentClass = isSender ? 'justify-end' : 'justify-start';
                     const now = new Date();
                     const timeDisplay = getTimeDisplay(now);

@@ -35,7 +35,10 @@ class OrderController extends Controller
         // Load relasi service supaya bisa tampil judul layanan
         $order->load('service');
 
-        return view('orders.show', compact('order'));
+        return view('orders.show', [
+            'order' => $order,
+            'service' => $order->service,
+        ]);
     }
     public function create(Service $service)
     {
@@ -47,9 +50,9 @@ class OrderController extends Controller
         $request->validate([
             'service_id' => 'required|exists:services,id',
             'payment_method' => 'required|string',
-            'customer_address' => 'required|string|max:255',
+            'customer_address' => 'required|string|max:100',
             'customer_phone' => 'required|string|max:20',
-            'note' => 'nullable|string|max:255',
+            'note' => 'nullable|string|max:170',
         ], [
             'service_id.required' => 'Layanan wajib dipilih.',
             'service_id.exists' => 'Layanan yang dipilih tidak valid.',

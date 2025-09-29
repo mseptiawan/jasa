@@ -60,7 +60,7 @@ class ProviderApplicationController extends Controller
     {
         $request->validate([
             'phone_number' => 'required|string|max:20',
-            'address' => 'required|string|max:255',
+            'address' => 'required|string|max:100',
             'skills' => 'required|string|max:40',
             'experience' => 'required|string|max:100',
             'portfolio' => 'nullable|string|max:100',
@@ -155,7 +155,7 @@ class ProviderApplicationController extends Controller
     public function approve(Request $request, $id)
     {
         $request->validate([
-            'admin_notes' => 'nullable|string|max:255',
+            'admin_notes' => 'nullable|string|max:100',
         ]);
 
         $application = ProviderApplication::with('user')->findOrFail($id);
@@ -183,7 +183,7 @@ class ProviderApplicationController extends Controller
     public function reject(Request $request, $id)
     {
         $request->validate([
-            'admin_notes' => 'nullable|string|max:255',
+            'admin_notes' => 'nullable|string|max:100',
         ]);
 
         $application = ProviderApplication::with('user')->findOrFail($id);

@@ -183,20 +183,44 @@
                 </div>
 
                 {{-- Tombol Aksi --}}
-                <a href="{{ route('services.edit', $service->slug) }}"
-                   class="text-gray-500 hover:text-gray-700 mt-4 transition-colors duration-200"
-                   title="Edit">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         class="h-5 w-5"
-                         fill="none"
-                         viewBox="0 0 24 24"
-                         stroke="currentColor"
-                         stroke-width="2">
-                        <path stroke-linecap="round"
-                              stroke-linejoin="round"
-                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                </a>
+                {{-- Cek kalau user yang login bukan owner service --}}
+                @if (auth()->id() === $service->user_id)
+                    {{-- Tombol edit untuk penjual --}}
+                    <a href="{{ route('services.edit', $service->slug) }}"
+                       title="Edit Service"
+                       class="inline-flex items-center mt-6 px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition">
+                        Edit Layanan
+                    </a>
+                @else
+                    {{-- Form mulai chat --}}
+                    <form id="start-chat-{{ $service->id }}"
+                          action="{{ route('conversations.start') }}"
+                          method="POST"
+                          class="mt-6">
+                        @csrf
+                        <input type="hidden"
+                               name="seller_id"
+                               value="{{ $service->user->id }}" />
+                        <input type="hidden"
+                               name="product_id"
+                               value="{{ $service->id }}" />
+                        <button type="submit"
+                                class="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 text-white font-bold rounded-lg bg-indigo-600 hover:bg-indigo-700 transition">
+                            Chat
+                        </button>
+                    </form>
+
+                    {{-- Tombol pesan layanan --}}
+                    <form action="{{ route('orders.create', $service->slug) }}"
+                          method="GET"
+                          class="mt-4">
+                        <button type="submit"
+                                class="w-full md:w-auto px-6 py-3 bg-green-500 text-white font-bold rounded-lg hover:bg-green-700 transition">
+                            Pesan Layanan
+                        </button>
+                    </form>
+                @endif
+
             </div>
         </div>
 
@@ -241,7 +265,8 @@
                                                 </svg>
                                             @endfor
                                         </div>
-                                        <p class="text-xs text-gray-400">{{ $review->created_at->format('d M Y') }}</p>
+                                        <p class="text-xs text-gray-400">{{ $review->created_at->format('d M Y') }}
+                                        </p>
                                     </div>
                                     <p class="text-gray-800 text-base mb-2 font-medium">
                                         {{ $review->comment ?? 'Tidak ada komentar.' }}</p>

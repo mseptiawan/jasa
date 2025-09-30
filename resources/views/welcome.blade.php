@@ -135,42 +135,19 @@
                      alt="JasaReceh"
                      class="h-10 w-auto">
             </a>
-
-            <!-- Search Form -->
-            <div class="w-full md:w-auto md:flex-1 md:max-w-md lg:max-w-lg order-3 md:order-2">
-                <form action="{{ route('home') }}"
-                      method="GET"
-                      class="relative">
-                    <input type="text"
-                           name="search"
-                           placeholder="Cari layanan apa pun..."
-                           value="{{ request('search') }}"
-                           class="w-full py-2 pl-4 pr-10 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                           autocomplete="off">
-                    <button type="submit"
-                            class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-primary transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                             class="h-5 w-5"
-                             fill="none"
-                             viewBox="0 0 24 24"
-                             stroke="currentColor"
-                             stroke-width="2">
-                            <path stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                    </button>
-                </form>
-            </div>
-
-            <!-- Auth Links -->
             <div class="flex items-center space-x-8 order-2 md:order-3">
                 <a href="{{ route('login') }}"
                    class="animated-underline text-gray-700 hover:text-primary font-semibold transition-colors">Login</a>
                 <a href="{{ route('register') }}"
                    class="animated-underline text-accent hover:text-yellow-400 font-semibold transition-colors">Register</a>
             </div>
-        </div>
+            <!-- Search Form -->
+            <div class="w-full md:w-auto md:flex-1 md:max-w-md lg:max-w-lg order-3 md:order-2">
+
+
+                <!-- Auth Links -->
+
+            </div>
     </header>
 
     <!-- Main Container -->

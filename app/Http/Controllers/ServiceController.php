@@ -341,16 +341,21 @@ class ServiceController extends Controller
             ->with('success', "Highlight '{$service->title}' aktif {$highlightDuration} hari. " .
                 "Metode: {$request->payment_method}. Fee: Rp " . number_format($highlightFee, 0, ',', '.'));
     }
-
-    public function guestIndex()
+    public function guestIndex(Request $request)
     {
-        $query = \App\Models\Service::with(['user', 'subcategory.category', 'reviews'])
+        $query = Service::with(['user', 'subcategory.category', 'reviews'])
             ->where('status', 'active')
             ->orderBy('created_at', 'desc');
 
-        // search
-        if ($search = request('search')) {
-            $query->where('title', 'like', '%' . $search . '%');
+        // filter pencarian
+        if ($search = $request->query('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhereHas('subcategory.category', function ($q2) use ($search) {
+                        $q2->where('name', 'like', "%{$search}%");
+                    });
+            });
         }
 
         $services = $query->get();
@@ -361,6 +366,6 @@ class ServiceController extends Controller
             return $service;
         });
 
-        return view('welcome', compact('services'));
+        return view('welcome', compact('services', 'search'));
     }
 }

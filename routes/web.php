@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 
 // landing
 Route::get('/', [ServiceController::class, 'guestIndex'])->name('home');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->name('dashboard');
 Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 
 Route::get('services/create', [ServiceController::class, 'create'])
@@ -135,8 +137,7 @@ Route::middleware('auth')->group(function () {
 
     Route::patch('/orders/{order}/complete', [OrderController::class, 'complete'])->name('orders.complete');
 
-    Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->name('dashboard');
+
 
     Route::get('/conversations', [ChatController::class, 'index'])->name('conversations.index');
 

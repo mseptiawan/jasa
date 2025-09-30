@@ -220,29 +220,11 @@
                 <form id="location-form"
                       action="{{ route('services.nearby') }}"
                       method="get"
-                      class="flex flex-col">
+                      class="flex flex-col w-full">
                     <p class="text-gray-600 mb-2">Atau temukan layanan terdekat.</p>
                     <div class="flex items-center gap-2">
-                        {{-- <button type="button"
-                                id="btn-nearby"
-                                class="flex-shrink-0 flex items-center justify-center gap-2 bg-primary text-white font-bold py-3 px-4 rounded-lg shadow-md hover:opacity-90 transition-all">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                 width="20"
-                                 height="20"
-                                 viewBox="0 0 24 24"
-                                 fill="none"
-                                 stroke="currentColor"
-                                 stroke-width="2"
-                                 stroke-linecap="round"
-                                 stroke-linejoin="round">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                <circle cx="12"
-                                        cy="10"
-                                        r="3"></circle>
-                            </svg>
-                            <span class="md:hidden lg:inline-block">Layanan Terdekat</span>
-                        </button> --}}
-                        <div class="relative flex-grow">
+
+                        <div class="relative flex-grow w-full">
                             <input type="text"
                                    id="address-input"
                                    placeholder="Ketik alamat Anda..."

@@ -204,12 +204,38 @@
                             Cari Layanan Terdekat
                         </button>
                     </div> --}}
+                    <form action="{{ route('home') }}"
+                          method="GET"
+                          class="relative">
+                        <p class="text-gray-600 mb-2">Cari berdasarkan kata kunci.</p>
+                        <div class="search-container flex gap-2">
+                            <input type="text"
+                                   name="search"
+                                   placeholder="Cari layanan apa pun..."
+                                   value="{{ request('search') }}"
+                                   class="w-full py-2 pl-4 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                                   autocomplete="off">
+                            <button type="submit"
+                                    class="bg-primary text-white font-bold p-3 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     class="h-6 w-6"
+                                     fill="none"
+                                     viewBox="0 0 24 24"
+                                     stroke="currentColor"
+                                     stroke-width="2">
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </button>
 
+                        </div>
+                    </form>
                     <!-- Address Form -->
                     <form id="location-form"
                           action="{{ route('services.nearby') }}"
                           method="get"
-                          class="flex flex-col">
+                          class="flex flex-col w-full">
                         <p class="text-gray-600 mb-2">Atau ketik alamat Anda secara manual.</p>
                         <div class="flex items-center gap-2">
                             <div class="relative flex-grow">

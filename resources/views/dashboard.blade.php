@@ -223,7 +223,7 @@
                       class="flex flex-col">
                     <p class="text-gray-600 mb-2">Atau temukan layanan terdekat.</p>
                     <div class="flex items-center gap-2">
-                        <button type="button"
+                        {{-- <button type="button"
                                 id="btn-nearby"
                                 class="flex-shrink-0 flex items-center justify-center gap-2 bg-primary text-white font-bold py-3 px-4 rounded-lg shadow-md hover:opacity-90 transition-all">
                             <svg xmlns="http://www.w3.org/2000/svg"
@@ -241,7 +241,7 @@
                                         r="3"></circle>
                             </svg>
                             <span class="md:hidden lg:inline-block">Layanan Terdekat</span>
-                        </button>
+                        </button> --}}
                         <div class="relative flex-grow">
                             <input type="text"
                                    id="address-input"
@@ -259,6 +259,19 @@
                                 class="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-b-lg shadow-lg max-h-60 overflow-y-auto z-10 list-none p-0 m-0 hidden">
                             </ul>
                         </div>
+                        <button type="submit"
+                                class="bg-primary text-white font-bold p-3 rounded-lg hover:opacity-90 transition-opacity">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="h-6 w-6"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke="currentColor"
+                                 stroke-width="2">
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </button>
                     </div>
                 </form>
             </div>

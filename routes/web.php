@@ -117,6 +117,7 @@ Route::middleware('auth')->group(function () {
         ->name('orders.create');
 
 
+
     Route::get('/orders/{order}/invoice', [OrderController::class, 'downloadInvoice'])->name('orders.invoice');
 
 

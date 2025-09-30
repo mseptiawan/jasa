@@ -75,7 +75,7 @@
 
             setTimeout(() => {
                 window.location.href = "{{ route('orders.store', $order->id) }}";
-            }, 10000);
+            }, 5000);
 
             updateCountdown();
         @endif

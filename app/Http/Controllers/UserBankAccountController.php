@@ -10,6 +10,7 @@ class UserBankAccountController extends Controller
 {
     public function index()
     {
+        // Ambil semua akun bank user
         $accounts = Auth::user()->bankAccounts;
         return view('bank_accounts.index', compact('accounts'));
     }
@@ -21,12 +22,7 @@ class UserBankAccountController extends Controller
 
     public function store(Request $request)
     {
-        // Cek apakah user sudah punya akun bank
-        if (Auth::user()->bankAccounts()->exists()) {
-            return redirect()->route('bank-accounts.index')
-                ->with('error', 'You can only have 1 bank account.');
-        }
-
+        // Validasi input
         $request->validate([
             'bank_name' => 'required|string|max:20',
             'account_number' => 'required|string|max:50',
@@ -45,7 +41,7 @@ class UserBankAccountController extends Controller
             'account_holder.max' => 'Account Holder maksimal 100 karakter.',
         ]);
 
-
+        // Simpan akun bank baru
         UserBankAccount::create([
             'user_id' => Auth::id(),
             'bank_name' => $request->bank_name,
@@ -55,12 +51,14 @@ class UserBankAccountController extends Controller
 
         return redirect()->route('bank-accounts.index')->with('success', 'Bank account added.');
     }
+
     public function edit($id)
     {
         $account = UserBankAccount::findOrFail($id);
         if ($account->user_id != Auth::id()) {
             abort(403);
         }
+
         $banks = ['BRI', 'BCA', 'Mandiri', 'BNI', 'Danamon', 'CIMB Niaga', 'Permata'];
         return view('bank_accounts.edit', compact('account', 'banks'));
     }
@@ -90,7 +88,6 @@ class UserBankAccountController extends Controller
             'account_holder.max' => 'Account Holder maksimal 100 karakter.',
         ]);
 
-
         $account->update([
             'bank_name' => $request->bank_name,
             'account_number' => $request->account_number,
@@ -99,12 +96,14 @@ class UserBankAccountController extends Controller
 
         return redirect()->route('bank-accounts.index')->with('success', 'Bank account updated.');
     }
+
     public function destroy($id)
     {
         $account = UserBankAccount::findOrFail($id);
         if ($account->user_id != Auth::id()) {
-            abort(403); // pastikan user hanya bisa hapus miliknya
+            abort(403);
         }
+
         $account->delete();
         return redirect()->route('bank-accounts.index')->with('success', 'Bank account deleted.');
     }

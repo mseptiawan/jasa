@@ -10,21 +10,29 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
-    // Tampilkan daftar pesanan sesuai role
     public function index()
     {
-        if (auth()->user()->role === 'customer') {
+        $user = auth()->user();
+
+        if ($user->role === 'customer') {
+            // customer hanya lihat order yang dia buat
             $orders = Order::with(['service.reviews', 'seller'])
-                ->where('customer_id', auth()->id())
+                ->where('customer_id', $user->id)
                 ->get();
         } else { // seller
-            $orders = Order::with(['service.reviews', 'customer'])
-                ->where('seller_id', auth()->id())
+            // seller lihat order masuk DAN order yang dia buat
+            $orders = Order::with(['service.reviews', 'customer', 'seller'])
+                ->where(function ($q) use ($user) {
+                    $q->where('seller_id', $user->id)
+                        ->orWhere('customer_id', $user->id);
+                })
                 ->get();
         }
 
         return view('orders.index', compact('orders'));
     }
+
+
     public function show(Order $order)
     {
         // Pastikan user yang sedang login adalah pemilik order atau seller
@@ -66,6 +74,13 @@ class OrderController extends Controller
 
         $service = Service::findOrFail($request->service_id);
 
+        // Cek apakah seller pesan jasa sendiri
+        if ($service->user_id === auth()->id()) {
+            return redirect()->back()->withErrors([
+                'service_id' => 'Anda tidak bisa memesan layanan milik sendiri.'
+            ]);
+        }
+
         // Hitung platform fee & total price
         $platformFee = $service->price * 0.05; // 5%
         $totalPrice = $service->price + $platformFee;
@@ -77,19 +92,17 @@ class OrderController extends Controller
             'price' => $service->price,
             'platform_fee' => $platformFee,
             'total_price' => $totalPrice,
-            'status' => 'pending', // status awal pesanan
+            'status' => 'pending',
             'payment_method' => $request->payment_method,
             'customer_address' => $request->customer_address,
             'customer_phone' => $request->customer_phone,
             'note' => $request->note,
         ]);
+
         // Kirim notifikasi ke seller
         $service->user->notify(new \App\Notifications\NewOrderNotification($order));
-        // return view('orders.show', compact('order', 'service'));
-        return redirect()->route('orders.infoPayment', $order->id);
 
-        // return redirect()->route('orders.show', $order)
-        //     ->with('success', 'Order berhasil dibuat (simulasi).');
+        return redirect()->route('orders.infoPayment', $order->id);
     }
 
 

@@ -182,7 +182,7 @@
                 <h2 class="text-xl font-bold mb-4 text-gray-900">Temukan Layanan Terbaik di Dekat Anda</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Geolocation Search -->
-                    <div class="flex flex-col">
+                    {{-- <div class="flex flex-col">
                         <p class="text-gray-600 mb-2">Dapatkan lokasi Anda secara instan.</p>
                         <button type="button"
                                 id="btn-nearby"
@@ -203,7 +203,7 @@
                             </svg>
                             Cari Layanan Terdekat
                         </button>
-                    </div>
+                    </div> --}}
 
                     <!-- Address Form -->
                     <form id="location-form"
@@ -430,7 +430,7 @@
                 geocodeTimeout = setTimeout(() => {
                     fetch(
                             `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1`
-                            )
+                        )
                         .then(res => res.json())
                         .then(data => {
                             resultsList.innerHTML = '';
@@ -481,7 +481,7 @@
                         lngInput.value = position.coords.longitude;
                         fetch(
                                 `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latInput.value}&lon=${lngInput.value}`
-                                )
+                            )
                             .then(res => res.json())
                             .then(data => {
                                 addressInput.value = data.display_name || 'Lokasi Saat Ini';

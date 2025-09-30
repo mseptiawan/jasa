@@ -63,6 +63,23 @@
             padding: 20px;
         }
 
+        .account-info {
+            font-size: 0.6rem;
+            /* lebih kecil dari teks normal */
+            color: #555;
+            /* warna abu-abu biar nggak terlalu menonjol */
+            margin-bottom: 1rem;
+            /* beri jarak ke form */
+        }
+
+        .account-info code {
+            font-size: 0.50rem;
+            /* kodenya bisa lebih kecil lagi */
+            background-color: #f5f5f5;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
         /* Sisi Kiri (Branding & Logo) */
         .left-pane {
             flex: 1;
@@ -277,7 +294,14 @@
             <div class="login-form-wrapper">
                 <h2>Selamat Datang Kembali</h2>
                 <p class="subtitle">Silakan masuk untuk melanjutkan.</p>
-
+                <div class="account-info">
+                    <p><strong>Admin:</strong> email: <code>admin@gmail.com</code>, kata sandi: <code>password</code>
+                    </p>
+                    <p><strong>Seller:</strong> email: <code>ovan@gmail.com</code>, kata sandi: <code>password</code>
+                    </p>
+                    <p><strong>Customer:</strong> email: <code>sifa@gmail.com</code>, kata sandi: <code>password</code>
+                    </p>
+                </div>
                 <form method="POST"
                       action="{{ route('login') }}">
                     @csrf

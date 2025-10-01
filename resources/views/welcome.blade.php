@@ -565,3 +565,4 @@
     </script>
 
 </html>
+@include('components.footer')

@@ -106,7 +106,53 @@
             /* Perbaikan: Atur tinggi input yang konsisten */
             height: 52px;
         }
+
+        /* START: Custom CSS for Swiper (Final Fix) */
+        .swiper-pagination-bullet {
+            background: #cbd5e1;
+            opacity: 1;
+            width: 8px;
+            height: 8px;
+        }
+
+        .swiper-pagination-bullet-active {
+            background: #2b3cd7;
+            width: 20px;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        /* Perbaikan untuk mencegah tombol bawaan Swiper bertabrakan dengan SVG kustom */
+        .swiper-button-prev,
+        .swiper-button-next {
+            /* Gunakan properti Swiper untuk positioning utama */
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            cursor: pointer;
+
+            /* Overwrite/Perbaikan untuk tampilan */
+            width: 40px !important;
+            height: 40px !important;
+            color: transparent !important;
+            /* Hilangkan ikon default Swiper */
+            margin-top: 0 !important;
+            /* Reset margin default */
+        }
+
+        .swiper-button-prev::after,
+        .swiper-button-next::after {
+            content: '' !important;
+            /* Pastikan pseudo-element kosong */
+        }
+
+        /* END: Custom CSS for Swiper */
     </style>
+
+    {{-- Link CSS Swiper dari welcome.blade.php --}}
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
     <div id="notification-modal"
          class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden transition-opacity duration-300">
@@ -120,7 +166,70 @@
         </div>
     </div>
 
+    @php
+        // Data dummy untuk banner slider (Dari welcome.blade.php)
+        $banners = [
+            [
+                'image' => 'banner-pertama.png',
+                'link' => '/login',
+                'alt' => 'Promo Spesial Awal Bulan',
+            ],
+            [
+                'image' => 'banner-kedua.png',
+                'link' => '/service/apply',
+                'alt' => 'Layanan Terpopuler Minggu Ini',
+            ],
+        ];
+    @endphp
+
     <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+
+        {{-- START: Banner Swiper --}}
+        <div class="swiper mySwiper w-full h-auto rounded-xl shadow-lg mb-8 relative">
+            <div class="swiper-wrapper">
+                @foreach ($banners as $banner)
+                    <div class="swiper-slide min-h-32">
+                        <a href="{{ $banner['link'] }}"
+                           class="block h-full">
+                            {{-- Asumsi: images/banner-xxx.png ada di folder public/images/ --}}
+                            <img src="{{ asset('images/' . $banner['image']) }}"
+                                 alt="{{ $banner['alt'] }}"
+                                 class="w-full h-full object-cover rounded-xl"
+                                 onerror="this.onerror=null; this.src='{{ asset('images/default-banner.png') }}';">
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+            <div class="swiper-pagination !bottom-2"></div>
+
+            <div id="swiper-button-prev-custom"
+                 class="swiper-button-prev !left-4 !w-10 !h-10 bg-white/70 rounded-full flex items-center justify-center backdrop-blur-sm shadow-md transition-opacity hover:opacity-100 opacity-80 cursor-pointer z-10 hidden md:flex">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     fill="none"
+                     viewBox="0 0 24 24"
+                     stroke-width="2.5"
+                     stroke="#2b3cd7"
+                     class="w-6 h-6">
+                    <path stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M15.75 19.5L8.25 12l7.5-7.5" />
+                </svg>
+            </div>
+            <div id="swiper-button-next-custom"
+                 class="swiper-button-next !right-4 !w-10 !h-10 bg-white/70 rounded-full flex items-center justify-center backdrop-blur-sm shadow-md transition-opacity hover:opacity-100 opacity-80 cursor-pointer z-10 hidden md:flex">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     fill="none"
+                     viewBox="0 0 24 24"
+                     stroke-width="2.5"
+                     stroke="#2b3cd7"
+                     class="w-6 h-6">
+                    <path stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+            </div>
+        </div>
+        {{-- END: Banner Swiper --}}
 
         <div class="bg-white p-6 rounded-lg border border-gray-200 mb-8">
             <div class="flex flex-wrap gap-2 mb-6">
@@ -220,11 +329,11 @@
                 <form id="location-form"
                       action="{{ route('services.nearby') }}"
                       method="get"
-                      class="flex flex-col w-full">
+                      class="flex flex-col">
                     <p class="text-gray-600 mb-2">Atau temukan layanan terdekat.</p>
                     <div class="flex items-center gap-2">
-
-                        <div class="relative flex-grow w-full">
+                        {{-- TOMBOL LAYANAN TERDEKAT DIHAPUS --}}
+                        <div class="relative flex-grow">
                             <input type="text"
                                    id="address-input"
                                    placeholder="Ketik alamat Anda..."
@@ -241,18 +350,24 @@
                                 class="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-b-lg shadow-lg max-h-60 overflow-y-auto z-10 list-none p-0 m-0 hidden">
                             </ul>
                         </div>
+                        {{-- Tombol submit manual untuk form lokasi --}}
                         <button type="submit"
-                                class="bg-primary text-white font-bold p-3 rounded-lg hover:opacity-90 transition-opacity">
+                                class="bg-primary text-white font-bold py-3 px-4 rounded-lg shadow-md hover:opacity-90 transition-all flex items-center justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg"
-                                 class="h-6 w-6"
-                                 fill="none"
+                                 width="20"
+                                 height="20"
                                  viewBox="0 0 24 24"
+                                 fill="none"
                                  stroke="currentColor"
-                                 stroke-width="2">
-                                <path stroke-linecap="round"
-                                      stroke-linejoin="round"
-                                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                 stroke-width="2"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12"
+                                        cy="10"
+                                        r="3"></circle>
                             </svg>
+                            <span class="sr-only">Cari Lokasi</span>
                         </button>
                     </div>
                 </form>
@@ -344,7 +459,6 @@
                                       class="absolute top-2 left-2 bg-accent text-gray-900 text-xs font-bold px-3 py-1 rounded-full">UNGGULAN</span>
                             </div>
                             <div class="p-4">
-
                                 <a href="{{ route('services.show', $service->slug) }}"
                                    class="block font-bold text-lg mb-2 text-gray-900 hover:text-primary truncate transition-colors">{{ $service->title }}</a>
                                 <p class="text-lg font-semibold text-green-600 mb-3">Rp
@@ -446,10 +560,6 @@
                                class="block font-bold text-lg mb-2 text-gray-900 hover:text-primary truncate transition-colors">{{ $service->title }}</a>
                             <p class="text-lg font-semibold text-green-600 mb-3">Rp
                                 {{ number_format($service->price, 0, ',', '.') }}</p>
-
-                            <p class="text-gray-500 mb-4">
-                                {{ Str::words(strip_tags($service->description), 15, '...') }}
-                            </p>
                             <div class="flex items-center gap-2 text-sm text-gray-600 mb-3">
                                 @if ($profilePhoto)
                                     <img src="{{ $profilePhoto }}"
@@ -487,7 +597,46 @@
 
     </div>
 
+    {{-- Script CDN Swiper (Dari welcome.blade.php) --}}
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
     <script>
+        // START: Inisialisasi Swiper
+        var swiper = new Swiper(".mySwiper", {
+            spaceBetween: 30,
+            centeredSlides: true,
+            loop: true,
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+            navigation: {
+                // Targetkan ID kustom yang baru
+                nextEl: "#swiper-button-next-custom",
+                prevEl: "#swiper-button-prev-custom",
+            },
+            // Responsiveness: Tampilkan lebih dari 1 slide di layar lebar
+            breakpoints: {
+                640: {
+                    slidesPerView: 1,
+                    spaceBetween: 20,
+                },
+                768: {
+                    slidesPerView: 1,
+                    spaceBetween: 30,
+                },
+                1024: {
+                    slidesPerView: 1,
+                    spaceBetween: 40,
+                },
+            }
+        });
+        // END: Inisialisasi Swiper
+
         document.addEventListener('DOMContentLoaded', () => {
             const addressInput = document.getElementById('address-input');
             const latInput = document.getElementById('lat');
@@ -534,7 +683,7 @@
                 geocodeTimeout = setTimeout(() => {
                     fetch(
                             `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1`
-                        )
+                            )
                         .then(res => res.json())
                         .then(data => {
                             resultsList.innerHTML = '';
@@ -571,6 +720,7 @@
             });
 
             form.addEventListener('submit', (e) => {
+                // Hanya periksa jika koordinat kosong, karena tombol otomatis sudah dihapus
                 if (!latInput.value || !lngInput.value) {
                     e.preventDefault();
                     showModal(
@@ -578,22 +728,7 @@
                 }
             });
 
-            // Tombol "Layanan Terdekat"
-            document.getElementById('btn-nearby').addEventListener('click', () => {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition((position) => {
-                        latInput.value = position.coords.latitude;
-                        lngInput.value = position.coords.longitude;
-                        form.submit();
-                    }, () => {
-                        showModal(
-                            'Tidak dapat mengambil lokasi Anda. Silakan periksa izin browser Anda.'
-                        );
-                    });
-                } else {
-                    showModal('Geolocation tidak didukung oleh browser Anda.');
-                }
-            });
+            // LOGIKA UNTUK TOMBOL "LAYANAN TERDEKAT" DIHAPUS
 
             // Infinite Scroll Logic
             if (normalServiceCards.length > cardsPerLoad) {

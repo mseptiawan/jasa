@@ -186,8 +186,10 @@
                 {{-- Tombol Aksi --}}
                 <div class="pt-4 space-y-4">
                     @if (auth()->check() && auth()->id() !== $service->user_id)
+                        <!-- Tombol untuk user yang login dan bukan pemilik service -->
                         <a href="{{ route('orders.create', ['service' => $service->slug]) }}"
                            class="w-full flex items-center justify-center gap-2 bg-black text-white font-bold py-3 px-4 rounded-lg hover:opacity-80 transition-opacity duration-300 text-sm">
+                            <!-- Icon keranjang -->
                             <svg xmlns="http://www.w3.org/2000/svg"
                                  class="h-4 w-4"
                                  fill="currentColor"
@@ -197,9 +199,11 @@
                             </svg>
                             Pesan Sekarang
                         </a>
+
                         <a href="{{ route('conversations.start') }}"
                            onclick="event.preventDefault(); document.getElementById('start-chat-{{ $service->id }}').submit();"
                            class="w-full flex items-center justify-center gap-2 bg-white border border-gray-400 text-gray-700 font-bold py-3 px-4 rounded-lg hover:bg-gray-100 transition-colors duration-300 text-sm">
+                            <!-- Icon chat -->
                             <svg xmlns="http://www.w3.org/2000/svg"
                                  class="h-4 w-4"
                                  fill="none"
@@ -212,6 +216,7 @@
                             </svg>
                             Hubungi Penjual
                         </a>
+
                         <form id="start-chat-{{ $service->id }}"
                               action="{{ route('conversations.start') }}"
                               method="POST"
@@ -224,8 +229,20 @@
                                    name="product_id"
                                    value="{{ $service->id }}" />
                         </form>
+                    @else
+                        <!-- Kalau user non-auth, arahkan ke login -->
+                        <a href="{{ route('login') }}"
+                           class="w-full flex items-center justify-center gap-2 bg-black text-white font-bold py-3 px-4 rounded-lg hover:opacity-80 transition-opacity duration-300 text-sm">
+                            Pesan Sekarang
+                        </a>
+
+                        <a href="{{ route('login') }}"
+                           class="w-full flex items-center justify-center gap-2 bg-white border border-gray-400 text-gray-700 font-bold py-3 px-4 rounded-lg hover:bg-gray-100 transition-colors duration-300 text-sm">
+                            Hubungi Penjual
+                        </a>
                     @endif
                 </div>
+
 
             </div>
         </div>

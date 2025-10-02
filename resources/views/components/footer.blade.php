@@ -20,15 +20,15 @@
             <h2 class="text-white font-bold text-lg mb-4">Hubungi Kami</h2>
             <ul class="space-y-2 text-sm">
                 <li class="flex items-center gap-2">
-                    <a href="mailto:support@jasareceh.com"
-                       class="hover:text-white">support@jasareceh.com</a>
+                    <a href="mailto:mseptiawan017@gmail.com"
+                       class="hover:text-white">mseptiawan017@gmail.com</a>
                 </li>
                 <li class="flex items-center gap-2">
-                    <a href="https://wa.me/628123456789"
-                       class="hover:text-white">+62 812-3456-789</a>
+                    <a href="https://wa.me/6281374387139"
+                       class="hover:text-white">+62 813 7438 7139</a>
                 </li>
                 <li class="flex items-center gap-2">
-                    <a href="https://instagram.com/jasareceh"
+                    <a href="https://instagram.com/adit.jns"
                        target="_blank"
                        class="hover:text-white">Instagram</a>
                 </li>
@@ -38,7 +38,7 @@
             <h2 class="text-white font-bold text-lg mb-4">Tim Pegiat Website</h2>
             <ul class="space-y-2 text-sm">
                 <li class="flex items-center gap-2">
-                    <a href="mailto:support@jasareceh.com"
+                    <a href="mailto:mseptiawan017@gmail.com"
                        class="hover:text-white">M Septiawan</a>
                 </li>
                 <li class="flex items-center gap-2">

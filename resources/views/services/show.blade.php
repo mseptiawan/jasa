@@ -159,8 +159,9 @@
                 {{-- Deskripsi Layanan --}}
                 <div class="space-y-4">
                     <h2 class="text-xl font-bold text-gray-800">Deskripsi Layanan</h2>
-                    <p class="text-gray-700 leading-relaxed">{{ $service->description }}</p>
+                    <p class="text-gray-700 leading-relaxed">{!! nl2br(e($service->description)) !!}</p>
                 </div>
+
 
                 {{-- Bagian Jaminan --}}
                 <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">

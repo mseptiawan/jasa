@@ -10,10 +10,8 @@
           type="image/x-icon"
           href="{{ asset('logo-JasaReceh.ico') }}">
 
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Google Fonts: Montserrat -->
     <link rel="preconnect"
           href="https://fonts.googleapis.com">
     <link rel="preconnect"
@@ -22,7 +20,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
           rel="stylesheet">
 
-    <!-- Custom Styles -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
     <style>
         body {
             font-family: 'Montserrat', sans-serif;
@@ -55,6 +55,14 @@
         .focus\:ring-primary:focus {
             --tw-ring-color: #2b3cd7;
         }
+
+        /* START: Solusi untuk menghilangkan outline hitam bawaan browser */
+        input:focus {
+            outline: none !important;
+            /* Memaksa menghilangkan outline pada semua input saat fokus */
+        }
+
+        /* END: Solusi untuk menghilangkan outline hitam bawaan browser */
 
         /* Autocomplete list styling */
         #autocomplete-results li:hover {
@@ -107,12 +115,36 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* Styling for Swiper pagination (dots) */
+        .swiper-pagination-bullet {
+            background: #cbd5e1;
+            /* Tailwind gray-300 */
+            opacity: 1;
+            width: 8px;
+            height: 8px;
+        }
+
+        .swiper-pagination-bullet-active {
+            background: #2b3cd7;
+            /* Custom primary color */
+            width: 20px;
+            /* Make active bullet wider */
+            border-radius: 4px;
+            /* Make it look like a dash */
+            transition: width 0.3s;
+        }
+
+        /* Hapus pseudo-element bawaan Swiper agar tidak bentrok dengan SVG kustom */
+        .swiper-button-prev::after,
+        .swiper-button-next::after {
+            content: '';
+        }
     </style>
 </head>
 
 <body class="text-gray-800">
 
-    <!-- Notification Modal -->
     <div id="notification-modal"
          class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden transition-opacity duration-300">
         <div class="bg-white rounded-lg shadow-xl p-6 w-11/12 max-w-sm text-center">
@@ -125,10 +157,8 @@
         </div>
     </div>
 
-    <!-- Header -->
     <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-sm w-full border-b border-gray-200">
         <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center py-3 px-4 sm:px-6 lg:px-8 gap-4">
-            <!-- Logo -->
             <a href="{{ url('/') }}"
                class="order-1">
                 <img src="{{ asset('images/logo-JasaReceh.png') }}"
@@ -141,46 +171,85 @@
                 <a href="{{ route('register') }}"
                    class="animated-underline text-accent hover:text-yellow-400 font-semibold transition-colors">Register</a>
             </div>
-            <!-- Search Form -->
             <div class="w-full md:w-auto md:flex-1 md:max-w-md lg:max-w-lg order-3 md:order-2">
 
-
-                <!-- Auth Links -->
 
             </div>
     </header>
 
-    <!-- Main Container -->
-    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+    @php
+        // Data dummy untuk banner slider
+        // Asumsi: 'category.show' adalah rute yang valid dan banner-pertama.png, banner-kedua.png ada di folder 'public/images/'
+        $banners = [
+            [
+                'image' => 'banner-pertama.png',
+                'link' => '/login', // Ganti dengan rute Laravel yang sesuai, contoh: route('promo.detail', 'spesial-awal-bulan')
+                'alt' => 'Promo Spesial Awal Bulan',
+            ],
+            [
+                'image' => 'banner-kedua.png',
+                'link' => '/service/apply', // Ganti dengan rute Laravel yang sesuai, contoh: route('promo.detail', 'spesial-awal-bulan')
 
+                // kalo belom login ke route /login kalo
+                'alt' => 'Layanan Terpopuler Minggu Ini',
+            ],
+        ];
+        // Tambahkan fallback untuk $services jika belum didefinisikan (agar kode Blade tidak error di luar konteks Laravel)
+        if (!isset($services)) {
+            $services = collect([]);
+        }
+    @endphp
+
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+        <div class="swiper mySwiper w-full h-auto rounded-xl shadow-lg mb-8 relative">
+            <div class="swiper-wrapper">
+                @foreach ($banners as $banner)
+                    <div class="swiper-slide min-h-32">
+                        <a href="{{ $banner['link'] }}"
+                           class="block h-full">
+                            {{-- Asumsi: images/banner-xxx.png ada di folder public/images/ --}}
+                            <img src="{{ asset('images/' . $banner['image']) }}"
+                                 alt="{{ $banner['alt'] }}"
+                                 class="w-full h-full object-cover rounded-xl"
+                                 onerror="this.onerror=null; this.src='{{ asset('images/default-banner.png') }}';">
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+            <div class="swiper-pagination !bottom-2"></div>
+
+            <div id="swiper-button-prev-custom"
+                 class="swiper-button-prev !left-4 !w-10 !h-10 bg-white/70 rounded-full flex items-center justify-center backdrop-blur-sm shadow-md transition-opacity hover:opacity-100 opacity-80 cursor-pointer z-10 hidden md:flex">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     fill="none"
+                     viewBox="0 0 24 24"
+                     stroke-width="2.5"
+                     stroke="#2b3cd7"
+                     class="w-6 h-6">
+                    <path stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M15.75 19.5L8.25 12l7.5-7.5" />
+                </svg>
+            </div>
+            <div id="swiper-button-next-custom"
+                 class="swiper-button-next !right-4 !w-10 !h-10 bg-white/70 rounded-full flex items-center justify-center backdrop-blur-sm shadow-md transition-opacity hover:opacity-100 opacity-80 cursor-pointer z-10 hidden md:flex">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     fill="none"
+                     viewBox="0 0 24 24"
+                     stroke-width="2.5"
+                     stroke="#2b3cd7"
+                     class="w-6 h-6">
+                    <path stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+            </div>
+        </div>
         <main>
-            <!-- Location & Search Section -->
             <div class="bg-white p-6 rounded-lg border border-gray-200 mb-8">
                 <h2 class="text-xl font-bold mb-4 text-gray-900">Temukan Layanan Terbaik di Dekat Anda</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Geolocation Search -->
-                    {{-- <div class="flex flex-col">
-                        <p class="text-gray-600 mb-2">Dapatkan lokasi Anda secara instan.</p>
-                        <button type="button"
-                                id="btn-nearby"
-                                class="w-full flex items-center justify-center gap-2 bg-primary text-white font-bold py-3 px-4 rounded-lg shadow-md hover:opacity-90 transition-all">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                 width="20"
-                                 height="20"
-                                 viewBox="0 0 24 24"
-                                 fill="none"
-                                 stroke="currentColor"
-                                 stroke-width="2"
-                                 stroke-linecap="round"
-                                 stroke-linejoin="round">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                <circle cx="12"
-                                        cy="10"
-                                        r="3"></circle>
-                            </svg>
-                            Cari Layanan Terdekat
-                        </button>
-                    </div> --}}
+
                     <form action="{{ route('home') }}"
                           method="GET"
                           class="relative">
@@ -190,7 +259,7 @@
                                    name="search"
                                    placeholder="Cari layanan apa pun..."
                                    value="{{ request('search') }}"
-                                   class="w-full py-2 pl-4 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                                   class="w-full py-2 pl-4 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-primary focus:border-transparent transition **focus:outline-none**"
                                    autocomplete="off">
                             <button type="submit"
                                     class="bg-primary text-white font-bold p-3 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center">
@@ -208,7 +277,6 @@
 
                         </div>
                     </form>
-                    <!-- Address Form -->
                     <form id="location-form"
                           action="{{ route('services.nearby') }}"
                           method="get"
@@ -219,7 +287,7 @@
                                 <input type="text"
                                        id="address-input"
                                        placeholder="Ketik alamat Anda..."
-                                       class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                                       class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition **focus:outline-none**"
                                        autocomplete="off"
                                        required>
                                 <input type="hidden"
@@ -232,8 +300,27 @@
                                     class="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-b-lg shadow-lg max-h-60 overflow-y-auto z-10 list-none p-0 m-0 hidden">
                                 </ul>
                             </div>
+                            {{-- <button type="button"
+                                    id="btn-nearby"
+                                    class="bg-accent text-gray-900 font-bold p-3 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center"
+                                    title="Gunakan Lokasi Saat Ini">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     fill="none"
+                                     viewBox="0 0 24 24"
+                                     stroke-width="2"
+                                     stroke="currentColor"
+                                     class="w-6 h-6">
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                                </svg>
+                            </button> --}}
                             <button type="submit"
-                                    class="bg-primary text-white font-bold p-3 rounded-lg hover:opacity-90 transition-opacity">
+                                    class="bg-primary text-white font-bold p-3 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center"
+                                    title="Cari Berdasarkan Alamat">
                                 <svg xmlns="http://www.w3.org/2000/svg"
                                      class="h-6 w-6"
                                      fill="none"
@@ -250,8 +337,9 @@
                 </div>
             </div>
 
-            <!-- Highlighted Services Section -->
             @php
+                // Filter the services for highlight and normal services
+                // This assumes $services is a Laravel Collection, and 'now()' is a Carbon instance
                 $highlightServices = $services->filter(
                     fn($s) => $s->is_highlight && $s->highlight_until && now()->lte($s->highlight_until),
                 );
@@ -317,7 +405,6 @@
                 </section>
             @endif
 
-            <!-- All Services Section -->
             @php
                 $normalServices = $services->filter(
                     fn($s) => !($s->is_highlight && $s->highlight_until && now()->lte($s->highlight_until)),
@@ -383,7 +470,6 @@
                     @endforelse
                 </div>
 
-                <!-- Loading Indicator -->
                 <div id="loading-indicator"
                      class="w-full flex justify-center items-center py-8 gap-3 text-gray-600 hidden">
                     <div class="loader"></div>
@@ -394,7 +480,46 @@
 
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
     <script>
+        // Inisialisasi Swiper
+        var swiper = new Swiper(".mySwiper", {
+            spaceBetween: 30,
+            centeredSlides: true,
+            loop: true, // Untuk looping slider
+            autoplay: {
+                delay: 5000, // Otomatis slide setiap 5 detik
+                disableOnInteraction: false, // Lanjutkan autoplay setelah interaksi pengguna
+            },
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+            navigation: {
+                // Targetkan ID kustom yang baru
+                nextEl: "#swiper-button-next-custom",
+                prevEl: "#swiper-button-prev-custom",
+            },
+            // Responsiveness: Tampilkan lebih dari 1 slide di layar lebar
+            breakpoints: {
+                640: {
+                    slidesPerView: 1,
+                    spaceBetween: 20,
+                },
+                768: {
+                    slidesPerView: 1, // Diubah menjadi 1 agar lebih maksimal di layar lebar
+                    spaceBetween: 30,
+                },
+                1024: {
+                    slidesPerView: 1, // Diubah menjadi 1 agar lebih maksimal di layar lebar
+                    spaceBetween: 40,
+                },
+            }
+        });
+
+        // --- Existing JS (Modal, Geolocation, Autocomplete, Infinite Scroll) ---
+
         document.addEventListener('DOMContentLoaded', () => {
             // --- Existing JS for Modal, Geolocation and Autocomplete ---
             const addressInput = document.getElementById('address-input');
@@ -405,6 +530,7 @@
             const modal = document.getElementById('notification-modal');
             const modalMessage = document.getElementById('modal-message');
             const modalCloseBtn = document.getElementById('modal-close-btn');
+            const nearbyBtn = document.getElementById('btn-nearby');
             let geocodeTimeout = null;
 
             function showModal(message) {
@@ -477,31 +603,37 @@
                 }
             });
 
-            document.getElementById('btn-nearby').addEventListener('click', () => {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition((position) => {
-                        latInput.value = position.coords.latitude;
-                        lngInput.value = position.coords.longitude;
-                        fetch(
-                                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latInput.value}&lon=${lngInput.value}`
-                            )
-                            .then(res => res.json())
-                            .then(data => {
-                                addressInput.value = data.display_name || 'Lokasi Saat Ini';
-                                form.submit();
-                            })
-                            .catch(() => {
-                                form.submit();
-                            })
-                    }, () => {
-                        showModal(
-                            'Tidak dapat mengambil lokasi Anda. Silakan periksa izin browser Anda.'
-                        );
-                    });
-                } else {
-                    showModal('Geolocation tidak didukung oleh browser Anda.');
-                }
-            });
+            // LOGIC untuk tombol "Gunakan Lokasi Saat Ini"
+            if (nearbyBtn) {
+                nearbyBtn.addEventListener('click', () => {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition((position) => {
+                            latInput.value = position.coords.latitude;
+                            lngInput.value = position.coords.longitude;
+                            // Reverse geocode untuk mendapatkan nama alamat (optional, tapi disarankan)
+                            fetch(
+                                    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latInput.value}&lon=${lngInput.value}`
+                                )
+                                .then(res => res.json())
+                                .then(data => {
+                                    addressInput.value = data.display_name || 'Lokasi Saat Ini';
+                                    form.submit();
+                                })
+                                .catch(() => {
+                                    // Jika reverse geocode gagal, tetap submit dengan koordinat
+                                    addressInput.value = 'Lokasi Saat Ini';
+                                    form.submit();
+                                })
+                        }, () => {
+                            showModal(
+                                'Tidak dapat mengambil lokasi Anda. Silakan periksa izin browser Anda.'
+                            );
+                        });
+                    } else {
+                        showModal('Geolocation tidak didukung oleh browser Anda.');
+                    }
+                });
+            }
 
             // --- New Infinite Scroll Logic ---
             const normalServiceCards = document.querySelectorAll('.normal-service-card');

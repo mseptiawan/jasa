@@ -467,6 +467,9 @@
                                        class="block font-bold text-lg mb-2 text-gray-900 hover:text-primary truncate transition-colors">{{ $service->title }}</a>
                                     <p class="text-lg font-semibold text-green-600 mb-3">Rp
                                         {{ number_format($service->price, 0, ',', '.') }}</p>
+                                    <p class="text-gray-500 mb-4">
+                                        {{ Str::words(strip_tags($service->description), 15, '...') }}
+                                    </p>
                                     <div class="flex items-center gap-2 text-sm text-gray-600 mb-3">
                                         @if ($profilePhoto)
                                             <img src="{{ $profilePhoto }}"

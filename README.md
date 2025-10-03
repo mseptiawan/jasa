@@ -1,4 +1,4 @@
-![images (1)](https://github.com/user-attachments/assets/a35b7873-1f54-4a5a-895d-b1e2978ff449)# Marketplace Jasa Receh – Solusi Kita Semua
+# Marketplace Jasa Receh – Solusi Kita Semua
 
 Disusun dengan rekan saya Adit Jansa
 

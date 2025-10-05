@@ -29,6 +29,8 @@ class ProfileUpdateRequest extends FormRequest
             'website' => ['nullable', 'url', 'max:255'],
             'linkedin' => ['nullable', 'url', 'max:255'],
             'instagram' => ['nullable', 'url', 'max:255'],
+            'address' => ['nullable', 'string', 'max:255'],
+            'no_telp' => ['nullable', 'string', 'max:20'], // field baru
             'profile_photo' => ['nullable', 'image', 'max:2048'], // max 2MB
         ];
     }

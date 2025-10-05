@@ -49,6 +49,10 @@
                                         :active="request()->routeIs('services.favorites')">
                                 {{ __('Favorit Saya') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('cart.index')"
+                                        :active="request()->routeIs('cart.index')">
+                                {{ __('Keranjang') }}
+                            </x-nav-link>
                         @endif
 
                         <!-- Seller Dropdown -->
@@ -263,6 +267,10 @@
                                            :active="request()->routeIs('services.favorites')">
                         {{ __('Favorit Saya') }}
                     </x-responsive-nav-link>
+                    <x-nav-link :href="route('cart.index')"
+                                :active="request()->routeIs('cart.index')">
+                        {{ __('Keranjang') }}
+                    </x-nav-link>
                 @endif
 
                 <!-- Seller Links -->

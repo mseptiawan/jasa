@@ -79,9 +79,6 @@
                     <span class="text-gray-900 font-bold text-xl">Rp
                         {{ number_format($highlightFee, 0, ',', '.') }}</span>
                 </div>
-                <p class="text-sm text-gray-500 mt-4 text-center">
-                    (Simulasi: Tidak ada pembayaran nyata, highlight langsung aktif setelah form di-submit.)
-                </p>
             </div>
 
             {{-- Form Pembayaran --}}
@@ -89,29 +86,40 @@
                   action="{{ route('services.highlight.pay', $service->slug) }}"
                   method="POST">
                 @csrf
+                {{-- Pilihan Metode Pembayaran --}}
                 <div class="mb-4">
                     <label for="paymentMethod"
                            class="block text-gray-700 font-semibold mb-2">Metode Pembayaran</label>
-                    <div class="relative">
-                        {{-- Menghapus "appearance-none" agar ikon dropdown bawaan browser muncul --}}
-                        <select name="payment_method"
-                                id="paymentMethod"
-                                class="block w-full bg-white border border-gray-300 rounded-lg py-3 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-primary transition-colors duration-200">
-                            <option value="bank_transfer"
-                                    selected>Bank Transfer</option>
-                            <option value="e_wallet">E-Wallet (OVO, GoPay, Dana)</option>
-                            <option value="dummy_gateway">Gateway Dummy</option>
-                        </select>
-                    </div>
+                    <select name="payment_method"
+                            id="paymentMethod"
+                            class="block w-full bg-white border border-gray-300 rounded-lg py-3 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-primary transition-colors duration-200">
+                        <optgroup label="Bank Transfer">
+                            <option value="bca">BCA</option>
+                            <option value="mandiri">Mandiri</option>
+                            <option value="bri">BRI</option>
+                            <option value="btn">BTN</option>
+                            <option value="danamon">Danamon</option>
+                        </optgroup>
+                        <optgroup label="E-Wallet">
+                            <option value="ovo">OVO</option>
+                            <option value="dana">DANA</option>
+                            <option value="gopay">GoPay</option>
+                        </optgroup>
+                        <option value="dummy_gateway">Gateway Dummy</option>
+                    </select>
                     @error('payment_method')
                         <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
                     @enderror
                 </div>
 
-                {{-- Info metode pembayaran dinamis (tanpa ikon) --}}
+                {{-- Petunjuk Bayar --}}
                 <div id="paymentInfo"
                      class="mt-2 p-4 bg-gray-100 rounded-lg text-sm text-gray-700">
-                    <p>Transfer ke rekening **BCA 123-456-789** a.n. **PT. Contoh.**</p>
+                    <h3 class="font-bold text-gray-800 mb-2">Petunjuk Cara Bayar</h3>
+                    <ol id="instructionList"
+                        class="list-decimal list-inside text-gray-700 text-sm">
+                        <li>Pilih metode pembayaran di atas untuk melihat langkah-langkah.</li>
+                    </ol>
                 </div>
 
                 <div class="mt-8 text-center">
@@ -142,43 +150,87 @@
         </div>
     </div>
 
+    {{-- Script untuk update petunjuk pembayaran --}}
     <script>
         const paymentMethod = document.getElementById('paymentMethod');
-        const paymentInfo = document.getElementById('paymentInfo');
-        const form = document.getElementById('highlightForm');
-        const payButton = document.getElementById('payButton');
-        const loadingBox = document.getElementById('loadingBox');
-        const successBox = document.getElementById('successBox');
+        const instructionList = document.getElementById('instructionList');
 
-        // Ganti info pembayaran sesuai metode
-        paymentMethod.addEventListener('change', () => {
+        const instructions = {
+            bca: [
+                "Buka aplikasi BCA Mobile / Livin' BCA.",
+                "Login dengan akun Anda.",
+                "Pilih menu 'Transfer' → 'Rekening BCA'.",
+                "Masukkan nomor rekening: 123-456-789 a.n. PT. Contoh.",
+                "Masukkan nominal sesuai total pembayaran di atas.",
+                "Konfirmasi data, lalu klik 'Kirim'.",
+                "Simpan bukti pembayaran."
+            ],
+            mandiri: [
+                "Buka aplikasi Mandiri Online / Livin' Mandiri.",
+                "Login dengan akun Anda.",
+                "Pilih menu 'Transfer' → 'Antar Rekening / Bank Lain'.",
+                "Masukkan nomor rekening: 987-654-321 a.n. PT. Contoh.",
+                "Masukkan nominal sesuai total pembayaran.",
+                "Konfirmasi transfer, simpan bukti pembayaran."
+            ],
+            bri: [
+                "Buka aplikasi BRImo / Internet Banking BRI.",
+                "Login dengan akun Anda.",
+                "Pilih menu 'Transfer' → 'Ke Rekening BRI / Bank Lain'.",
+                "Masukkan nomor rekening: 112-233-445 a.n. PT. Contoh.",
+                "Masukkan nominal sesuai total pembayaran.",
+                "Konfirmasi transfer, simpan bukti pembayaran."
+            ],
+            btn: [
+                "Buka aplikasi BTN / Internet Banking BTN.",
+                "Login dengan akun Anda.",
+                "Pilih menu 'Transfer' → 'Rekening Bank'.",
+                "Masukkan nomor rekening: 556-677-889 a.n. PT. Contoh.",
+                "Masukkan nominal sesuai total pembayaran.",
+                "Konfirmasi transfer, simpan bukti pembayaran."
+            ],
+            danamon: [
+                "Buka aplikasi Danamon Online / Internet Banking Danamon.",
+                "Login dengan akun Anda.",
+                "Pilih menu 'Transfer' → 'Rekening Bank'.",
+                "Masukkan nomor rekening: 221-334-556 a.n. PT. Contoh.",
+                "Masukkan nominal sesuai total pembayaran.",
+                "Konfirmasi transfer, simpan bukti pembayaran."
+            ],
+            ovo: [
+                "Buka aplikasi OVO dan login.",
+                "Pilih menu 'Transfer' → 'OVO / Bank'.",
+                "Masukkan nomor tujuan: 0812-3456-7890 a.n. PT. Contoh.",
+                "Masukkan nominal sesuai total pembayaran.",
+                "Konfirmasi transfer, simpan bukti pembayaran."
+            ],
+            dana: [
+                "Buka aplikasi DANA dan login.",
+                "Pilih menu 'Kirim / Transfer'.",
+                "Masukkan nomor tujuan: 0812-3456-7890 a.n. PT. Contoh.",
+                "Masukkan nominal sesuai total pembayaran.",
+                "Konfirmasi transfer, simpan bukti pembayaran."
+            ],
+            gopay: [
+                "Buka aplikasi GoPay / Gojek dan login.",
+                "Pilih menu 'Bayar / Transfer'.",
+                "Masukkan nomor tujuan: 0812-3456-7890 a.n. PT. Contoh.",
+                "Masukkan nominal sesuai total pembayaran.",
+                "Konfirmasi pembayaran, simpan bukti pembayaran."
+            ],
+            dummy_gateway: [
+                "Simulasi gateway online.",
+                "Klik 'Bayar & Pesan' untuk checkout dummy."
+            ]
+        };
+
+        function updateInstructions() {
             const method = paymentMethod.value;
-            let infoText = '';
-            if (method === 'bank_transfer') {
-                infoText = 'Transfer ke rekening **BCA 123-456-789** a.n. **PT. Contoh.**';
-            } else if (method === 'e_wallet') {
-                infoText = 'Bayar menggunakan **OVO, GoPay, atau Dana** ke nomor **0812-3456-7890.**';
-            } else if (method === 'dummy_gateway') {
-                infoText = 'Simulasi gateway online. Klik \'Bayar & Pesan\' untuk checkout dummy.';
-            }
-            paymentInfo.innerHTML = `<p>${infoText}</p>`;
-        });
+            const steps = instructions[method] || ["Pilih metode pembayaran untuk melihat langkah-langkah."];
+            instructionList.innerHTML = steps.map(step => `<li>${step}</li>`).join('');
+        }
 
-        // Simulasi proses pembayaran
-        // form.addEventListener('submit', function(e) {
-        //     e.preventDefault(); // cegah submit langsung
-
-        //     payButton.disabled = true;
-        //     loadingBox.classList.remove('hidden');
-
-        //     // Delay 3 detik seolah proses
-        //     setTimeout(() => {
-        //         loadingBox.classList.add('hidden');
-        //         successBox.classList.remove('hidden');
-
-        //         // otomatis submit ke server setelah sukses (opsional)
-        //         // form.submit(); // kalau mau tetep update DB
-        //     }, 3000);
-        // });
+        paymentMethod.addEventListener('change', updateInstructions);
+        updateInstructions();
     </script>
 </x-app-layout>

@@ -12,35 +12,75 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // ambil query service aktif, include relasi
-        $query = \App\Models\Service::with(['user', 'subcategory.category', 'reviews'])
+        $query = Service::with(['user', 'subcategory.category', 'reviews'])
+            ->withAvg('reviews', 'rating')
             ->where('status', 'active')
             ->orderBy('created_at', 'desc');
 
-        // filter berdasarkan kategori kalo ada request
+        // Filter kategori
         if ($categoryId = request('category')) {
             $query->whereHas('subcategory', function ($q) use ($categoryId) {
                 $q->where('category_id', $categoryId);
             });
         }
 
-        // filter berdasarkan search
+        // Filter search
         if ($search = request('search')) {
             $query->where('title', 'like', '%' . $search . '%');
         }
 
-        $services = $query->get();
+        // Filter harga
+        if ($priceMin = request('price_min')) {
+            $query->where('price', '>=', $priceMin);
+        }
+        if ($priceMax = request('price_max')) {
+            $query->where('price', '<=', $priceMax);
+        }
 
-        // hitung rata-rata rating tiap service
-        $services->map(function ($service) {
+        // Filter diskon
+        if (request('discount')) {
+            $query->whereNotNull('discount_price')->whereColumn('discount_price', '<', 'price');
+        }
+
+        // Filter status online/offline
+        if ($status = request('status')) {
+            if ($status === 'online') {
+                $query->whereIn('service_type', ['Full-time', 'Part-time', 'Freelance']);
+            } elseif ($status === 'offline') {
+                $query->where('service_type', 'offline');
+            }
+        }
+
+        // Filter kota
+        if ($city = request('city')) {
+            $allowedCities = ['Palembang', 'Jakarta', 'Bandung', 'Surabaya', 'Medan', 'Semarang', 'Makassar', 'Yogyakarta', 'Depok', 'Bekasi'];
+            if (in_array($city, $allowedCities)) {
+                $query->where('address', 'like', '%' . $city . '%');
+            }
+        }
+
+        // Filter individu: user tertentu
+        if ($userId = request('user_id')) {
+            $query->where('user_id', $userId);
+        }
+
+        // Ambil data
+        $services = $query->get()->map(function ($service) {
             $service->avg_rating = $service->reviews->avg('rating') ?? 0;
             return $service;
         });
 
-        // stats opsional
-        $totalUsers = Auth::check() ? \App\Models\User::count() : null;
-        $totalServices = \App\Models\Service::where('status', 'active')->count();
-        $pendingOrders = Auth::check() ? \App\Models\Order::where('status', 'pending')->count() : null;
+        // Filter rating >=4 jika checkbox dicentang
+        if (request('rating_filter')) {
+            $services = $services->filter(function ($service) {
+                return $service->avg_rating >= 4;
+            });
+        }
+
+        // Stats opsional
+        $totalUsers = Auth::check() ? User::count() : null;
+        $totalServices = Service::where('status', 'active')->count();
+        $pendingOrders = Auth::check() ? Order::where('status', 'pending')->count() : null;
 
         return view('dashboard', compact('services', 'totalUsers', 'totalServices', 'pendingOrders'));
     }

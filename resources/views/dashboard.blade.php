@@ -386,7 +386,105 @@
                 </div>
             @endif
         @endauth
+        <form method="GET"
+              action="{{ route('dashboard') }}"
+              class="mb-4 p-4 bg-white rounded shadow">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
+                <!-- Search -->
+
+                <!-- Kota -->
+                <div>
+                    <label for="city"
+                           class="block font-semibold mb-1">Kota</label>
+                    <select name="city"
+                            id="city"
+                            class="w-full border rounded px-2 py-1">
+                        <option value="">Semua Kota</option>
+                        @php
+                            $cities = [
+                                'Palembang',
+                                'Jakarta',
+                                'Bandung',
+                                'Surabaya',
+                                'Medan',
+                                'Semarang',
+                                'Makassar',
+                                'Yogyakarta',
+                                'Bekasi',
+                                'Depok',
+                            ];
+                        @endphp
+                        @foreach ($cities as $city)
+                            <option value="{{ $city }}"
+                                    {{ request('city') == $city ? 'selected' : '' }}>
+                                {{ $city }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Status Online -->
+                <div>
+                    <label for="status"
+                           class="block font-semibold mb-1">Status</label>
+                    <select name="status"
+                            id="status"
+                            class="w-full border rounded px-2 py-1">
+                        <option value="">Semua</option>
+                        <option value="online"
+                                {{ request('status') == 'online' ? 'selected' : '' }}>Online</option>
+                        <option value="offline"
+                                {{ request('status') == 'offline' ? 'selected' : '' }}>Offline</option>
+                    </select>
+                </div>
+
+                <!-- Diskon -->
+                <div class="flex items-center mt-4 md:mt-0">
+                    <input type="checkbox"
+                           name="discount"
+                           value="1"
+                           id="discount"
+                           {{ request('discount') == '1' ? 'checked' : '' }}>
+                    <label for="discount"
+                           class="ml-2 font-semibold">Hanya Diskon</label>
+                </div>
+                <div class="flex items-center mt-4 md:mt-0">
+                    <input type="checkbox"
+                           name="rating_filter"
+                           value="1"
+                           id="rating_filter"
+                           {{ request('rating_filter') == '1' ? 'checked' : '' }}>
+                    <label for="rating_filter"
+                           class="ml-2 font-semibold">Rating ≥ 4</label>
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">Harga</label>
+                    <div class="flex gap-2">
+                        <input type="number"
+                               name="price_min"
+                               value="{{ request('price_min') }}"
+                               placeholder="Min"
+                               class="w-1/2 border rounded px-2 py-1">
+                        <input type="number"
+                               name="price_max"
+                               value="{{ request('price_max') }}"
+                               placeholder="Max"
+                               class="w-1/2 border rounded px-2 py-1">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mt-4">
+                <button type="submit"
+                        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    Filter
+                </button>
+                <a href="{{ route('dashboard') }}"
+                   class="ml-2 text-gray-600 hover:underline">Reset</a>
+            </div>
+        </form>
         @php
             $highlightServices = $services->filter(
                 fn($s) => $s->is_highlight && $s->highlight_until && now()->lte($s->highlight_until),
@@ -461,9 +559,19 @@
                             <div class="p-4">
                                 <a href="{{ route('services.show', $service->slug) }}"
                                    class="block font-bold text-lg mb-2 text-gray-900 hover:text-primary truncate transition-colors">{{ $service->title }}</a>
+                                @if ($service->discount_price && $service->discount_price > 0)
+                                    <p class="text-lg font-semibold text-red-600 mb-1">
+                                        Rp {{ number_format($service->discount_price, 0, ',', '.') }}
+                                    </p>
+                                    <p class="text-sm text-gray-500 line-through mb-3">
+                                        Rp {{ number_format($service->price, 0, ',', '.') }}
+                                    </p>
+                                @else
+                                    <p class="text-lg font-semibold text-green-600 mb-3">
+                                        Rp {{ number_format($service->price, 0, ',', '.') }}
+                                    </p>
+                                @endif
 
-                                <p class="text-lg font-semibold text-green-600 mb-3">Rp
-                                    {{ number_format($service->price, 0, ',', '.') }}</p>
                                 <p class="text-gray-500 mb-4">
                                     {{ Str::words(strip_tags($service->description), 15, '...') }}
                                 </p>
@@ -497,6 +605,8 @@
         @endif
 
         <section>
+
+
             <h2 class="text-2xl font-bold mb-5 text-gray-900">Semua Layanan</h2>
             <div id="normal-services-grid"
                  class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -563,8 +673,19 @@
                         <div class="p-4">
                             <a href="{{ route('services.show', $service->slug) }}"
                                class="block font-bold text-lg mb-2 text-gray-900 hover:text-primary truncate transition-colors">{{ $service->title }}</a>
-                            <p class="text-lg font-semibold text-green-600 mb-3">Rp
-                                {{ number_format($service->price, 0, ',', '.') }}</p>
+                            @if ($service->discount_price && $service->discount_price > 0)
+                                <p class="text-lg font-semibold text-red-600 mb-1">
+                                    Rp {{ number_format($service->discount_price, 0, ',', '.') }}
+                                </p>
+                                <p class="text-sm text-gray-500 line-through mb-3">
+                                    Rp {{ number_format($service->price, 0, ',', '.') }}
+                                </p>
+                            @else
+                                <p class="text-lg font-semibold text-green-600 mb-3">
+                                    Rp {{ number_format($service->price, 0, ',', '.') }}
+                                </p>
+                            @endif
+
                             <p class="text-gray-500 mb-4">
                                 {{ Str::words(strip_tags($service->description), 15, '...') }}
                             </p>

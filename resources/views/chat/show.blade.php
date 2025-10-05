@@ -332,18 +332,30 @@
                         },
                         body: new FormData(e.target),
                     })
-                    .then(() => {
+                    .then(async res => {
+                        if (!res.ok) {
+                            const data = await res.json();
+                            throw data; // biar masuk ke .catch
+                        }
+                        return res.json();
+                    })
+                    .then(data => {
                         input.value = "";
                         scrollToBottom();
                     })
                     .catch(err => {
-                        console.error(err);
-                        alert('Gagal mengirim pesan.');
+                        if (err.error) {
+                            toastr.warning(err.error);
+                        } else {
+                            toastr.error('Gagal mengirim pesan.');
+                        }
+
                     })
                     .finally(() => {
                         sendButton.disabled = false;
                         sendButton.innerHTML = originalButtonText;
                     });
+
             });
 
             // Handle template button clicks

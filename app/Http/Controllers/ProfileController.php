@@ -27,34 +27,29 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $user = $request->user();
+        $validated = $request->validated();
 
-        // Update semua field text / url
-        $user->full_name = $request->input('full_name');
-        $user->email = $request->input('email');
-        $user->bio = $request->input('bio');
-        $user->website = $request->input('website');
-        $user->linkedin = $request->input('linkedin');
-        $user->instagram = $request->input('instagram');
+        // Upload foto profil kalau ada
+        if ($request->hasFile('profile_photo')) {
+            $path = $request->file('profile_photo')->store('profile_photos', 'public');
+            $validated['profile_photo'] = $path;
+        }
 
-        // Reset email verification jika email diubah
+        // Isi data dari request yang tervalidasi
+        $user->fill($validated);
+
+        // Reset verifikasi email jika email diubah
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
         }
 
-        // Upload foto profil
-        if ($request->hasFile('profile_photo')) {
-            // Hapus foto lama jika ada
-            if ($user->profile_photo && \Illuminate\Support\Facades\Storage::exists($user->profile_photo)) {
-                \Illuminate\Support\Facades\Storage::delete($user->profile_photo);
-            }
-            $path = $request->file('profile_photo')->store('profile-photos', 'public');
-            $user->profile_photo = $path;
-        }
-
+        // ✅ Simpan perubahan
         $user->save();
 
+        // Redirect dengan pesan sukses
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
+
 
 
     /**

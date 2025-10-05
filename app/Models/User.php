@@ -17,6 +17,7 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+
     protected $fillable = [
         'full_name',
         'email',
@@ -26,7 +27,9 @@ class User extends Authenticatable
         'website',
         'linkedin',
         'instagram',
+        'address',
         'profile_photo',
+        'no_telp',
     ];
     public function ordersAsCustomer()
     {

@@ -27,10 +27,9 @@
             <select name="subcategory_id"
                     class="border px-2 py-1 w-full mb-4">
                 <option value="">Pilih Kategori</option>
-                @foreach($subcategories as $sub)
-                <option value="{{ $sub->id }}"
-                        {{
-                        old('subcategory_id')==$sub->id ? 'selected' : '' }}>{{ $sub->name }}</option>
+                @foreach ($subcategories as $sub)
+                    <option value="{{ $sub->id }}"
+                            {{ old('subcategory_id') == $sub->id ? 'selected' : '' }}>{{ $sub->name }}</option>
                 @endforeach
             </select>
 
@@ -52,23 +51,14 @@
                     class="border px-2 py-1 w-full mb-4">
                 <option value="">Pilih Jenis Pekerjaan</option>
                 <option value="Full Time"
-                        {{
-                        old('job_type')=='Full Time'
-                        ? 'selected'
-                        : ''
-                        }}>Full Time</option>
+                        {{ old('job_type') == 'Full Time' ? 'selected' : '' }}>
+                    Full Time</option>
                 <option value="Part Time"
-                        {{
-                        old('job_type')=='Part Time'
-                        ? 'selected'
-                        : ''
-                        }}>Part Time</option>
+                        {{ old('job_type') == 'Part Time' ? 'selected' : '' }}>
+                    Part Time</option>
                 <option value="Freelance"
-                        {{
-                        old('job_type')=='Freelance'
-                        ? 'selected'
-                        : ''
-                        }}>Freelance</option>
+                        {{ old('job_type') == 'Freelance' ? 'selected' : '' }}>
+                    Freelance</option>
             </select>
 
             <label class="block mb-2">Pengalaman</label>
@@ -76,29 +66,17 @@
                     class="border px-2 py-1 w-full mb-4">
                 <option value="">Pilih Pengalaman</option>
                 <option value="0-1 Tahun"
-                        {{
-                        old('experience')=='0-1 Tahun'
-                        ? 'selected'
-                        : ''
-                        }}>0-1 Tahun</option>
+                        {{ old('experience') == '0-1 Tahun' ? 'selected' : '' }}>
+                    0-1 Tahun</option>
                 <option value="1-3 Tahun"
-                        {{
-                        old('experience')=='1-3 Tahun'
-                        ? 'selected'
-                        : ''
-                        }}>1-3 Tahun</option>
+                        {{ old('experience') == '1-3 Tahun' ? 'selected' : '' }}>
+                    1-3 Tahun</option>
                 <option value="3-5 Tahun"
-                        {{
-                        old('experience')=='3-5 Tahun'
-                        ? 'selected'
-                        : ''
-                        }}>3-5 Tahun</option>
+                        {{ old('experience') == '3-5 Tahun' ? 'selected' : '' }}>
+                    3-5 Tahun</option>
                 <option value=">5 Tahun"
-                        {{
-                        old('experience')=='>5 Tahun'
-                        ? 'selected'
-                        : ''
-                        }}>>5 Tahun</option>
+                        {{ old('experience') == '>5 Tahun' ? 'selected' : '' }}>
+                    >5 Tahun</option>
             </select>
 
             <label class="block mb-2">Industri</label>
@@ -106,35 +84,20 @@
                     class="border px-2 py-1 w-full mb-4">
                 <option value="">Pilih Industri</option>
                 <option value="IT"
-                        {{
-                        old('industry')=='IT'
-                        ? 'selected'
-                        : ''
-                        }}>IT</option>
+                        {{ old('industry') == 'IT' ? 'selected' : '' }}>
+                    IT</option>
                 <option value="Kesehatan"
-                        {{
-                        old('industry')=='Kesehatan'
-                        ? 'selected'
-                        : ''
-                        }}>Kesehatan</option>
+                        {{ old('industry') == 'Kesehatan' ? 'selected' : '' }}>
+                    Kesehatan</option>
                 <option value="Pendidikan"
-                        {{
-                        old('industry')=='Pendidikan'
-                        ? 'selected'
-                        : ''
-                        }}>Pendidikan</option>
+                        {{ old('industry') == 'Pendidikan' ? 'selected' : '' }}>
+                    Pendidikan</option>
                 <option value="Jasa"
-                        {{
-                        old('industry')=='Jasa'
-                        ? 'selected'
-                        : ''
-                        }}>Jasa</option>
+                        {{ old('industry') == 'Jasa' ? 'selected' : '' }}>
+                    Jasa</option>
                 <option value="Lainnya"
-                        {{
-                        old('industry')=='Lainnya'
-                        ? 'selected'
-                        : ''
-                        }}>Lainnya</option>
+                        {{ old('industry') == 'Lainnya' ? 'selected' : '' }}>
+                    Lainnya</option>
             </select>
 
             <label class="block mb-2">Kontak</label>
@@ -187,7 +150,7 @@
         }
 
         // Klik di map buat pasang marker
-        map.on('click', function (e) {
+        map.on('click', function(e) {
             var latlng = e.latlng;
             if (marker) {
                 marker.setLatLng(latlng);
@@ -200,11 +163,11 @@
 
         // Tambahin search control setelah map dibuat
         L.Control.geocoder({
-            defaultMarkGeocode: false,
-            collapsed: false, // supaya search box terlihat
-            placeholder: 'Cari lokasi...'
-        })
-            .on('markgeocode', function (e) {
+                defaultMarkGeocode: false,
+                collapsed: false, // supaya search box terlihat
+                placeholder: 'Cari lokasi...'
+            })
+            .on('markgeocode', function(e) {
                 var center = e.geocode.center;
                 if (marker) {
                     marker.setLatLng(center);

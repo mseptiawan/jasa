@@ -99,6 +99,7 @@ class OrderController extends Controller
             'note' => $request->note,
         ]);
 
+
         // Kirim notifikasi ke seller
         $service->user->notify(new \App\Notifications\NewOrderNotification($order));
 

@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
@@ -18,30 +19,25 @@ class CartController extends Controller
         return view('cart.index', compact('carts'));
     }
 
-
-    public function add(Request $request, $slug)
+    public function add(Request $request, $serviceId)
     {
-        // Cari service berdasarkan slug
-        $service = Service::where('slug', $slug)->firstOrFail();
-
-        // Simpan ke keranjang pakai ID numerik
         $cart = Cart::updateOrCreate(
             [
                 'user_id' => Auth::id(),
-                'service_id' => $service->id,
-            ],
-            [
-                'quantity' => $request->input('quantity', 1)
+                'service_id' => $serviceId
             ]
+
         );
 
         return redirect()->back()->with('success', 'Jasa ditambahkan ke keranjang');
     }
-    public function remove(Cart $cart)
+
+    public function remove($slug)
     {
-        if ($cart->user_id === Auth::id()) {
-            $cart->delete();
-        }
+        // Hapus berdasarkan user_id & service_id slug
+        Cart::where('user_id', Auth::id())
+            ->where('service_id', $slug)
+            ->delete();
 
         return redirect()->back()->with('success', 'Jasa dihapus dari keranjang');
     }
@@ -49,7 +45,6 @@ class CartController extends Controller
     public function clear()
     {
         Cart::where('user_id', Auth::id())->delete();
-
         return redirect()->back()->with('success', 'Keranjang dikosongkan');
     }
 }

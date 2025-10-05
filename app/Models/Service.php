@@ -9,7 +9,6 @@ use Illuminate\Support\Str;
 class Service extends Model
 {
     use SoftDeletes;
-    // Kolom yang boleh diisi mass assignment
     protected $fillable = [
         'user_id',
         'subcategory_id',
@@ -21,13 +20,14 @@ class Service extends Model
         'industry',
         'contact',
         'address',
+        'service_type',
+        'discount_price',
         'images',
         'latitude',
         'longitude',
-        'slug', // jangan lupa tambahkan slug
-        'is_highlight',      // untuk status highlight
-        'highlight_until',   // tanggal habis highlight
-        'highlight_fee',     // fee yang dibayarkan
+        'slug',
+        'is_highlight',
+        'highlight_fee',
     ];
 
 
@@ -43,14 +43,12 @@ class Service extends Model
         return 'slug';
     }
 
-    // Jika pakai JSON di images/tags, otomatis cast ke array
     protected $casts = [
         'images' => 'array',
-        'highlight_until' => 'datetime', // ini penting
+        'highlight_until' => 'datetime',
 
     ];
 
-    // Relasi ke user
     public function user()
     {
         return $this->belongsTo(User::class);

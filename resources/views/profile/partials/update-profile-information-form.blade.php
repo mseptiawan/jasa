@@ -151,7 +151,26 @@
                     </div>
                 @endif
             </div>
+            <div>
+                <label for="no_telp"
+                       class="block text-sm font-medium text-gray-700">No. Telepon</label>
+                <input id="no_telp"
+                       name="no_telp"
+                       type="text"
+                       class="mt-1 block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                       value="{{ old('no_telp', $user->no_telp) }}">
+                <x-input-error class="mt-2"
+                               :messages="$errors->get('no_telp')" />
+            </div>
 
+            <div>
+                <label for="address"
+                       class="block text-sm font-medium text-gray-700">Alamat</label>
+                <textarea id="address"
+                          name="address"
+                          rows="3"
+                          class="mt-1 block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">{{ old('address', $user->address) }}</textarea>
+            </div>
             <div>
                 <label for="bio"
                        class="block text-sm font-medium text-gray-700">Bio</label>
@@ -162,6 +181,8 @@
                 <x-input-error class="mt-2"
                                :messages="$errors->get('bio')" />
             </div>
+
+
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>

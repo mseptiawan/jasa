@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminServiceController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DashboardController;
@@ -18,6 +19,11 @@ Route::get('/', [ServiceController::class, 'guestIndex'])->name('home');
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard');
 Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+
+Route::get('/privacy-policy', function () {
+    return view('policies.privacy');
+})->name('privacy.policy');
+
 
 Route::get('services/create', [ServiceController::class, 'create'])
     ->name('services.create');
@@ -79,7 +85,10 @@ Route::middleware('auth')->group(function () {
         auth()->user()->unreadNotifications->markAsRead();
         return back();
     })->name('notifications.read');
-
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/add/{service:slug}', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/cart/remove/{slug}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 
     Route::patch('/reviews/{service:slug}', [ReviewController::class, 'store'])->name('reviews.store');
 
@@ -91,15 +100,14 @@ Route::middleware('auth')->group(function () {
     Route::patch('/services/{service:slug}/favorite', [ServiceController::class, 'toggleFavorite'])
         ->name('services.toggleFavorite');
 
-    // Store → simpan service baru
+    //  simpan service baru
     Route::post('services', [ServiceController::class, 'store'])
         ->name('services.store');
 
-    // Edit → form edit service
+    //  form edit service
     Route::get('services/{slug}/edit', [ServiceController::class, 'edit'])
         ->name('services.edit');
 
-    // Update → simpan perubahan
     Route::put('services/{slug}', [ServiceController::class, 'update'])
         ->name('services.update');
 
@@ -107,7 +115,7 @@ Route::middleware('auth')->group(function () {
     Route::get('services', [ServiceController::class, 'index'])
         ->name('services.index');
 
-    // Create → form tambah service
+    //  form tambah service
 
     Route::get('/orders/{order}/info-payment', [OrderController::class, 'infoPayment'])->name('orders.infoPayment');
 

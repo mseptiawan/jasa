@@ -108,6 +108,10 @@ class ProviderApplicationController extends Controller
 
         $application->save();
 
+        // update field no_telp dan address di tabel users
+        $user->no_telp = $request->phone_number;
+        $user->address = $request->address;
+        $user->save();
         return redirect()->route('provider.applications')->with('success', 'Pengajuan berhasil dikirim.');
     }
 

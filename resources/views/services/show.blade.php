@@ -144,8 +144,20 @@
                 {{-- Judul dan Harga --}}
                 <div>
                     <h1 class="text-3xl font-extrabold mb-1 text-gray-900 leading-tight">{{ $service->title }}</h1>
-                    <p class="text-xl font-medium text-gray-700">Mulai dari <span class="font-bold text-green-600">Rp
-                            {{ number_format($service->price, 0, ',', '.') }}</span></p>
+
+                    @if ($service->discount_price && $service->discount_price > 0)
+                        <p class="text-lg font-semibold text-red-600 mb-1">
+                            Rp {{ number_format($service->discount_price, 0, ',', '.') }}
+                        </p>
+                        <p class="text-sm text-gray-500 line-through mb-3">
+                            Rp {{ number_format($service->price, 0, ',', '.') }}
+                        </p>
+                    @else
+                        <p class="text-lg font-semibold text-green-600 mb-3">
+                            Rp {{ number_format($service->price, 0, ',', '.') }}
+                        </p>
+                    @endif
+
                 </div>
 
                 {{-- Detail Tambahan (Garis miring) --}}
@@ -180,6 +192,10 @@
                             {{ $service->experience ?? '-' }}</li>
                         <li class="flex items-center gap-2"><span class="font-semibold">Alamat:</span>
                             {{ $service->address ?? '-' }}</li>
+                        <li class="flex items-center gap-2">
+                            <span class="font-semibold">Tipe Layanan:</span>
+                            {{ ucfirst($service->service_type ?? '-') }}
+                        </li>
                     </ul>
                 </div>
 
@@ -187,6 +203,17 @@
                 <div class="pt-4 space-y-4">
                     @if (auth()->check() && auth()->id() !== $service->user_id)
                         <!-- Tombol untuk user yang login dan bukan pemilik service -->
+
+
+                        <form action="{{ route('cart.add', $service->slug) }}"
+                              method="POST">
+                            @csrf
+                            <input type="hidden"
+                                   name="quantity"
+                                   value="1">
+                            <button type="submit"
+                                    class="bg-black text-white px-4 py-2 rounded">Tambahkan ke Keranjang</button>
+                        </form>
                         <a href="{{ route('orders.create', ['service' => $service->slug]) }}"
                            class="w-full flex items-center justify-center gap-2 bg-black text-white font-bold py-3 px-4 rounded-lg hover:opacity-80 transition-opacity duration-300 text-sm">
                             <!-- Icon keranjang -->
@@ -230,16 +257,19 @@
                                    value="{{ $service->id }}" />
                         </form>
                     @else
-                        <!-- Kalau user non-auth, arahkan ke login -->
-                        <a href="{{ route('login') }}"
-                           class="w-full flex items-center justify-center gap-2 bg-black text-white font-bold py-3 px-4 rounded-lg hover:opacity-80 transition-opacity duration-300 text-sm">
-                            Pesan Sekarang
-                        </a>
+                        @if (!auth()->check() || auth()->id() !== $service->user_id)
+                            <!-- Kalau user non-auth, arahkan ke login -->
 
-                        <a href="{{ route('login') }}"
-                           class="w-full flex items-center justify-center gap-2 bg-white border border-gray-400 text-gray-700 font-bold py-3 px-4 rounded-lg hover:bg-gray-100 transition-colors duration-300 text-sm">
-                            Hubungi Penjual
-                        </a>
+                            <a href="{{ route('login') }}"
+                               class="w-full flex items-center justify-center gap-2 bg-black text-white font-bold py-3 px-4 rounded-lg hover:opacity-80 transition-opacity duration-300 text-sm">
+                                Pesan Sekarang
+                            </a>
+
+                            <a href="{{ route('login') }}"
+                               class="w-full flex items-center justify-center gap-2 bg-white border border-gray-400 text-gray-700 font-bold py-3 px-4 rounded-lg hover:bg-gray-100 transition-colors duration-300 text-sm">
+                                Hubungi Penjual
+                            </a>
+                        @endif
                     @endif
                 </div>
 

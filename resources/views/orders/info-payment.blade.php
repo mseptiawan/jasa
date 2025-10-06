@@ -2,7 +2,6 @@
     <div class="container mx-auto py-6 max-w-xl">
         <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-8 text-center">
             <div class="mb-6">
-                {{-- ICON LOADING YANG SUDAH DIPERBAIKI --}}
                 <svg class="animate-spin h-20 w-20 text-blue-500 mx-auto"
                      xmlns="http://www.w3.org/2000/svg"
                      fill="none"
@@ -39,7 +38,8 @@
                 <div class="flex justify-between items-center">
                     <p class="text-sm font-medium text-gray-500">Metode Pembayaran</p>
                     <p class="text-sm font-bold text-gray-800">
-                        {{ strtoupper(str_replace('_', ' ', $order->payment_method)) }}</p>
+                        {{ strtoupper(str_replace('_', ' ', $order->payment_method)) }}
+                    </p>
                 </div>
                 <div class="flex justify-between items-center">
                     <p class="text-sm font-medium text-gray-500">Paket Layanan</p>
@@ -48,11 +48,10 @@
             </div>
 
             <div class="bg-gray-100 rounded-lg p-4 mt-6 text-sm text-gray-700">
-                <p>Simulasi pembayaran online sedang diproses. Halaman ini akan otomatis dialihkan setelah pembayaran
+                <p>Simulasi pembayaran sedang diproses. Halaman ini akan otomatis dialihkan setelah pembayaran
                     dikonfirmasi.</p>
             </div>
 
-            {{-- Elemen baru untuk menampilkan timer --}}
             <p class="mt-4 text-center text-gray-500 text-sm">
                 Harap tunggu, Anda akan dialihkan dalam <span id="countdown"
                       class="font-bold text-blue-600">15</span> detik.
@@ -61,23 +60,22 @@
     </div>
 
     <script>
-        @if ($order->payment_method == 'dummy_gateway')
-            const countdownElement = document.getElementById('countdown');
-            let timeLeft = 15;
+        const countdownElement = document.getElementById('countdown');
+        let timeLeft = 4;
 
-            function updateCountdown() {
-                countdownElement.textContent = timeLeft;
-                if (timeLeft > 0) {
-                    timeLeft--;
-                    setTimeout(updateCountdown, 1000);
-                }
+        function updateCountdown() {
+            countdownElement.textContent = timeLeft;
+            if (timeLeft > 0) {
+                timeLeft--;
+                setTimeout(updateCountdown, 1000);
             }
+        }
 
-            setTimeout(() => {
-                window.location.href = "{{ route('orders.store', $order->id) }}";
-            }, 5000);
+        // setelah 15 detik redirect ke halaman sukses
+        setTimeout(() => {
+            window.location.href = "{{ route('orders.store', $order->id) }}";
+        }, 4000);
 
-            updateCountdown();
-        @endif
+        updateCountdown();
     </script>
 </x-app-layout>

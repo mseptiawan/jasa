@@ -7,7 +7,6 @@
           content="{{ $conversation->id }}" />
 
     <style>
-        /* CSS Kustom Konsisten */
         body {
             font-family: 'Montserrat', sans-serif;
             background-color: #f0f4f8;
@@ -58,6 +57,7 @@
     </style>
 
     <div class="container mx-auto p-0 md:p-8 max-w-4xl">
+
 
         {{-- Header Chat --}}
         <div
@@ -170,7 +170,17 @@
               action="{{ route('conversations.send', $conversation->id) }}"
               class="p-4 bg-white rounded-b-lg shadow-lg border-t border-gray-200">
             @csrf
+            @if (session('success'))
+                <div class="bg-green-500 text-white p-2 rounded mb-2">
+                    {{ session('success') }}
+                </div>
+            @endif
 
+            @if (session('error'))
+                <div class="bg-red-500 text-white p-2 rounded mb-2">
+                    {{ session('error') }}
+                </div>
+            @endif
             {{-- Template Text Buttons --}}
             {{-- Template Text Buttons --}}
             @if (auth()->id() === $conversation->customer_id)
@@ -269,7 +279,6 @@
                         </div>
                     `;
 
-                    // cek kalau pesan adalah produk
                     if (data.chat.is_product) {
                         chatHtml = `
                             <div data-chat-id="${data.chat.id}" class="flex mb-3 ${alignmentClass}">
@@ -358,7 +367,6 @@
 
             });
 
-            // Handle template button clicks
             templateButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     chatInput.value = button.textContent.trim();

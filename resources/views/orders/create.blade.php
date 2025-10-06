@@ -190,6 +190,26 @@
     </div>
 
     <script>
+        // Hitung total harga otomatis
+        const priceEl = document.getElementById('servicePriceDisplay');
+        const feeEl = document.getElementById('platformFee');
+        const totalEl = document.getElementById('totalPrice');
+
+        const basePrice = parseInt(
+            priceEl.textContent.replace(/\./g, '')
+        );
+
+        const fee = Math.round(basePrice * 0.05);
+
+        const total = basePrice + fee;
+
+        function formatRupiah(angka) {
+            return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        feeEl.textContent = formatRupiah(fee);
+        totalEl.textContent = formatRupiah(total);
+
         document.addEventListener('DOMContentLoaded', () => {
             const paymentMethodEl = document.getElementById('payment_method');
             const instructionList = document.getElementById('instruction-list');

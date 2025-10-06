@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -20,7 +19,6 @@ class SellerRejectedNotification extends Notification
 
     public function via(object $notifiable): array
     {
-        // kirim ke email dan database
         return ['mail', 'database'];
     }
 
@@ -28,18 +26,21 @@ class SellerRejectedNotification extends Notification
     {
         return (new MailMessage)
             ->subject('Pengajuan Seller Ditolak')
-            ->line('Pengajuan akun seller kamu ditolak.')
-            ->line($this->reason ? 'Alasan: ' . $this->reason : '')
-            ->line('Silakan ajukan kembali setelah memperbaiki data.');
+            ->view('emails.seller-rejected', [
+                'user' => $notifiable,
+                'reason' => $this->reason,
+                'url' => route('dashboard'),
+            ]);
     }
+
 
     public function toArray(object $notifiable): array
     {
         return [
             'title'   => 'Pengajuan Seller Ditolak',
             'message' => $this->reason
-                ? 'Pengajuan seller kamu ditolak. Alasan: ' . $this->reason
-                : 'Pengajuan seller kamu ditolak.',
+                ? 'Pengajuan kamu ditolak. Alasan: ' . $this->reason
+                : 'Pengajuan kamu ditolak.',
             'url'     => route('dashboard'),
         ];
     }

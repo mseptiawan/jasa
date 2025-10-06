@@ -12,6 +12,8 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\UserBankAccountController;
+use Carbon\Exceptions\Exception;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 // landing
@@ -23,6 +25,20 @@ Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.sh
 Route::get('/privacy-policy', function () {
     return view('policies.privacy');
 })->name('privacy.policy');
+
+Route::get('/tes-email', function () {
+    try {
+        Mail::raw('Tes kirim email via Gmail Laravel', function ($message) {
+            $message->to('mseptiawan017@gmail.com')
+                ->subject('Tes Email Laravel');
+        });
+
+        return 'Email berhasil dikirim.';
+    } catch (Exception $e) {
+        return 'Gagal kirim email: ' . $e->getMessage();
+    }
+});
+
 
 
 Route::get('services/create', [ServiceController::class, 'create'])

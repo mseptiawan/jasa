@@ -148,23 +148,117 @@
         }
 
         /* END: Custom CSS for Swiper */
+
+        /* CSS untuk menghilangkan scrollbar horizontal */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            /* IE and Edge */
+            scrollbar-width: none;
+            /* Firefox */
+        }
     </style>
 
     {{-- Link CSS Swiper dari welcome.blade.php --}}
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
     <div id="notification-modal"
-         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden transition-opacity duration-300">
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden transition-opacity duration-300">
         <div class="bg-white rounded-lg shadow-xl p-6 w-11/12 max-w-sm text-center">
-            <p id="modal-message"
-               class="mb-4 text-gray-700"></p>
+            <p id="modal-message" class="mb-4 text-gray-700"></p>
             <button id="modal-close-btn"
-                    class="bg-primary text-white font-semibold py-2 px-6 rounded-lg hover:opacity-90 transition-opacity">
+                class="bg-primary text-white font-bold py-2 px-6 rounded-lg hover:opacity-90 transition-opacity">
                 OK
             </button>
         </div>
     </div>
+
+    {{-- START: Price Filter Modal (Pop-up) --}}
+    <div id="price-modal"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden transition-opacity duration-300">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-11/12 max-w-md">
+            <h3 class="text-xl font-extrabold mb-4 text-gray-900">Atur Rentang Harga</h3>
+            <form id="price-form-modal">
+                <div class="mb-4">
+                    <label for="price_min_modal" class="block text-sm font-semibold text-gray-700 mb-2">Harga
+                        Minimum (Rp)</label>
+                    <input type="number" id="price_min_modal" name="price_min" placeholder="e.g. 50000"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 font-semibold focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                        value="{{ request('price_min') }}">
+                </div>
+                <div class="mb-6">
+                    <label for="price_max_modal" class="block text-sm font-semibold text-gray-700 mb-2">Harga
+                        Maksimum (Rp)</label>
+                    <input type="number" id="price_max_modal" name="price_max" placeholder="e.g. 500000"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 font-semibold focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                        value="{{ request('price_max') }}">
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" id="price-modal-reset"
+                        class="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition font-bold">Reset</button>
+                    <button type="submit"
+                        class="bg-primary text-white font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity">
+                        Terapkan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {{-- END: Price Filter Modal (Pop-up) --}}
+
+    {{-- START: LOCATION SEARCH MODAL (Pop-up Baru) --}}
+    <div id="location-search-modal"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden transition-opacity duration-300">
+        {{-- Perubahan Ukuran Modal Container: max-w-lg --}}
+        <div class="bg-white rounded-lg shadow-xl p-6 w-11/12 max-w-lg relative">
+            <div class="flex justify-between items-start mb-4">
+                <h3 class="text-xl font-extrabold text-gray-900">Cari Layanan di Lokasi Anda</h3>
+                {{-- Tombol Close (X) --}}
+                <button type="button" id="location-modal-close-x"
+                    class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <form id="location-form-modal" action="{{ route('services.nearby') }}" method="get" class="flex flex-col">
+                <div class="relative flex-grow">
+                    <label for="address-input-modal" class="block text-sm font-semibold text-gray-700 mb-2">Masukkan
+                        Alamat</label>
+                    <input type="text" id="address-input-modal" placeholder="Ketik alamat Anda..."
+                        class="w-full p-3 border border-gray-300 rounded-lg font-semibold focus:ring-2 focus:ring-primary focus:border-transparent transition bg-gray-50"
+                        autocomplete="off" required>
+                    <input type="hidden" name="lat" id="lat-modal">
+                    <input type="hidden" name="lng" id="lng-modal">
+                    <ul id="autocomplete-results-modal"
+                        class="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-b-lg shadow-lg max-h-60 overflow-y-auto z-10 list-none p-0 m-0 hidden">
+                    </ul>
+                </div>
+
+                <div class="mt-6 flex justify-end space-x-3">
+                    {{-- Tombol Batal dipindahkan ke sini dan menggunakan ID penutup X untuk fungsionalitasnya --}}
+                    <button type="button" id="location-modal-close-button"
+                        class="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition font-bold">Batal</button>
+                    <button type="submit"
+                        class="bg-primary text-white font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" class="mr-2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        Cari
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {{-- END: LOCATION SEARCH MODAL --}}
 
     @php
         // Data dummy untuk banner slider (Dari welcome.blade.php)
@@ -182,69 +276,126 @@
         ];
     @endphp
 
+    @php
+        // Cek apakah ada parameter filter/pencarian yang aktif
+        $isSearchingOrFiltering =
+            request('search') ||
+            request('category') || // Menambahkan category karena tab kategori juga termasuk filter
+            request('city') ||
+            request('status') ||
+            request('price_min') ||
+            request('price_max') ||
+            request('discount') ||
+            request('rating_filter') ||
+            (request('lat') && request('lng')); // Tambahkan cek untuk pencarian lokasi terdekat
+
+        // Fungsi untuk menentukan sapaan waktu
+        function getGreeting() {
+            $hour = date('H');
+            if ($hour >= 5 && $hour < 11) {
+                return 'Selamat Pagi';
+            } elseif ($hour >= 11 && $hour < 15) {
+                return 'Selamat Siang';
+            } elseif ($hour >= 15 && $hour < 18) {
+                return 'Selamat Sore';
+            } else {
+                return 'Selamat Malam';
+            }
+        }
+
+        // Definisikan daftar kota di sini
+        $cities = [
+            'Palembang',
+            'Jakarta',
+            'Bandung',
+            'Surabaya',
+            'Medan',
+            'Semarang',
+            'Makassar',
+            'Yogyakarta',
+            'Bekasi',
+            'Depok',
+        ];
+
+        // LOGIKA TAMBAHAN: Ambil Layanan Populer (Non-Highlight)
+        // Pastikan variabel $services sudah didefinisikan oleh controller dan berisi semua layanan yang difilter.
+        // Jika tidak, Anda mungkin perlu melakukan query di sini, contoh:
+        // $allServices = \App\Models\Service::query()->/* ... apply filters ... */->get();
+        // $services = $allServices; // Jika sudah difilter oleh controller.
+
+        // Memisahkan layanan non-unggulan
+        $nonHighlightServices = $services->filter(
+            fn($s) => !($s->is_highlight && $s->highlight_until && now()->lte($s->highlight_until)),
+        );
+
+        // Mengambil layanan paling populer (rating tertinggi) dari yang non-unggulan
+        $popularServices = $nonHighlightServices->sortByDesc('avg_rating')->take(4);
+
+        // Memisahkan layanan normal (selain unggulan dan populer yang sudah diambil)
+        $normalServices = $services->filter(
+            fn($s) => !($s->is_highlight && $s->highlight_until && now()->lte($s->highlight_until))
+        )->reject(
+            fn($s) => $popularServices->contains($s)
+        );
+    @endphp
+
     <div class="container mx-auto p-4 md:p-8 max-w-7xl">
 
-        {{-- START: Banner Swiper --}}
-        <div class="swiper mySwiper w-full h-auto rounded-xl shadow-lg mb-8 relative">
-            <div class="swiper-wrapper">
-                @foreach ($banners as $banner)
-                    <div class="swiper-slide min-h-32">
-                        <a href="{{ $banner['link'] }}"
-                           class="block h-full">
-                            {{-- Asumsi: images/banner-xxx.png ada di folder public/images/ --}}
-                            <img src="{{ asset('images/' . $banner['image']) }}"
-                                 alt="{{ $banner['alt'] }}"
-                                 class="w-full h-full object-cover rounded-xl"
-                                 onerror="this.onerror=null; this.src='{{ asset('images/default-banner.png') }}';">
-                        </a>
-                    </div>
-                @endforeach
-            </div>
-            <div class="swiper-pagination !bottom-2"></div>
-
-            <div id="swiper-button-prev-custom"
-                 class="swiper-button-prev !left-4 !w-10 !h-10 bg-white/70 rounded-full flex items-center justify-center backdrop-blur-sm shadow-md transition-opacity hover:opacity-100 opacity-80 cursor-pointer z-10 hidden md:flex">
-                <svg xmlns="http://www.w3.org/2000/svg"
-                     fill="none"
-                     viewBox="0 0 24 24"
-                     stroke-width="2.5"
-                     stroke="#2b3cd7"
-                     class="w-6 h-6">
-                    <path stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M15.75 19.5L8.25 12l7.5-7.5" />
-                </svg>
-            </div>
-            <div id="swiper-button-next-custom"
-                 class="swiper-button-next !right-4 !w-10 !h-10 bg-white/70 rounded-full flex items-center justify-center backdrop-blur-sm shadow-md transition-opacity hover:opacity-100 opacity-80 cursor-pointer z-10 hidden md:flex">
-                <svg xmlns="http://www.w3.org/2000/svg"
-                     fill="none"
-                     viewBox="0 0 24 24"
-                     stroke-width="2.5"
-                     stroke="#2b3cd7"
-                     class="w-6 h-6">
-                    <path stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                </svg>
-            </div>
+        {{-- START: Widget Sapaan Waktu Dinamis --}}
+        <div class="mb-6">
+            <h1 class="text-2xl font-black text-gray-900">{{ getGreeting() }}!</h1>
+            <div class="text-xl text-primary font-extrabold">{{ optional(Auth::user())->full_name ?? 'Guest' }}</div>
         </div>
+        {{-- END: Widget Sapaan Waktu Dinamis --}}
+
+        {{-- START: Banner Swiper --}}
+        {{-- Sembunyikan banner saat ada filter/pencarian aktif --}}
+        @if (!$isSearchingOrFiltering)
+            <div class="swiper mySwiper w-full h-auto rounded-xl shadow-lg mb-8 relative">
+                <div class="swiper-wrapper">
+                    @foreach ($banners as $banner)
+                        <div class="swiper-slide min-h-32">
+                            <a href="{{ $banner['link'] }}" class="block h-full">
+                                {{-- Asumsi: images/banner-xxx.png ada di folder public/images/ --}}
+                                <img src="{{ asset('images/' . $banner['image']) }}" alt="{{ $banner['alt'] }}"
+                                    class="w-full h-full object-cover rounded-xl"
+                                    onerror="this.onerror=null; this.src='{{ asset('images/default-banner.png') }}';">
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="swiper-pagination !bottom-2"></div>
+
+                <div id="swiper-button-prev-custom"
+                    class="swiper-button-prev !left-4 !w-10 !h-10 bg-white/70 rounded-full flex items-center justify-center backdrop-blur-sm shadow-md transition-opacity hover:opacity-100 opacity-80 cursor-pointer z-10 hidden md:flex">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
+                        stroke="#2b3cd7" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                    </svg>
+                </div>
+                <div id="swiper-button-next-custom"
+                    class="swiper-button-next !right-4 !w-10 !h-10 bg-white/70 rounded-full flex items-center justify-center backdrop-blur-sm shadow-md transition-opacity hover:opacity-100 opacity-80 cursor-pointer z-10 hidden md:flex">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
+                        stroke="#2b3cd7" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                    </svg>
+                </div>
+            </div>
+        @endif
         {{-- END: Banner Swiper --}}
 
+        {{-- START: KATEGORI, SEARCH, & LOKASI (DALAM SATU BOX) --}}
         <div class="bg-white p-6 rounded-lg border border-gray-200 mb-8">
-            <div class="flex flex-wrap gap-2 mb-6">
+
+            {{-- DAFTAR KATEGORI --}}
+            {{-- Menggunakan flex-nowrap dan overflow-x-auto untuk scroll horizontal --}}
+            <div class="flex flex-nowrap overflow-x-auto gap-2 mb-6 pb-2 no-scrollbar">
                 <a href="{{ route('dashboard') }}"
-                   class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors
-                   {{ !request('category') ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         class="h-4 w-4"
-                         fill="none"
-                         viewBox="0 0 24 24"
-                         stroke="currentColor"
-                         stroke-width="2">
-                        <path stroke-linecap="round"
-                              stroke-linejoin="round"
-                              d="M4 6h16M4 12h16M4 18h16" />
+                    class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-colors duration-200 flex-shrink-0
+                   {{ !request('category') ? 'bg-primary text-accent' : 'bg-gray-100 text-gray-700 hover:bg-primary hover:text-white' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                     Semua
                 </a>
@@ -288,203 +439,194 @@
                 @endphp
                 @foreach ($categories as $cat)
                     <a href="{{ route('dashboard', ['category' => $cat->id]) }}"
-                       class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors
-                       {{ request('category') == $cat->id ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-colors duration-200 flex-shrink-0
+                   {{ request('category') == $cat->id ? 'bg-primary text-accent' : 'bg-gray-100 text-gray-700 hover:bg-primary hover:text-white' }}">
                         @php echo $categoryIcons[$cat->name] ?? $categoryIcons['default']; @endphp
                         <span>{{ $cat->name }}</span>
                     </a>
                 @endforeach
             </div>
 
-            <h2 class="text-xl font-bold mb-4 text-gray-900">Temukan Layanan Terbaik di Dekat Anda</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{-- SEARCH DAN LOKASI --}}
+            <h2 class="text-xl font-extrabold mb-4 text-gray-900 border-t pt-4">Temukan Layanan Terbaik</h2>
 
-                <form action="{{ route('dashboard') }}"
-                      method="GET"
-                      class="relative">
-                    <p class="text-gray-600 mb-2">Cari berdasarkan kata kunci.</p>
-                    <div class="search-container">
-                        <input type="text"
-                               name="search"
-                               placeholder="Cari layanan apa pun..."
-                               value="{{ request('search') }}"
-                               class="w-full py-2 pl-4 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                               autocomplete="off">
-                        <button type="submit"
-                                class="search-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                 class="h-5 w-5"
-                                 fill="none"
-                                 viewBox="0 0 24 24"
-                                 stroke="currentColor"
-                                 stroke-width="2">
-                                <path stroke-linecap="round"
-                                      stroke-linejoin="round"
-                                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                        </button>
-                    </div>
-                </form>
+            <div class="flex gap-4 items-end">
 
-                <form id="location-form"
-                      action="{{ route('services.nearby') }}"
-                      method="get"
-                      class="flex flex-col">
-                    <p class="text-gray-600 mb-2">Atau temukan layanan terdekat.</p>
-                    <div class="flex items-center gap-2">
-                        {{-- TOMBOL LAYANAN TERDEKAT DIHAPUS --}}
-                        <div class="relative flex-grow">
-                            <input type="text"
-                                   id="address-input"
-                                   placeholder="Ketik alamat Anda..."
-                                   class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                                   autocomplete="off"
-                                   required>
-                            <input type="hidden"
-                                   name="lat"
-                                   id="lat">
-                            <input type="hidden"
-                                   name="lng"
-                                   id="lng">
-                            <ul id="autocomplete-results"
-                                class="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-b-lg shadow-lg max-h-60 overflow-y-auto z-10 list-none p-0 m-0 hidden">
-                            </ul>
+                {{-- Container untuk Search Bar Kata Kunci --}}
+                <div class="flex-grow relative">
+                    <form action="{{ route('dashboard') }}" method="GET" id="main-search-form" class="relative">
+                        <p class="text-gray-600 font-semibold mb-2">Cari berdasarkan kata kunci atau temukan layanan di dekat Anda.</p>
+                        <div class="search-container">
+                            <input type="text" name="search" id="main-search-input" placeholder="Cari layanan apa pun..."
+                                value="{{ request('search') }}"
+                                class="w-full py-2 pl-4 border border-gray-300 rounded-lg bg-gray-50 font-semibold focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                                autocomplete="off">
+                            <button type="submit" class="search-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </button>
                         </div>
-                        {{-- Tombol submit manual untuk form lokasi --}}
-                        <button type="submit"
-                                class="bg-primary text-white font-bold py-3 px-4 rounded-lg shadow-md hover:opacity-90 transition-all flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                 width="20"
-                                 height="20"
-                                 viewBox="0 0 24 24"
-                                 fill="none"
-                                 stroke="currentColor"
-                                 stroke-width="2"
-                                 stroke-linecap="round"
-                                 stroke-linejoin="round">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                <circle cx="12"
-                                        cy="10"
-                                        r="3"></circle>
-                            </svg>
-                            <span class="sr-only">Cari Lokasi</span>
-                        </button>
+                    </form>
+
+                    {{-- START: Rekomendasi Pencarian Cepat (Hidden by default) --}}
+                    {{-- Posisi absolute agar muncul di atas konten lain, z-20 agar di atas input --}}
+                    <div id="quick-search-recommendations"
+                        class="absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-20 p-3 hidden">
+                        <p class="text-sm font-bold text-gray-800 mb-2">Pencarian Cepat:</p>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach ($categories->take(4) as $cat)
+                                <a href="{{ route('dashboard', ['category' => $cat->id]) }}"
+                                    class="text-xs font-semibold bg-gray-100 text-primary px-3 py-1 rounded-full hover:bg-primary hover:text-white transition">
+                                    #{{ $cat->name }}
+                                </a>
+                            @endforeach
+                            <a href="{{ route('dashboard', ['discount' => 1]) }}"
+                                class="text-xs font-semibold bg-red-100 text-red-600 px-3 py-1 rounded-full hover:bg-red-600 hover:text-white transition">
+                                #PromoDiskon
+                            </a>
+                        </div>
                     </div>
-                </form>
+                    {{-- END: Rekomendasi Pencarian Cepat --}}
+                </div>
+
+                {{-- Tombol Pencarian Lokasi Terdekat (DIKECILKAN SEUKURAN ICON) --}}
+                <div class="flex flex-col items-center">
+                    <p class="text-gray-600 font-semibold mb-2 text-center whitespace-nowrap">Terdekat</p>
+                    {{-- Tombol yang memicu modal lokasi, diatur ukuran tetap w-12 h-12 --}}
+                    <button type="button" id="open-location-modal"
+                        class="bg-primary text-white font-extrabold rounded-lg shadow-md hover:opacity-90 transition-all flex items-center justify-center w-12 h-12 flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        <span class="sr-only">Cari Layanan Terdekat</span>
+                    </button>
+                </div>
             </div>
         </div>
+        {{-- END: KATEGORI, SEARCH, & LOKASI (DALAM SATU BOX) --}}
+
 
         @auth
             @if (auth()->user()->role === 'admin')
                 <div class="mb-4 flex flex-wrap gap-4">
                     <a href="{{ route('categories.index') }}"
-                       class="animated-underline text-gray-700 hover:text-primary font-semibold transition-colors">Kelola
+                        class="animated-underline text-gray-700 hover:text-primary font-bold transition-colors">Kelola
                         Kategori</a>
                     <a href="{{ route('subcategories.index') }}"
-                       class="animated-underline text-gray-700 hover:text-primary font-semibold transition-colors">Kelola
+                        class="animated-underline text-gray-700 hover:text-primary font-bold transition-colors">Kelola
                         Subkategori</a>
                 </div>
             @endif
         @endauth
-        <form method="GET"
-              action="{{ route('dashboard') }}"
-              class="mb-4 p-4 bg-white rounded shadow">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-                <!-- Search -->
 
-                <!-- Kota -->
-                <div>
-                    <label for="city"
-                           class="block font-semibold mb-1">Kota</label>
-                    <select name="city"
-                            id="city"
-                            class="w-full border rounded px-2 py-1">
-                        <option value="">Semua Kota</option>
-                        @php
-                            $cities = [
-                                'Palembang',
-                                'Jakarta',
-                                'Bandung',
-                                'Surabaya',
-                                'Medan',
-                                'Semarang',
-                                'Makassar',
-                                'Yogyakarta',
-                                'Bekasi',
-                                'Depok',
-                            ];
-                        @endphp
-                        @foreach ($cities as $city)
-                            <option value="{{ $city }}"
-                                    {{ request('city') == $city ? 'selected' : '' }}>
-                                {{ $city }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
+        {{-- Filter Lanjutan: Hanya muncul saat ada pencarian/filter aktif --}}
+        @if ($isSearchingOrFiltering)
+            <form id="secondary-filter-form" method="GET" action="{{ route('dashboard') }}" class="mb-8">
+                <h2 class="text-xl font-extrabold text-gray-800 mb-6 border-b pb-4">Temukan Layanan Sesuai Filter</h2>
 
-                <!-- Status Online -->
-                <div>
-                    <label for="status"
-                           class="block font-semibold mb-1">Status</label>
-                    <select name="status"
-                            id="status"
-                            class="w-full border rounded px-2 py-1">
-                        <option value="">Semua</option>
-                        <option value="online"
-                                {{ request('status') == 'online' ? 'selected' : '' }}>Online</option>
-                        <option value="offline"
-                                {{ request('status') == 'offline' ? 'selected' : '' }}>Offline</option>
-                    </select>
-                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
 
-                <!-- Diskon -->
-                <div class="flex items-center mt-4 md:mt-0">
-                    <input type="checkbox"
-                           name="discount"
-                           value="1"
-                           id="discount"
-                           {{ request('discount') == '1' ? 'checked' : '' }}>
-                    <label for="discount"
-                           class="ml-2 font-semibold">Hanya Diskon</label>
-                </div>
-                <div class="flex items-center mt-4 md:mt-0">
-                    <input type="checkbox"
-                           name="rating_filter"
-                           value="1"
-                           id="rating_filter"
-                           {{ request('rating_filter') == '1' ? 'checked' : '' }}>
-                    <label for="rating_filter"
-                           class="ml-2 font-semibold">Rating ≥ 4</label>
-                </div>
-                <div>
-                    <label class="block font-semibold mb-1">Harga</label>
-                    <div class="flex gap-2">
-                        <input type="number"
-                               name="price_min"
-                               value="{{ request('price_min') }}"
-                               placeholder="Min"
-                               class="w-1/2 border rounded px-2 py-1">
-                        <input type="number"
-                               name="price_max"
-                               value="{{ request('price_max') }}"
-                               placeholder="Max"
-                               class="w-1/2 border rounded px-2 py-1">
+                    {{-- **Input Hidden untuk mempertahankan nilai 'search'** --}}
+                    <input type="hidden" name="search" id="secondary-search-hidden" value="{{ request('search') }}">
+                    {{-- **Input Hidden untuk mempertahankan nilai 'category' (dari tab)** --}}
+                    <input type="hidden" name="category" value="{{ request('category') }}">
+                    {{-- **Input Hidden untuk mempertahankan nilai 'lat' dan 'lng' (dari nearby search)** --}}
+                    @if (request('lat') && request('lng'))
+                        <input type="hidden" name="lat" value="{{ request('lat') }}">
+                        <input type="hidden" name="lng" value="{{ request('lng') }}">
+                    @endif
+
+
+                    <div>
+                        <label for="city" class="block text-sm font-semibold text-gray-700 mb-2">Kota</label>
+                        <select name="city" id="city"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2 font-semibold focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                            <option value="">Semua Kota</option>
+                            @foreach ($cities as $city)
+                                <option value="{{ $city }}" {{ request('city') == $city ? 'selected' : '' }}>
+                                    {{ $city }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
+
+                    <div>
+                        <label for="status" class="block text-sm font-semibold text-gray-700 mb-2">Status</label>
+                        <select name="status" id="status"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2 font-semibold focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                            <option value="">Semua</option>
+                            <option value="online" {{ request('status') == 'online' ? 'selected' : '' }}>Online</option>
+                            <option value="offline" {{ request('status') == 'offline' ? 'selected' : '' }}>Offline
+                            </option>
+                        </select>
+                    </div>
+
+                    {{-- Ganti input range harga dengan tombol dropdown/modal trigger --}}
+                    <div class="relative">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Rentang Harga</label>
+                        <input type="hidden" name="price_min" id="price_min_hidden" value="{{ request('price_min') }}">
+                        <input type="hidden" name="price_max" id="price_max_hidden" value="{{ request('price_max') }}">
+
+                        <button type="button" id="open-price-modal"
+                            class="w-full text-left bg-white border border-gray-300 rounded-lg px-4 py-2 font-semibold flex justify-between items-center hover:bg-gray-50 transition duration-150 ease-in-out">
+                            <span id="price-display">
+                                @if (request('price_min') || request('price_max'))
+                                    Rp {{ number_format(request('price_min') ?: 0) }} - Rp
+                                    {{ number_format(request('price_max') ?: 'Max') }}
+                                @else
+                                    Semua Harga
+                                @endif
+                            </span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+
+
+                    <div class="md:col-span-2 lg:col-span-1 flex items-end justify-between md:justify-end gap-6">
+
+                        <div class="flex items-center">
+                            <input type="checkbox" name="discount" value="1" id="discount"
+                                class="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                {{ request('discount') == '1' ? 'checked' : '' }}>
+                            <label for="discount" class="ml-2 text-sm font-semibold text-gray-700">Hanya Diskon</label>
+                        </div>
+
+                        <div class="flex items-center">
+                            <input type="checkbox" name="rating_filter" value="1" id="rating_filter"
+                                class="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                {{ request('rating_filter') == '1' ? 'checked' : '' }}>
+                            <label for="rating_filter" class="ml-2 text-sm font-semibold text-gray-700">Rating ≥ 4</label>
+                        </div>
+                    </div>
+
                 </div>
 
-            </div>
+                <div class="mt-8 pt-4 border-t flex justify-end">
+                    <a href="{{ route('dashboard') }}"
+                        class="px-6 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-150 font-bold">
+                        Reset Filter
+                    </a>
+                    <button type="submit"
+                        class="ml-3 bg-blue-600 text-white font-bold px-8 py-2 rounded-lg hover:bg-blue-700 transition duration-150 shadow-lg transform hover:scale-[1.02]">
+                        Terapkan Filter
+                    </button>
+                </div>
+            </form>
+        @endif
 
-            <div class="mt-4">
-                <button type="submit"
-                        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                    Filter
-                </button>
-                <a href="{{ route('dashboard') }}"
-                   class="ml-2 text-gray-600 hover:underline">Reset</a>
-            </div>
-        </form>
+        {{-- Pastikan logic highlight service berada di luar blok form --}}
         @php
             $highlightServices = $services->filter(
                 fn($s) => $s->is_highlight && $s->highlight_until && now()->lte($s->highlight_until),
@@ -493,7 +635,7 @@
 
         @if ($highlightServices->count() > 0)
             <section class="mb-12">
-                <h2 class="text-2xl font-bold mb-5 text-gray-900">Layanan Unggulan</h2>
+                <h2 class="text-2xl font-extrabold mb-5 text-gray-900">Layanan Unggulan</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     @foreach ($highlightServices as $service)
                         @php
@@ -507,92 +649,83 @@
                             $isFavorited = $userFavorites->contains($service->id);
                         @endphp
                         <div
-                             class="bg-white rounded-lg overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 border-2 border-accent relative">
+                            class="bg-accent/20 rounded-lg overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 border-2 border-accent relative shadow-xl">
                             @auth
-                                <form action="{{ route('services.toggleFavorite', $service->slug) }}"
-                                      method="POST"
-                                      class="absolute top-2 right-2 z-10">
+                                <form action="{{ route('services.toggleFavorite', $service->slug) }}" method="POST"
+                                    class="absolute top-2 right-2 z-10">
                                     @csrf
                                     @method('PATCH')
-                                    <button type="submit"
-                                            class="focus:outline-none bg-white p-1 rounded-full shadow-md">
+                                    <button type="submit" class="focus:outline-none bg-white p-1 rounded-full shadow-md">
                                         @if ($isFavorited)
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                 class="h-6 w-6 text-red-500"
-                                                 viewBox="0 0 20 20"
-                                                 fill="currentColor">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500"
+                                                viewBox="0 0 20 20" fill="currentColor">
                                                 <path fill-rule="evenodd"
-                                                      d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                                                      clip-rule="evenodd" />
+                                                    d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                                                    clip-rule="evenodd" />
                                             </svg>
                                         @else
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                 class="h-6 w-6 text-gray-400"
-                                                 fill="none"
-                                                 viewBox="0 0 24 24"
-                                                 stroke="currentColor"
-                                                 stroke-width="2">
-                                                <path stroke-linecap="round"
-                                                      stroke-linejoin="round"
-                                                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400"
+                                                fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                                             </svg>
                                         @endif
                                     </button>
                                 </form>
                             @endauth
 
-                            <div class="relative">
+                            <div class="relative bg-white">
                                 <a href="{{ route('services.show', $service->slug) }}">
                                     @if ($mainImage)
-                                        <img src="{{ $mainImage }}"
-                                             alt="{{ $service->title }}"
-                                             class="w-full h-40 object-cover">
+                                        <img src="{{ $mainImage }}" alt="{{ $service->title }}"
+                                            class="w-full h-40 object-cover">
                                     @else
                                         <div
-                                             class="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500">
+                                            class="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500">
                                             Tidak Ada Gambar</div>
                                     @endif
                                 </a>
                                 <span
-                                      class="absolute top-2 left-2 bg-accent text-gray-900 text-xs font-bold px-3 py-1 rounded-full">UNGGULAN</span>
+                                    class="absolute top-2 left-2 bg-accent text-gray-900 text-xs font-extrabold px-3 py-1 rounded-full">UNGGULAN</span>
                             </div>
                             <div class="p-4">
                                 <a href="{{ route('services.show', $service->slug) }}"
-                                   class="block font-bold text-lg mb-2 text-gray-900 hover:text-primary truncate transition-colors">{{ $service->title }}</a>
+                                    class="block font-bold text-lg mb-2 text-gray-900 hover:text-primary truncate transition-colors">{{ $service->title }}</a>
                                 @if ($service->discount_price && $service->discount_price > 0)
-                                    <p class="text-lg font-semibold text-red-600 mb-1">
+                                    <p class="text-lg font-bold text-red-600 mb-1">
                                         Rp {{ number_format($service->discount_price, 0, ',', '.') }}
                                     </p>
                                     <p class="text-sm text-gray-500 line-through mb-3">
                                         Rp {{ number_format($service->price, 0, ',', '.') }}
                                     </p>
                                 @else
-                                    <p class="text-lg font-semibold text-green-600 mb-3">
+                                    <p class="text-lg font-bold text-green-600 mb-3">
                                         Rp {{ number_format($service->price, 0, ',', '.') }}
                                     </p>
                                 @endif
 
-                                <p class="text-gray-500 mb-4">
-                                    {{ Str::words(strip_tags($service->description), 15, '...') }}
+                                {{-- MODIFIKASI: Menggunakan line-clamp-2 dan batas 8 kata --}}
+                                <p class="text-gray-500 mb-4 line-clamp-2">
+                                    {{ Str::words(strip_tags($service->description), 8, '...') }}
                                 </p>
 
                                 <div class="flex items-center gap-2 text-sm text-gray-600 mb-3">
                                     @if ($profilePhoto)
                                         <img src="{{ $profilePhoto }}"
-                                             alt="{{ $service->user->full_name ?? 'N/A' }}"
-                                             class="w-7 h-7 rounded-full object-cover">
+                                            alt="{{ $service->user->full_name ?? 'N/A' }}"
+                                            class="w-7 h-7 rounded-full object-cover">
                                     @else
                                         <div class="w-7 h-7 rounded-full bg-gray-300"></div>
                                     @endif
-                                    <span>{{ $service->user->full_name ?? 'N/A' }}</span>
+                                    <span class="font-semibold">{{ $service->user->full_name ?? 'N/A' }}</span>
                                 </div>
                                 <div class="flex items-center">
                                     @for ($i = 1; $i <= 5; $i++)
                                         <svg class="w-5 h-5 {{ $i <= round($service->avg_rating) ? 'text-yellow-400' : 'text-gray-300' }}"
-                                             fill="currentColor"
-                                             viewBox="0 0 20 20">
+                                            fill="currentColor" viewBox="0 0 20 20">
                                             <path
-                                                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
+                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
                                             </path>
                                         </svg>
                                     @endfor
@@ -604,17 +737,117 @@
             </section>
         @endif
 
+        {{-- START: Layanan Paling Populer (TAMBAHAN) --}}
+        @if ($popularServices->count() > 0)
+            <section class="mb-12">
+                <h2 class="text-2xl font-extrabold mb-5 text-gray-900">Layanan Paling Populer</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    @foreach ($popularServices as $service)
+                        @php
+                            $images = json_decode($service->images, true);
+                            $mainImage = !empty($images) && count($images) > 0 ? asset('storage/' . $images[0]) : null;
+                            $profilePhoto =
+                                $service->user && $service->user->profile_photo
+                                    ? asset('storage/' . $service->user->profile_photo)
+                                    : asset('images/profile-user.png');
+                            $userFavorites = auth()->user()->favoriteServices ?? collect();
+                            $isFavorited = $userFavorites->contains($service->id);
+                        @endphp
+                        <div
+                            class="bg-white rounded-lg border border-gray-200 overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 relative shadow-lg">
+                            {{-- Card Konten (Sama seperti service card normal) --}}
+                            @auth
+                                <form action="{{ route('services.toggleFavorite', $service->slug) }}" method="POST"
+                                    class="absolute top-2 right-2 z-10">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" class="focus:outline-none bg-white p-1 rounded-full shadow-md">
+                                        @if ($isFavorited)
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500"
+                                                viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd"
+                                                    d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                        @else
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400"
+                                                fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                            </svg>
+                                        @endif
+                                    </button>
+                                </form>
+                            @endauth
+
+                            <a href="{{ route('services.show', $service->slug) }}">
+                                @if ($mainImage)
+                                    <img src="{{ $mainImage }}" alt="{{ $service->title }}"
+                                        class="w-full h-40 object-cover">
+                                @else
+                                    <div
+                                        class="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500">
+                                        Tidak Ada Gambar</div>
+                                @endif
+                            </a>
+                            <div class="p-4">
+                                <a href="{{ route('services.show', $service->slug) }}"
+                                    class="block font-bold text-lg mb-2 text-gray-900 hover:text-primary truncate transition-colors">{{ $service->title }}</a>
+                                @if ($service->discount_price && $service->discount_price > 0)
+                                    <p class="text-lg font-bold text-red-600 mb-1">
+                                        Rp {{ number_format($service->discount_price, 0, ',', '.') }}
+                                    </p>
+                                    <p class="text-sm text-gray-500 line-through mb-3">
+                                        Rp {{ number_format($service->price, 0, ',', '.') }}
+                                    </p>
+                                @else
+                                    <p class="text-lg font-bold text-green-600 mb-3">
+                                        Rp {{ number_format($service->price, 0, ',', '.') }}
+                                    </p>
+                                @endif
+
+                                <p class="text-gray-500 mb-4 line-clamp-2">
+                                    {{ Str::words(strip_tags($service->description), 8, '...') }}
+                                </p>
+
+                                <div class="flex items-center gap-2 text-sm text-gray-600 mb-3">
+                                    @if ($profilePhoto)
+                                        <img src="{{ $profilePhoto }}"
+                                            alt="{{ $service->user->full_name ?? 'N/A' }}"
+                                            class="w-7 h-7 rounded-full object-cover">
+                                    @else
+                                        <div class="w-7 h-7 rounded-full bg-gray-300"></div>
+                                    @endif
+                                    <span class="font-semibold">{{ $service->user->full_name ?? 'N/A' }}</span>
+                                </div>
+                                <div class="flex items-center">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        <svg class="w-5 h-5 {{ $i <= round($service->avg_rating) ? 'text-yellow-400' : 'text-gray-300' }}"
+                                            fill="currentColor" viewBox="0 0 20 20">
+                                            <path
+                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
+                                            </path>
+                                        </svg>
+                                    @endfor
+                                    <span class="ml-2 text-sm font-bold text-yellow-500">
+                                        ({{ number_format($service->avg_rating, 1) }})
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </section>
+        @endif
+        {{-- END: Layanan Paling Populer --}}
+
+
         <section>
-
-
-            <h2 class="text-2xl font-bold mb-5 text-gray-900">Semua Layanan</h2>
+            <h2 class="text-2xl font-extrabold mb-5 text-gray-900">Semua Layanan</h2>
             <div id="normal-services-grid"
-                 class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                @php
-                    $normalServices = $services->filter(
-                        fn($s) => !($s->is_highlight && $s->highlight_until && now()->lte($s->highlight_until)),
-                    );
-                @endphp
+                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {{-- Gunakan variabel $normalServices yang sudah di filter di blok PHP atas --}}
                 @forelse($normalServices as $service)
                     @php
                         $images = json_decode($service->images, true);
@@ -627,34 +860,25 @@
                         $isFavorited = $userFavorites->contains($service->id);
                     @endphp
                     <div
-                         class="normal-service-card bg-white rounded-lg border border-gray-200 overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 relative">
+                        class="normal-service-card bg-white rounded-lg border border-gray-200 overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 relative">
                         @auth
-                            <form action="{{ route('services.toggleFavorite', $service->slug) }}"
-                                  method="POST"
-                                  class="absolute top-2 right-2 z-10">
+                            <form action="{{ route('services.toggleFavorite', $service->slug) }}" method="POST"
+                                class="absolute top-2 right-2 z-10">
                                 @csrf
                                 @method('PATCH')
-                                <button type="submit"
-                                        class="focus:outline-none bg-white p-1 rounded-full shadow-md">
+                                <button type="submit" class="focus:outline-none bg-white p-1 rounded-full shadow-md">
                                     @if ($isFavorited)
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                             class="h-6 w-6 text-red-500"
-                                             viewBox="0 0 20 20"
-                                             fill="currentColor">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500"
+                                            viewBox="0 0 20 20" fill="currentColor">
                                             <path fill-rule="evenodd"
-                                                  d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                                                  clip-rule="evenodd" />
+                                                d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                                                clip-rule="evenodd" />
                                         </svg>
                                     @else
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                             class="h-6 w-6 text-gray-400"
-                                             fill="none"
-                                             viewBox="0 0 24 24"
-                                             stroke="currentColor"
-                                             stroke-width="2">
-                                            <path stroke-linecap="round"
-                                                  stroke-linejoin="round"
-                                                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                                         </svg>
                                     @endif
                                 </button>
@@ -662,9 +886,8 @@
                         @endauth
                         <a href="{{ route('services.show', $service->slug) }}">
                             @if ($mainImage)
-                                <img src="{{ $mainImage }}"
-                                     alt="{{ $service->title }}"
-                                     class="w-full h-40 object-cover">
+                                <img src="{{ $mainImage }}" alt="{{ $service->title }}"
+                                    class="w-full h-40 object-cover">
                             @else
                                 <div class="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500">
                                     Tidak Ada Gambar</div>
@@ -672,55 +895,56 @@
                         </a>
                         <div class="p-4">
                             <a href="{{ route('services.show', $service->slug) }}"
-                               class="block font-bold text-lg mb-2 text-gray-900 hover:text-primary truncate transition-colors">{{ $service->title }}</a>
+                                class="block font-bold text-lg mb-2 text-gray-900 hover:text-primary truncate transition-colors">{{ $service->title }}</a>
                             @if ($service->discount_price && $service->discount_price > 0)
-                                <p class="text-lg font-semibold text-red-600 mb-1">
+                                <p class="text-lg font-bold text-red-600 mb-1">
                                     Rp {{ number_format($service->discount_price, 0, ',', '.') }}
                                 </p>
                                 <p class="text-sm text-gray-500 line-through mb-3">
                                     Rp {{ number_format($service->price, 0, ',', '.') }}
                                 </p>
                             @else
-                                <p class="text-lg font-semibold text-green-600 mb-3">
+                                <p class="text-lg font-bold text-green-600 mb-3">
                                     Rp {{ number_format($service->price, 0, ',', '.') }}
                                 </p>
                             @endif
 
-                            <p class="text-gray-500 mb-4">
-                                {{ Str::words(strip_tags($service->description), 15, '...') }}
+                            {{-- MODIFIKASI: Menggunakan line-clamp-2 dan batas 8 kata --}}
+                            <p class="text-gray-500 mb-4 line-clamp-2">
+                                {{ Str::words(strip_tags($service->description), 8, '...') }}
                             </p>
                             <div class="flex items-center gap-2 text-sm text-gray-600 mb-3">
                                 @if ($profilePhoto)
-                                    <img src="{{ $profilePhoto }}"
-                                         alt="{{ $service->user->full_name ?? 'N/A' }}"
-                                         class="w-7 h-7 rounded-full object-cover">
+                                    <img src="{{ $profilePhoto }}" alt="{{ $service->user->full_name ?? 'N/A' }}"
+                                        class="w-7 h-7 rounded-full object-cover">
                                 @else
                                     <div class="w-7 h-7 rounded-full bg-gray-300"></div>
                                 @endif
-                                <span>{{ $service->user->full_name ?? 'N/A' }}</span>
+                                <span class="font-semibold">{{ $service->user->full_name ?? 'N/A' }}</span>
                             </div>
                             <div class="flex items-center">
+                                {{-- START: Perbaikan Icon Bintang --}}
                                 @for ($i = 1; $i <= 5; $i++)
                                     <svg class="w-5 h-5 {{ $i <= round($service->avg_rating) ? 'text-yellow-400' : 'text-gray-300' }}"
-                                         fill="currentColor"
-                                         viewBox="0 0 20 20">
+                                        fill="currentColor" viewBox="0 0 20 20">
                                         <path
-                                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
+                                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
                                         </path>
                                     </svg>
                                 @endfor
+                                {{-- END: Perbaikan Icon Bintang --}}
                             </div>
                         </div>
                     </div>
                 @empty
-                    <p class="col-span-full text-center text-gray-500 py-10">Tidak ada layanan yang tersedia saat ini.
+                    <p class="col-span-full text-center text-gray-500 py-10 font-bold">Tidak ada layanan yang tersedia saat ini.
                     </p>
                 @endforelse
             </div>
             <div id="loading-indicator"
-                 class="w-full flex justify-center items-center py-8 gap-3 text-gray-600 hidden">
+                class="w-full flex justify-center items-center py-8 gap-3 text-gray-600 hidden">
                 <div class="loader"></div>
-                <span>Memuat layanan lainnya...</span>
+                <span class="font-bold">Memuat layanan lainnya...</span>
             </div>
         </section>
 
@@ -767,14 +991,45 @@
         // END: Inisialisasi Swiper
 
         document.addEventListener('DOMContentLoaded', () => {
-            const addressInput = document.getElementById('address-input');
-            const latInput = document.getElementById('lat');
-            const lngInput = document.getElementById('lng');
-            const resultsList = document.getElementById('autocomplete-results');
-            const form = document.getElementById('location-form');
-            const modal = document.getElementById('notification-modal');
+            const openLocationModalBtn = document.getElementById('open-location-modal');
+            const locationSearchModal = document.getElementById('location-search-modal');
+
+            // Tambahkan elemen close 'X' dan 'Batal' di modal lokasi
+            const locationModalCloseXBtn = document.getElementById('location-modal-close-x');
+            const locationModalCloseButton = document.getElementById('location-modal-close-button');
+
+
+            // Elemen Modal Lokasi
+            const locationFormModal = document.getElementById('location-form-modal');
+            const addressInputModal = document.getElementById('address-input-modal');
+            const latInputModal = document.getElementById('lat-modal');
+            const lngInputModal = document.getElementById('lng-modal');
+            const resultsListModal = document.getElementById('autocomplete-results-modal');
+
+            // Elemen Search dan Filter
+            const mainSearchInput = document.getElementById('main-search-input');
+            const secondarySearchHidden = document.getElementById('secondary-search-hidden');
+
+            // Elemen Pencarian Cepat
+            const quickSearchRecommendations = document.getElementById('quick-search-recommendations');
+
+
+            // Elemen Filter Lain
+            const notificationModal = document.getElementById('notification-modal');
             const modalMessage = document.getElementById('modal-message');
             const modalCloseBtn = document.getElementById('modal-close-btn');
+
+            const priceModal = document.getElementById('price-modal');
+            const openPriceModalBtn = document.getElementById('open-price-modal');
+            const priceModalForm = document.getElementById('price-form-modal');
+            const priceModalResetBtn = document.getElementById('price-modal-reset');
+            const priceMinModalInput = document.getElementById('price_min_modal');
+            const priceMaxModalInput = document.getElementById('price_max_modal');
+            const priceMinHiddenInput = document.getElementById('price_min_hidden');
+            const priceMaxHiddenInput = document.getElementById('price_max_hidden');
+            const priceDisplay = document.getElementById('price-display');
+            const secondaryFilterForm = document.getElementById('secondary-filter-form');
+
             let geocodeTimeout = null;
             let isLoading = false;
 
@@ -783,30 +1038,81 @@
             const cardsPerLoad = 8;
             let currentlyDisplayed = cardsPerLoad;
 
-            // Fungsi untuk menampilkan modal
-            function showModal(message) {
-                modalMessage.textContent = message;
-                modal.classList.remove('hidden');
+
+            // LOGIKA TAMBAHAN: Sinkronisasi Search Input dan Hidden Field Filter
+            if (mainSearchInput && secondarySearchHidden) {
+                mainSearchInput.addEventListener('input', () => {
+                    secondarySearchHidden.value = mainSearchInput.value;
+                });
             }
 
-            // Fungsi untuk menyembunyikan modal
-            function hideModal() {
-                modal.classList.add('hidden');
+            // LOGIKA PENCARIAN CEPAT
+            if (mainSearchInput && quickSearchRecommendations) {
+                mainSearchInput.addEventListener('focus', () => {
+                    quickSearchRecommendations.classList.remove('hidden');
+                });
+
+                // Hapus event listener blur yang lama, diganti dengan click handler global yang lebih baik
+                // mainSearchInput.addEventListener('blur', () => { ... });
             }
 
-            modalCloseBtn.addEventListener('click', hideModal);
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    hideModal();
+            // LOGIKA PENCARIAN CEPAT: Auto-Close di luar area
+            document.addEventListener('click', (e) => {
+                const isClickInsideSearchBox = mainSearchInput.contains(e.target);
+                const isClickInsideRecommendations = quickSearchRecommendations.contains(e.target);
+
+                if (!isClickInsideSearchBox && !isClickInsideRecommendations) {
+                    quickSearchRecommendations.classList.add('hidden');
                 }
             });
 
-            // Autocomplete alamat
-            addressInput.addEventListener('input', () => {
+
+            // Fungsi untuk menampilkan modal (umum)
+            function showModal(message) {
+                modalMessage.textContent = message;
+                notificationModal.classList.remove('hidden');
+            }
+
+            // Fungsi untuk menyembunyikan modal (umum)
+            function hideModal(modalElement) {
+                modalElement.classList.add('hidden');
+            }
+
+            modalCloseBtn.addEventListener('click', () => hideModal(notificationModal));
+            notificationModal.addEventListener('click', (e) => {
+                if (e.target === notificationModal) {
+                    hideModal(notificationModal);
+                }
+            });
+
+            // LOGIKA UNTUK LOCATION SEARCH MODAL
+            const hideLocationModal = () => hideModal(locationSearchModal);
+
+            openLocationModalBtn.addEventListener('click', () => {
+                locationSearchModal.classList.remove('hidden');
+            });
+
+            // Tambahkan event listener untuk tombol close 'X' dan 'Batal'
+            if (locationModalCloseXBtn) {
+                 locationModalCloseXBtn.addEventListener('click', hideLocationModal);
+            }
+            if (locationModalCloseButton) {
+                 locationModalCloseButton.addEventListener('click', hideLocationModal);
+            }
+
+            locationSearchModal.addEventListener('click', (e) => {
+                // Tutup modal jika mengklik backdrop
+                if (e.target === locationSearchModal) {
+                    hideLocationModal();
+                }
+            });
+
+            // Autocomplete alamat untuk modal lokasi
+            addressInputModal.addEventListener('input', () => {
                 clearTimeout(geocodeTimeout);
-                const query = addressInput.value.trim();
+                const query = addressInputModal.value.trim();
                 if (query.length < 3) {
-                    resultsList.style.display = 'none';
+                    resultsListModal.style.display = 'none';
                     return;
                 }
                 geocodeTimeout = setTimeout(() => {
@@ -815,23 +1121,25 @@
                         )
                         .then(res => res.json())
                         .then(data => {
-                            resultsList.innerHTML = '';
+                            resultsListModal.innerHTML = '';
                             if (data.length > 0) {
                                 data.forEach(item => {
                                     const li = document.createElement('li');
                                     li.textContent = item.display_name;
                                     li.className = 'p-3 cursor-pointer';
                                     li.addEventListener('click', () => {
-                                        addressInput.value = item.display_name;
-                                        latInput.value = item.lat;
-                                        lngInput.value = item.lon;
-                                        resultsList.style.display = 'none';
+                                        addressInputModal.value = item.display_name;
+                                        latInputModal.value = item.lat;
+                                        lngInputModal.value = item.lon;
+                                        resultsListModal.style.display = 'none';
+                                        // Pastikan rekomendasi cepat tersembunyi
+                                        quickSearchRecommendations.classList.add('hidden');
                                     });
-                                    resultsList.appendChild(li);
+                                    resultsListModal.appendChild(li);
                                 });
-                                resultsList.style.display = 'block';
+                                resultsListModal.style.display = 'block';
                             } else {
-                                resultsList.style.display = 'none';
+                                resultsListModal.style.display = 'none';
                             }
                         })
                         .catch(() => {
@@ -842,24 +1150,90 @@
                 }, 500);
             });
 
+            // Sembunyikan hasil autocomplete jika mengklik di luar input/modal
             document.addEventListener('click', (e) => {
-                if (!addressInput.contains(e.target) && !resultsList.contains(e.target)) {
-                    resultsList.style.display = 'none';
+                const isClickInsideModal = locationSearchModal.contains(e.target);
+                const isClickOnInputOrResults = addressInputModal.contains(e.target) || resultsListModal.contains(e.target);
+
+                // Ini menangani penutupan hasil autocomplete (dropdown)
+                if (locationSearchModal.classList.contains('hidden') || (isClickInsideModal && !isClickOnInputOrResults)) {
+                    resultsListModal.style.display = 'none';
                 }
             });
 
-            form.addEventListener('submit', (e) => {
-                // Hanya periksa jika koordinat kosong, karena tombol otomatis sudah dihapus
-                if (!latInput.value || !lngInput.value) {
+            locationFormModal.addEventListener('submit', (e) => {
+                if (!latInputModal.value || !lngInputModal.value) {
                     e.preventDefault();
                     showModal(
                         'Silakan pilih alamat yang valid dari daftar dropdown untuk mengisi koordinat.');
                 }
+                // Jika valid, form akan dikirim ke route services.nearby
+            });
+            // END LOGIKA UNTUK LOCATION SEARCH MODAL
+
+
+            // LOGIKA UNTUK PRICE FILTER MODAL (Sama seperti sebelumnya)
+            openPriceModalBtn.addEventListener('click', () => {
+                priceMinModalInput.value = priceMinHiddenInput.value;
+                priceMaxModalInput.value = priceMaxHiddenInput.value;
+                priceModal.classList.remove('hidden');
             });
 
-            // LOGIKA UNTUK TOMBOL "LAYANAN TERDEKAT" DIHAPUS
+            priceModal.addEventListener('click', (e) => {
+                if (e.target === priceModal) {
+                    hideModal(priceModal);
+                }
+            });
 
-            // Infinite Scroll Logic
+            priceModalResetBtn.addEventListener('click', () => {
+                priceMinModalInput.value = '';
+                priceMaxModalInput.value = '';
+                priceMinHiddenInput.value = '';
+                priceMaxHiddenInput.value = '';
+                priceDisplay.textContent = 'Semua Harga';
+                hideModal(priceModal);
+
+                // Hapus parameter harga, dan kirim form filter lanjutan
+                const url = new URL(window.location.href);
+                url.searchParams.delete('price_min');
+                url.searchParams.delete('price_max');
+
+                secondaryFilterForm.querySelector('#price_min_hidden').value = '';
+                secondaryFilterForm.querySelector('#price_max_hidden').value = '';
+
+                secondaryFilterForm.submit();
+            });
+
+            priceModalForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const minPrice = priceMinModalInput.value;
+                const maxPrice = priceMaxModalInput.value;
+
+                if (minPrice && maxPrice && parseInt(minPrice) > parseInt(maxPrice)) {
+                    showModal('Harga Minimum tidak boleh lebih besar dari Harga Maksimum.');
+                    return;
+                }
+
+                priceMinHiddenInput.value = minPrice;
+                priceMaxHiddenInput.value = maxPrice;
+
+                let displayText = 'Semua Harga';
+                if (minPrice || maxPrice) {
+                    const minFormatted = minPrice ? 'Rp ' + parseInt(minPrice).toLocaleString('id-ID') : 'Min';
+                    const maxFormatted = maxPrice ? 'Rp ' + parseInt(maxPrice).toLocaleString('id-ID') : 'Max';
+                    displayText = `${minFormatted} - ${maxFormatted}`;
+                }
+                displayText = displayText.replace('Rp Max', 'Max').replace('Min - Rp', 'Min - ');
+                priceDisplay.textContent = displayText;
+
+                hideModal(priceModal);
+                secondaryFilterForm.submit();
+            });
+            // END LOGIKA UNTUK PRICE FILTER MODAL
+
+
+            // Infinite Scroll Logic (Tidak berubah)
             if (normalServiceCards.length > cardsPerLoad) {
                 normalServiceCards.forEach((card, index) => {
                     if (index >= cardsPerLoad) {

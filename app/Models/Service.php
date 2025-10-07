@@ -26,6 +26,7 @@ class Service extends Model
         'latitude',
         'longitude',
         'slug',
+        'highlight_until',
         'is_highlight',
         'highlight_fee',
     ];

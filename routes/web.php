@@ -93,7 +93,11 @@ Route::middleware(['auth', 'seller'])->group(function () {
     Route::delete('/bank-accounts/{id}', [UserBankAccountController::class, 'destroy'])->name('bank-accounts.destroy');
 });
 
+Route::middleware(['auth', 'customer'])->group(function () {
+    Route::get('/service/apply', [ProviderApplicationController::class, 'create'])->name('service.apply');
 
+    Route::post('/service/apply', [ProviderApplicationController::class, 'store'])->name('service.apply.submit');
+});
 
 Route::middleware('auth')->group(function () {
 
@@ -109,9 +113,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/reviews/{service:slug}', [ReviewController::class, 'store'])->name('reviews.store');
 
 
-    Route::get('/service/apply', [ProviderApplicationController::class, 'create'])->name('service.apply');
 
-    Route::post('/service/apply', [ProviderApplicationController::class, 'store'])->name('service.apply.submit');
 
     Route::patch('/services/{service:slug}/favorite', [ServiceController::class, 'toggleFavorite'])
         ->name('services.toggleFavorite');

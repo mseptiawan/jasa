@@ -11,6 +11,8 @@
                     $isFavorited = auth()->user() && auth()->user()->favoriteServices->contains($service->id);
                 @endphp
                 <div class="bg-white rounded-lg border border-gray-200 overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 relative">
+
+                    {{-- START: FAVORITE BUTTON --}}
                     <form action="{{ route('services.toggleFavorite', $service->slug) }}" method="POST" class="absolute top-2 right-2 z-10">
                         @csrf
                         @method('PATCH')
@@ -26,6 +28,7 @@
                             @endif
                         </button>
                     </form>
+                    {{-- END: FAVORITE BUTTON --}}
 
                     <a href="{{ route('services.show', $service->slug) }}">
                         @if ($mainImage)
@@ -55,8 +58,53 @@
                     </div>
                 </div>
             @empty
-                <p class="col-span-full text-center text-gray-500 py-10">Tidak ada layanan favorit yang tersedia saat ini.</p>
+                {{-- START: EMPTY STATE DESIGN DENGAN images/listening.png --}}
+                <div class="col-span-full flex flex-col items-center justify-center p-12 rounded-xl bg-gray-50 border border-gray-200">
+                    <div class="w-32 h-32 mb-4 text-gray-400">
+                        {{-- Menggunakan URL asset yang diminta --}}
+                        <img src="{{ asset('images/listening.png') }}" alt="Stiker Listening" class="w-full h-full object-contain">
+                    </div>
+
+                    <p class="text-xl font-semibold text-gray-700 mt-2 mb-1">
+                        Belum Ada Layanan Favorit
+                    </p>
+                    <p class="text-gray-500 max-w-md text-center">
+                        Sepertinya Anda belum menemukan layanan yang cocok untuk dijadikan favorit. Ayo jelajahi dan tekan ikon hati ❤️ pada layanan yang Anda suka!
+                    </p>
+
+                    <a href="#" class="mt-5 px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition duration-150">
+                        Jelajahi Layanan
+                    </a>
+                </div>
+                {{-- END: EMPTY STATE DESIGN --}}
             @endforelse
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.rating-stars').forEach(container => {
+                const orderId = container.id.split('-')[2];
+                const hiddenInput = document.getElementById(`rating-input-${orderId}`);
+                const stars = container.querySelectorAll('.star-icon');
+
+                stars.forEach(star => {
+                    star.addEventListener('click', () => {
+                        const ratingValue = star.dataset.rating;
+                        hiddenInput.value = ratingValue;
+
+                        stars.forEach(s => {
+                            if (s.dataset.rating <= ratingValue) {
+                                s.classList.add('text-yellow-400');
+                                s.classList.remove('text-gray-400');
+                            } else {
+                                s.classList.add('text-gray-400');
+                                s.classList.remove('text-yellow-400');
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    </script>
 </x-app-layout>

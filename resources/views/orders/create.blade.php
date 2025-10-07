@@ -19,8 +19,9 @@
         {{-- Box utama --}}
         <div class="bg-white p-6 rounded-lg border border-gray-200">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {{-- Kiri: Detail Layanan --}}
-                <div>
+
+                {{-- Kiri ATAS: Detail Layanan (DITAMBAH: lg:sticky lg:top-8) --}}
+                <div id="service-details" class="lg:sticky lg:top-8">
                     <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ $service->title }}</h1>
                     <div class="flex items-center mb-4 text-gray-600">
                         <img src="{{ $service->user && $service->user->profile_photo ? asset('storage/' . $service->user->profile_photo) : asset('images/profile-user.png') }}"
@@ -41,9 +42,9 @@
                     @endif
 
                     <h2 class="text-xl font-semibold mt-6 mb-2 text-gray-800">Deskripsi</h2>
-                    <p class="text-gray-700 leading-relaxed">
-                        {{ $service->description }}
-                    </p>
+                    <div class="text-gray-700 leading-relaxed prose max-w-none">
+                        {!! nl2br(e($service->description)) !!}
+                    </div>
 
                     <h2 class="text-xl font-semibold mt-6 mb-2 text-gray-800">Harga</h2>
                     <p class="text-3xl font-bold text-green-600">Rp <span
@@ -64,80 +65,133 @@
                     </div>
                 </div>
 
-                {{-- Kanan: Form Pesan & Pembayaran --}}
-                <div class="lg:sticky lg:top-8 self-start bg-gray-50 p-6 rounded-lg border border-gray-200">
+                {{-- Kanan BAWAH: Form Pesan & Pembayaran --}}
+                <div class="col-span-1 lg:col-start-2 lg:row-start-1 self-start bg-gray-50 p-6 rounded-lg border border-gray-200">
                     <h2 class="text-xl font-bold mb-4 text-gray-900">Pesan Layanan</h2>
-                    <form action="{{ route('orders.store') }}"
+                    <form id="order-form" action="{{ route('orders.store') }}"
                           method="POST">
                         @csrf
                         <input type="hidden"
                                name="service_id"
                                value="{{ $service->id }}" />
 
-                        {{-- Nomor Telepon --}}
+                        {{-- HIDDEN INPUTS (Data yang akan disubmit) --}}
+                        <input type="hidden" id="hidden_customer_phone" name="customer_phone" value="{{ old('customer_phone', Auth::user()->no_telp ?? '') }}">
+                        <input type="hidden" id="hidden_customer_address" name="customer_address" value="{{ old('customer_address', Auth::user()->address ?? '') }}">
+                        <input type="hidden" id="hidden_note" name="note" value="">
+
+                        {{-- START: RINGKASAN DATA ORDER DENGAN MODAL --}}
+                        <div class="space-y-4 mb-4 p-4 border border-gray-300 rounded-lg bg-white">
+                            <div class="flex justify-between items-start">
+                                <h3 class="font-bold text-gray-800">Detail Kontak Order</h3>
+                                <button type="button" id="open-modal-btn" class="text-primary text-sm font-semibold hover:underline">
+                                    Ubah Detail
+                                </button>
+                            </div>
+
+                            {{-- Ringkasan Telepon --}}
+                            <div class="text-sm text-gray-700 border-b pb-2">
+                                <span class="font-semibold block">Nomor Telepon:</span>
+                                <span id="summary_phone">{{ Auth::user()->no_telp ?? 'Belum diisi' }}</span>
+                            </div>
+
+                            {{-- Ringkasan Alamat --}}
+                            <div class="text-sm text-gray-700 border-b pb-2">
+                                <span class="font-semibold block">Alamat / Lokasi:</span>
+                                <span id="summary_address" class="line-clamp-2">{{ Auth::user()->address ?? 'Belum diisi' }}</span>
+                            </div>
+
+                            {{-- Ringkasan Catatan --}}
+                            <div class="text-sm text-gray-700">
+                                <span class="font-semibold block">Catatan Tambahan:</span>
+                                <span id="summary_note" class="line-clamp-2 italic text-gray-500">Tidak ada catatan</span>
+                            </div>
+                        </div>
+                        {{-- END: RINGKASAN DATA ORDER DENGAN MODAL --}}
+
+
+                        {{-- Pilihan Metode Pembayaran (MENGGUNAKAN ACCORDION RADIO BUTTONS) --}}
                         <div class="mb-4">
-                            <label for="customer_phone"
-                                   class="block text-gray-700 font-semibold mb-1">Nomor Telepon</label>
-                            <input type="text"
-                                   id="customer_phone"
-                                   name="customer_phone"
-                                   class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                                   placeholder="Masukkan nomor telepon Anda"
-                                   value="{{ old('customer_phone', Auth::user()->no_telp ?? '') }}">
-                            @error('customer_phone')
+                            <label class="block text-gray-700 font-semibold mb-2">Metode Pembayaran</label>
+
+                            <div class="space-y-3" id="payment-options-container">
+                                @php
+                                    $bankLogos = [
+                                        'bca' => ['name' => 'BCA', 'file' => 'bca.png'],
+                                        'mandiri' => ['name' => 'Mandiri', 'file' => 'mandiri.png'],
+                                        'bri' => ['name' => 'BRI', 'file' => 'bri.png'],
+                                        'btn' => ['name' => 'BTN', 'file' => 'btn.png'],
+                                        'danamon' => ['name' => 'Danamon', 'file' => 'danamon.png'],
+                                    ];
+                                    $eWalletLogos = [
+                                        'ovo' => ['name' => 'OVO', 'file' => 'ovo.png'],
+                                        'dana' => ['name' => 'DANA', 'file' => 'dana.png'],
+                                        'gopay' => ['name' => 'GoPay', 'file' => 'gopay.png'],
+                                    ];
+                                @endphp
+
+                                {{-- ACCORDION: BANK TRANSFER --}}
+                                <div class="accordion-group border border-gray-300 rounded-lg overflow-hidden">
+                                    <button type="button" class="accordion-header w-full flex items-center justify-between p-3 bg-white hover:bg-gray-50 transition" data-target="bank-transfer-options">
+                                        <span class="font-bold text-gray-800">Bank Transfer</span>
+                                        <svg class="h-5 w-5 text-gray-500 transition-transform duration-300 transform" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+                                    <div id="bank-transfer-options" class="accordion-content hidden space-y-2 pt-2 pb-2 px-2 border-t border-gray-200 bg-gray-50">
+                                        @foreach ($bankLogos as $value => $data)
+                                            <label for="payment-{{ $value }}"
+                                                   class="p-3 flex items-center justify-between border border-gray-300 rounded-lg cursor-pointer transition-all hover:border-primary has-[:checked]:ring-2 has-[:checked]:ring-primary has-[:checked]:border-primary bg-white">
+                                                <div class="flex items-center">
+                                                    <img src="{{ asset('images/logo_payment/' . $data['file']) }}"
+                                                         alt="{{ $data['name'] }} Logo"
+                                                         class="h-6 w-auto object-contain mr-3">
+                                                    <span class="font-medium text-gray-800">{{ $data['name'] }}</span>
+                                                </div>
+                                                <input type="radio"
+                                                       id="payment-{{ $value }}"
+                                                       name="payment_method"
+                                                       value="{{ $value }}"
+                                                       class="text-primary focus:ring-primary h-4 w-4 border-gray-300"
+                                                       required>
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                </div>
+
+                                {{-- ACCORDION: E-WALLET --}}
+                                <div class="accordion-group border border-gray-300 rounded-lg overflow-hidden">
+                                    <button type="button" class="accordion-header w-full flex items-center justify-between p-3 bg-white hover:bg-gray-50 transition" data-target="e-wallet-options">
+                                        <span class="font-bold text-gray-800">E-Wallet</span>
+                                        <svg class="h-5 w-5 text-gray-500 transition-transform duration-300 transform" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+                                    <div id="e-wallet-options" class="accordion-content hidden space-y-2 pt-2 pb-2 px-2 border-t border-gray-200 bg-gray-50">
+                                        @foreach ($eWalletLogos as $value => $data)
+                                            <label for="payment-{{ $value }}"
+                                                   class="p-3 flex items-center justify-between border border-gray-300 rounded-lg cursor-pointer transition-all hover:border-primary has-[:checked]:ring-2 has-[:checked]:ring-primary has-[:checked]:border-primary bg-white">
+                                                <div class="flex items-center">
+                                                    <img src="{{ asset('images/logo_payment/' . $data['file']) }}"
+                                                         alt="{{ $data['name'] }} Logo"
+                                                         class="h-6 w-auto object-contain mr-3">
+                                                    <span class="font-medium text-gray-800">{{ $data['name'] }}</span>
+                                                </div>
+                                                <input type="radio"
+                                                       id="payment-{{ $value }}"
+                                                       name="payment_method"
+                                                       value="{{ $value }}"
+                                                       class="text-primary focus:ring-primary h-4 w-4 border-gray-300">
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                            @error('payment_method')
                                 <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                             @enderror
                         </div>
-
-                        {{-- Alamat --}}
-                        <div class="mb-4">
-                            <label for="customer_address"
-                                   class="block text-gray-700 font-semibold mb-1">Alamat / Lokasi</label>
-                            <textarea id="customer_address"
-                                      name="customer_address"
-                                      class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                                      placeholder="Masukkan alamat lengkap Anda"
-                                      rows="3">{{ old('customer_address', Auth::user()->address ?? '') }}</textarea>
-                            @error('customer_address')
-                                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        {{-- Catatan --}}
-                        <div class="mb-4">
-                            <label for="note"
-                                   class="block text-gray-700 font-semibold mb-1">Catatan / Instruksi Tambahan</label>
-                            <textarea id="note"
-                                      name="note"
-                                      class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                                      placeholder="Contoh: jam layanan, instruksi khusus"
-                                      rows="3"></textarea>
-                            @error('note')
-                                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        {{-- Pilihan Metode Pembayaran --}}
-                        <div class="mb-4">
-                            <label for="payment_method"
-                                   class="block text-gray-700 font-semibold mb-1">Metode Pembayaran</label>
-                            <select id="payment_method"
-                                    name="payment_method"
-                                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition">
-                                <optgroup label="Bank Transfer">
-                                    <option value="bca">BCA</option>
-                                    <option value="mandiri">Mandiri</option>
-                                    <option value="bri">BRI</option>
-                                    <option value="btn">BTN</option>
-                                    <option value="danamon">Danamon</option>
-                                </optgroup>
-                                <optgroup label="E-Wallet">
-                                    <option value="ovo">OVO</option>
-                                    <option value="dana">DANA</option>
-                                    <option value="gopay">GoPay</option>
-                                </optgroup>
-                            </select>
-                        </div>
+                        {{-- END: Pilihan Metode Pembayaran --}}
 
                         {{-- Petunjuk Bayar --}}
                         <div id="payment-instructions"
@@ -168,7 +222,7 @@
                             </div>
                         </div>
 
-                        {{-- Submit --}}
+                        {{-- Submit Button --}}
                         <button type="submit"
                                 class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-all duration-200">
                             <svg xmlns="http://www.w3.org/2000/svg"
@@ -183,14 +237,68 @@
                             </svg>
                             Bayar & Pesan Sekarang
                         </button>
+
+                        {{-- Pernyataan S&K --}}
+                        <p class="text-xs text-center text-gray-500 mt-2">
+                            Dengan melanjutkan pembayaran, kamu menyetujui **Syarat & Ketentuan Layanan Penyedia Jasa**.
+                        </p>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
+    {{-- START: MODAL EDIT DETAIL ORDER --}}
+    <div id="edit-detail-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden" aria-modal="true" role="dialog">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg mx-4 p-6 transform transition-all">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h3 class="text-xl font-bold text-gray-900">Ubah Detail Kontak & Catatan</h3>
+                {{-- Tombol Close (Hanya Ikon X) --}}
+                <button type="button" id="close-modal-btn-top" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <div>
+                {{-- Nomor Telepon --}}
+                <div class="mb-4">
+                    <label for="modal_customer_phone" class="block text-gray-700 font-semibold mb-1">Nomor Telepon</label>
+                    <input type="text"
+                           id="modal_customer_phone"
+                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent transition"
+                           placeholder="Masukkan nomor telepon Anda">
+                </div>
+
+                {{-- Alamat --}}
+                <div class="mb-4">
+                    <label for="modal_customer_address" class="block text-gray-700 font-semibold mb-1">Alamat / Lokasi</label>
+                    <textarea id="modal_customer_address"
+                              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent transition"
+                              placeholder="Masukkan alamat lengkap Anda"
+                              rows="3"></textarea>
+                </div>
+
+                {{-- Catatan --}}
+                <div class="mb-4">
+                    <label for="modal_note" class="block text-gray-700 font-semibold mb-1">Catatan / Instruksi Tambahan</label>
+                    <textarea id="modal_note"
+                              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent transition"
+                              placeholder="Contoh: jam layanan, instruksi khusus"
+                              rows="3"></textarea>
+                </div>
+
+                <div class="flex justify-end mt-4">
+                    {{-- Tombol Simpan --}}
+                    <button type="button" id="save-modal-btn" class="px-6 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- END: MODAL EDIT DETAIL ORDER --}}
+
+
     <script>
-        // Hitung total harga otomatis
+        // Hitung total harga otomatis (Kode ini tidak berubah)
         const priceEl = document.getElementById('servicePriceDisplay');
         const feeEl = document.getElementById('platformFee');
         const totalEl = document.getElementById('totalPrice');
@@ -211,11 +319,129 @@
         totalEl.textContent = formatRupiah(total);
 
         document.addEventListener('DOMContentLoaded', () => {
-            const paymentMethodEl = document.getElementById('payment_method');
+            const paymentOptionsContainer = document.getElementById('payment-options-container');
             const instructionList = document.getElementById('instruction-list');
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
 
-            function updateInstructions() {
-                const method = paymentMethodEl.value;
+            // --- ELEMEN MODAL ---
+            const modal = document.getElementById('edit-detail-modal');
+            const openModalBtn = document.getElementById('open-modal-btn');
+            const closeModalBtnTop = document.getElementById('close-modal-btn-top'); // Tombol X
+            const saveModalBtn = document.getElementById('save-modal-btn'); // Tombol Simpan
+
+            // Input fields di dalam modal
+            const modalPhone = document.getElementById('modal_customer_phone');
+            const modalAddress = document.getElementById('modal_customer_address');
+            const modalNote = document.getElementById('modal_note');
+
+            // Input fields tersembunyi (untuk submit form)
+            const hiddenPhone = document.getElementById('hidden_customer_phone');
+            const hiddenAddress = document.getElementById('hidden_customer_address');
+            const hiddenNote = document.getElementById('hidden_note');
+
+            // Ringkasan tampilan
+            const summaryPhone = document.getElementById('summary_phone');
+            const summaryAddress = document.getElementById('summary_address');
+            const summaryNote = document.getElementById('summary_note');
+
+            // Update ringkasan awal
+            function updateSummary(phone, address, note) {
+                summaryPhone.textContent = phone || 'Belum diisi';
+                summaryAddress.textContent = address || 'Belum diisi';
+                summaryNote.textContent = note || 'Tidak ada catatan';
+
+                // Styling untuk Catatan
+                if (!note) {
+                     summaryNote.classList.add('italic', 'text-gray-500');
+                } else {
+                     summaryNote.classList.remove('italic', 'text-gray-500');
+                }
+
+                // Styling tombol 'Ubah Detail' jika data penting kosong
+                 if (!phone || !address) {
+                    document.getElementById('open-modal-btn').textContent = 'Lengkapi Detail';
+                    document.getElementById('open-modal-btn').classList.add('text-red-500');
+
+                 } else {
+                    document.getElementById('open-modal-btn').textContent = 'Ubah Detail';
+                    document.getElementById('open-modal-btn').classList.remove('text-red-500');
+                 }
+            }
+            // Panggil ini saat DOM load
+            updateSummary(hiddenPhone.value, hiddenAddress.value, hiddenNote.value);
+
+
+            // --- FUNGSI MODAL ---
+            const closeModal = () => {
+                modal.classList.add('hidden');
+            };
+
+            const openModal = () => {
+                // Salin nilai dari hidden input ke modal saat dibuka
+                modalPhone.value = hiddenPhone.value;
+                modalAddress.value = hiddenAddress.value;
+                modalNote.value = hiddenNote.value;
+
+                modal.classList.remove('hidden');
+            };
+
+            openModalBtn.addEventListener('click', openModal);
+            closeModalBtnTop.addEventListener('click', closeModal); // Tombol X
+
+            // FUNGSI SAVE (Sudah Dipastikan Benar)
+            saveModalBtn.addEventListener('click', () => {
+                // 1. Simpan nilai dari modal ke hidden input
+                hiddenPhone.value = modalPhone.value.trim();
+                hiddenAddress.value = modalAddress.value.trim();
+                hiddenNote.value = modalNote.value.trim();
+
+                // 2. Update tampilan ringkasan
+                updateSummary(hiddenPhone.value, hiddenAddress.value, hiddenNote.value);
+
+                // 3. Tutup modal
+                closeModal();
+            });
+
+
+            // --- FUNGSI ACCORDION DAN INTRUKSI ---
+
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', (e) => {
+                    e.preventDefault();
+
+                    const targetId = header.getAttribute('data-target');
+                    const targetContent = document.getElementById(targetId);
+                    const icon = header.querySelector('svg');
+                    const isOpening = targetContent.classList.contains('hidden');
+
+                    // Tutup semua akordeon lain
+                    document.querySelectorAll('.accordion-content').forEach(content => {
+                        if (content.id !== targetId) {
+                            content.classList.add('hidden');
+                            content.closest('.accordion-group').querySelector('.accordion-header svg').classList.remove('rotate-180');
+                            // Hapus pilihan radio button di accordion yang ditutup
+                            content.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
+                        }
+                    });
+
+                    if (isOpening) {
+                        // Buka akordeon yang diklik
+                        targetContent.classList.remove('hidden');
+                        icon.classList.add('rotate-180');
+                    } else {
+                        // Tutup akordeon yang diklik
+                        targetContent.classList.add('hidden');
+                        icon.classList.remove('rotate-180');
+                        // Reset instruksi jika ditutup
+                        updateInstructions(null);
+                        // Hapus pilihan radio button
+                        targetContent.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
+                    }
+                });
+            });
+
+
+            function updateInstructions(method) {
                 let steps = [];
 
                 switch (method) {
@@ -298,17 +524,30 @@
                         ];
                         break;
                     default:
-                        steps = ["Pilih metode pembayaran untuk melihat langkah-langkah."];
+                        steps = ["Pilih metode pembayaran di atas untuk melihat langkah-langkah."];
                 }
 
                 instructionList.innerHTML = steps.map(s => `<li>${s}</li>`).join('');
             }
 
-            paymentMethodEl.addEventListener('change', updateInstructions);
-            updateInstructions();
+            paymentOptionsContainer.addEventListener('change', (event) => {
+                if (event.target.name === 'payment_method' && event.target.type === 'radio') {
+                    // Pastikan akordeon yang sesuai terbuka saat radio button diklik
+                    const accordionContent = event.target.closest('.accordion-content');
+                    if (accordionContent && accordionContent.classList.contains('hidden')) {
+                        accordionContent.classList.remove('hidden');
+                        accordionContent.closest('.accordion-group').querySelector('.accordion-header svg').classList.add('rotate-180');
+                    }
+                    updateInstructions(event.target.value);
+                }
+            });
 
-
+            const initialCheckedRadio = paymentOptionsContainer.querySelector('input[name="payment_method"]:checked');
+            if (initialCheckedRadio) {
+                updateInstructions(initialCheckedRadio.value);
+            } else {
+                updateInstructions(null);
+            }
         });
     </script>
-
 </x-app-layout>

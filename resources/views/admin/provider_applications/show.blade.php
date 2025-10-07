@@ -101,23 +101,34 @@
                 @if($application->status == 'pending')
                 <div class="mt-8">
                     <h2 class="text-xl font-bold mb-4 text-gray-900">Aksi</h2>
-                    <div class="flex flex-col md:flex-row md:items-end gap-4">
-                        {{-- Formulir Reject --}}
-                        <form action="{{ route('admin.provider.applications.reject', $application->id) }}" method="POST" class="flex-grow">
+
+                    {{-- 1. Textarea Full Width (Dipisahkan dari tombol agar bisa full width) --}}
+                    <form action="{{ route('admin.provider.applications.reject', $application->id) }}" method="POST" id="reject-form-input" class="mb-4">
+                        @csrf
+                        <label for="admin_notes" class="block text-sm font-medium text-gray-700 mb-1">Catatan Penolakan</label>
+                        {{-- Textarea kini adalah w-full --}}
+                        <textarea id="admin_notes" name="admin_notes" rows="3" placeholder="Masukkan alasan penolakan..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500 transition-colors resize-none"></textarea>
+                    </form>
+
+                    {{-- 2. Container Flex untuk Tombol-tombol (Side-by-Side, Rata Kanan) --}}
+                    <div class="flex justify-end gap-3">
+
+                        {{-- Tombol Tolak (dibungkus form sendiri, membutuhkan nilai textarea dari atas - asumsi notes optional atau dikirim via JS) --}}
+                        <form action="{{ route('admin.provider.applications.reject', $application->id) }}" method="POST">
                             @csrf
-                            <label for="admin_notes" class="block text-sm font-medium text-gray-700 mb-1">Catatan Penolakan</label>
-                            <textarea id="admin_notes" name="admin_notes" rows="3" placeholder="Masukkan alasan penolakan..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition-colors resize-none"></textarea>
+                            {{-- Input tersembunyi untuk mengirim catatan penolakan jika tidak ada JS --}}
+                            <input type="hidden" name="admin_notes" value="">
                             <button type="submit"
-                                    class="w-full mt-2 px-6 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors">
+                                    class="px-6 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors">
                                 Tolak Pengajuan
                             </button>
                         </form>
 
-                        {{-- Formulir Approve --}}
-                        <form action="{{ route('admin.provider.applications.approve', $application->id) }}" method="POST" class="md:w-auto">
+                        {{-- Tombol Setujui --}}
+                        <form action="{{ route('admin.provider.applications.approve', $application->id) }}" method="POST">
                             @csrf
                             <button type="submit"
-                                    class="w-full md:w-auto mt-2 md:mt-0 px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors">
+                                    class="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors">
                                 Setujui Pengajuan
                             </button>
                         </form>

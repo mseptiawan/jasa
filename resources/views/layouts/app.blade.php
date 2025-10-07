@@ -27,13 +27,11 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <!-- Font Awesome 6 (versi terbaru) -->
-    <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIjK8C4D4w3aDJYqk6a5z6mH2Vv3d9V0Y9O4nUu5xF0Vw=="
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-    />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIjK8C4D4w3aDJYqk6a5z6mH2Vv3d9V0Y9O4nUu5xF0Vw=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer" />
 
 </head>
 
@@ -57,25 +55,6 @@
     @include('components.footer')
     <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.js"></script>
 
-    <!-- =================================== -->
-    <!-- MODERN COOKIE BANNER -->
-    <!-- =================================== -->
-    <div id="cookie-banner"
-         class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] sm:w-[400px] bg-white/90 backdrop-blur-md shadow-lg rounded-xl border border-gray-200 p-5 flex flex-col sm:flex-row sm:items-center gap-3 transition-all duration-500 opacity-0 pointer-events-none z-50">
-        <div class="flex-1 text-sm text-gray-700">
-            <span class="font-medium">Kami gunakan cookies</span> untuk meningkatkan pengalamanmu di situs ini.
-        </div>
-        <div class="flex gap-2 justify-end w-full sm:w-auto">
-            <button id="decline-cookies"
-                    class="text-gray-500 border border-gray-300 hover:bg-gray-100 px-3 py-1.5 rounded-md text-sm transition">
-                Tolak
-            </button>
-            <button id="accept-cookies"
-                    class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-md text-sm transition">
-                Terima
-            </button>
-        </div>
-    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

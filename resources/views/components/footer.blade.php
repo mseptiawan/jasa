@@ -45,17 +45,13 @@
                     <a href="https://wa.me/628123456789"
                        class="hover:text-white">Adit Jansa</a>
                 </li>
-            </ul>
-        </div>
-
-        {{-- Kebijakan Keamanan --}}
-        <div>
-            <h2 class="text-white font-bold text-lg mb-4">Kebijakan & Keamanan</h2>
-            <ul class="space-y-2 text-sm">
-                <li class="flex items-center gap-2">
-                    <a href="{{ route('privacy.policy') }}"
-                       class="hover:text-white">Kebijakan Privasi</a>
-                </li>
+                <h2 class="mt-4 text-white font-bold text-lg mb-4">Kebijakan & Keamanan</h2>
+                <ul class="space-y-2 text-sm">
+                    <li class="flex items-center gap-2">
+                        <a href="{{ route('privacy.policy') }}"
+                           class="hover:text-white">Kebijakan Privasi</a>
+                    </li>
+                </ul>
             </ul>
         </div>
     </div>

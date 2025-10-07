@@ -288,11 +288,16 @@
 
             // Fallback for $services if not passed by controller (Using collect([]) if needed)
             if (!isset($services)) {
-                $services = collect([]);
+                // DATA DUMMY SERVICE jika $services tidak ada (untuk mencegah error)
+                $services = collect([
+                    (object) ['title' => 'Jasa Desain Logo Cepat', 'price' => 50000, 'discount_price' => 45000, 'is_highlight' => true, 'highlight_until' => now()->addDays(5), 'avg_rating' => 4.5, 'description' => 'Kami mendesain logo profesional dalam 24 jam.', 'images' => json_encode(['dummy-image.jpg']), 'user' => (object)['full_name' => 'Designer Pro', 'profile_photo' => 'dummy-profile.jpg']],
+                    (object) ['title' => 'Perbaikan AC Kilat', 'price' => 150000, 'discount_price' => 0, 'is_highlight' => false, 'highlight_until' => null, 'avg_rating' => 4.8, 'description' => 'Teknisi berpengalaman untuk perbaikan AC rumah.', 'images' => json_encode(['dummy-image.jpg']), 'user' => (object)['full_name' => 'Teknisi AC', 'profile_photo' => 'dummy-profile.jpg']],
+                    (object) ['title' => 'Les Privat Matematika', 'price' => 75000, 'discount_price' => 60000, 'is_highlight' => true, 'highlight_until' => now()->addDays(2), 'avg_rating' => 4.2, 'description' => 'Bimbingan belajar matematika untuk SD-SMA.', 'images' => json_encode(['dummy-image.jpg']), 'user' => (object)['full_name' => 'Guru Cerdas', 'profile_photo' => 'dummy-profile.jpg']],
+                    (object) ['title' => 'Jasa Penerjemah Dokumen', 'price' => 120000, 'discount_price' => 0, 'is_highlight' => false, 'highlight_until' => null, 'avg_rating' => 3.9, 'description' => 'Penerjemahan dokumen resmi bahasa Inggris ke Indonesia.', 'images' => json_encode(['dummy-image.jpg']), 'user' => (object)['full_name' => 'Translater Pro', 'profile_photo' => 'dummy-profile.jpg']],
+                ]);
             }
 
             // Data dummy/placeholder untuk kategori
-            // (Mengambil dari dashboard.blade.php, tapi dibuat statis di welcome)
             $categories = [
                 (object) ['id' => 1, 'name' => 'Graphics & Design'],
                 (object) ['id' => 2, 'name' => 'Digital Marketing'],
@@ -323,7 +328,7 @@
                 'Industries' =>
                     '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 640 640"><path d="M96 96C78.3 96 64 110.3 64 128L64 496C64 522.5 85.5 544 112 544L528 544C554.5 544 576 522.5 576 496L576 216.2C576 198 556.6 186.5 540.6 195.1L384 279.4L384 216.2C384 198 364.6 186.5 348.6 195.1L192 279.4L192 128C192 110.3 177.7 96 160 96L96 96z"/></svg>',
                 'Perbaikan Elektronik' =>
-                    '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 640 640"><path d="M192 32C209.7 32 224 46.3 224 64L224 160L352 160L352 64C352 46.3 366.3 32 384 32C401.7 32 416 46.3 416 64L416 160L480 160C497.7 160 512 174.3 512 192C512 209.7 497.7 224 480 224L480 272.7C381.4 280.8 304 363.4 304 464C304 491.3 309.7 517.3 320 540.9L320 544C320 561.7 305.7 576 288 576C270.3 576 256 561.7 256 544L256 477.3C165.2 462.1 96 383.1 96 288L96 224C78.3 224 64 209.7 64 192C64 174.3 78.3 160 96 160L160 160L160 64C160 46.3 174.3 32 192 32zM496 320C575.5 320 640 384.5 640 464C640 543.5 575.5 608 496 608C416.5 608 352 543.5 352 464C352 384.5 416.5 320 496 320zM555.3 427.3C561.5 421.1 561.5 410.9 555.3 404.7C549.1 398.5 538.9 398.5 532.7 404.7L496 441.4L459.3 404.7C453.1 398.5 442.9 398.5 436.7 404.7C430.5 410.9 430.5 517.1 436.7 523.3C442.9 529.5 453.1 529.5 459.3 523.3L496 486.6L532.7 523.3C538.9 529.5 549.1 529.5 555.3 523.3C561.5 517.1 561.5 506.9 555.3 500.7L518.6 464L555.3 427.3z"/></svg>',
+                    '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 640 640"><path d="M192 32C209.7 32 224 46.3 224 64L224 160L352 160L352 64C352 46.3 366.3 32 384 32C401.7 32 416 46.3 416 64L416 160L480 160C497.7 160 512 174.3 512 192C512 209.7 497.7 224 480 224L480 272.7C381.4 280.8 304 363.4 304 464C304 491.3 309.7 517.3 320 540.9L320 544C320 561.7 305.7 576 288 576C270.3 576 256 561.7 256 544L256 477.3C165.2 462.1 96 383.1 96 288L96 224C78.3 224 64 209.7 64 192C64 174.3 78.3 160 96 160L160 160L160 64C160 46.3 174.3 32 192 32zM496 320C575.5 320 640 384.5 640 464C640 543.5 575.5 608 496 608C416.5 608 352 543.5 352 464C352 384.5 416.5 320 496 320zM555.3 427.3C561.5 421.1 561.5 410.9 555.3 404.7C549.1 398.5 538.9 398.5 532.7 404.7L496 441.4L459.3 404.7C453.1 398.5 442.9 398.5 436.7 404.7C430.5 410.9 430.5 517.1 436.7 523.3C442.9 529.5 549.1 529.5 555.3 523.3C561.5 517.1 561.5 506.9 555.3 500.7L518.6 464L555.3 427.3z"/></svg>',
                 'Jasa Smartphone' =>
                     '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 640 640"><path d="M208 64C172.7 64 144 92.7 144 128L144 512C144 547.3 172.7 576 208 576L432 576C467.3 576 496 547.3 496 512L496 128C496 92.7 467.3 64 432 64L208 64zM280 480L360 480C373.3 480 384 490.7 384 504C384 517.3 373.3 528 360 528L280 528C266.7 528 256 517.3 256 504C256 490.7 266.7 480 280 480z"/></svg>',
                 'Jasa Akademik' =>
@@ -345,8 +350,13 @@
                 fn($s) => $s->is_highlight && $s->highlight_until && now()->lte($s->highlight_until),
             );
 
-            $popularServices = $services->sortByDesc('avg_rating')->take(4);
+            // Ambil 4 layanan non-highlighted dan bukan highlight yang ratingnya tertinggi
+            $nonHighlightServices = $services->filter(
+                fn($s) => !($s->is_highlight && $s->highlight_until && now()->lte($s->highlight_until)),
+            );
+            $popularServices = $nonHighlightServices->sortByDesc('avg_rating')->take(4);
 
+            // Sisanya adalah layanan normal
             $normalServices = $services->reject(
                 fn($s) => ($s->is_highlight && $s->highlight_until && now()->lte($s->highlight_until)) || $popularServices->contains($s)
             );
@@ -409,7 +419,7 @@
                 @foreach ($categories as $cat)
                     <a href="{{ route('home', ['category' => $cat->id]) }}"
                         class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-colors duration-200 flex-shrink-0
-                       {{ request('category') == $cat->id ? 'bg-primary text-accent' : 'bg-gray-100 text-gray-700 hover:bg-primary hover:text-white' }}">
+                        {{ request('category') == $cat->id ? 'bg-primary text-accent' : 'bg-gray-100 text-gray-700 hover:bg-primary hover:text-white' }}">
                         @php echo $categoryIcons[$cat->name] ?? $categoryIcons['default']; @endphp
                         <span>{{ $cat->name }}</span>
                     </a>
@@ -464,7 +474,7 @@
         @if ($highlightServices->count() > 0)
             <section class="mb-12">
                 <h2 class="text-2xl font-extrabold mb-5 text-gray-900">Layanan Unggulan</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     @foreach ($highlightServices as $service)
                         @php
                             $images = json_decode($service->images, true);
@@ -473,7 +483,6 @@
                                 $service->user && $service->user->profile_photo
                                     ? asset('storage/' . $service->user->profile_photo)
                                     : asset('images/profile-user.png');
-                            // Tidak ada auth()->user() di halaman welcome
                         @endphp
                         <div
                             class="bg-accent/20 rounded-lg overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 border-2 border-accent relative shadow-xl">
@@ -481,11 +490,12 @@
                             <div class="relative bg-white">
                                 <a href="#">
                                     @if ($mainImage)
+                                        {{-- MODIFIKASI TINGGI GAMBAR --}}
                                         <img src="{{ $mainImage }}" alt="{{ $service->title }}"
-                                            class="w-full h-40 object-cover">
+                                            class="w-full h-32 sm:h-40 object-cover">
                                     @else
                                         <div
-                                            class="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500">
+                                            class="w-full h-32 sm:h-40 bg-gray-200 flex items-center justify-center text-gray-500">
                                             Tidak Ada Gambar</div>
                                     @endif
                                 </a>
@@ -508,7 +518,8 @@
                                     </p>
                                 @endif
 
-                                <p class="text-gray-500 mb-4 line-clamp-2">
+                                {{-- MODIFIKASI DESKRIPSI (hidden sm:block) --}}
+                                <p class="text-gray-500 mb-4 line-clamp-2 hidden sm:block">
                                     {{ Str::words(strip_tags($service->description), 8, '...') }}
                                 </p>
 
@@ -544,7 +555,7 @@
         @if ($popularServices->count() > 0)
             <section class="mb-12">
                 <h2 class="text-2xl font-extrabold mb-5 text-gray-900">Layanan Paling Populer</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     @foreach ($popularServices as $service)
                         @php
                             $images = json_decode($service->images, true);
@@ -559,11 +570,12 @@
 
                             <a href="#">
                                 @if ($mainImage)
+                                    {{-- MODIFIKASI TINGGI GAMBAR --}}
                                     <img src="{{ $mainImage }}" alt="{{ $service->title }}"
-                                        class="w-full h-40 object-cover">
+                                        class="w-full h-32 sm:h-40 object-cover">
                                 @else
                                     <div
-                                        class="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500">
+                                        class="w-full h-32 sm:h-40 bg-gray-200 flex items-center justify-center text-gray-500">
                                         Tidak Ada Gambar</div>
                                 @endif
                             </a>
@@ -583,7 +595,8 @@
                                     </p>
                                 @endif
 
-                                <p class="text-gray-500 mb-4 line-clamp-2">
+                                {{-- MODIFIKASI DESKRIPSI (hidden sm:block) --}}
+                                <p class="text-gray-500 mb-4 line-clamp-2 hidden sm:block">
                                     {{ Str::words(strip_tags($service->description), 8, '...') }}
                                 </p>
 
@@ -622,7 +635,7 @@
         <section>
             <h2 class="text-2xl font-extrabold mb-5 text-gray-900">Semua Layanan</h2>
             <div id="normal-services-grid"
-                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 @forelse($normalServices as $service)
                     @php
                         $images = json_decode($service->images, true);
@@ -637,10 +650,11 @@
 
                         <a href="#">
                             @if ($mainImage)
+                                {{-- MODIFIKASI TINGGI GAMBAR --}}
                                 <img src="{{ $mainImage }}" alt="{{ $service->title }}"
-                                    class="w-full h-40 object-cover">
+                                    class="w-full h-32 sm:h-40 object-cover">
                             @else
-                                <div class="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500">
+                                <div class="w-full h-32 sm:h-40 bg-gray-200 flex items-center justify-center text-gray-500">
                                     Tidak Ada Gambar</div>
                             @endif
                         </a>
@@ -660,9 +674,11 @@
                                 </p>
                             @endif
 
-                            <p class="text-gray-500 mb-4 line-clamp-2">
+                            {{-- MODIFIKASI DESKRIPSI (hidden sm:block) --}}
+                            <p class="text-gray-500 mb-4 line-clamp-2 hidden sm:block">
                                 {{ Str::words(strip_tags($service->description), 8, '...') }}
                             </p>
+
                             <div class="flex items-center gap-2 text-sm text-gray-600 mb-3">
                                 @if ($profilePhoto)
                                     <img src="{{ $profilePhoto }}" alt="{{ $service->user->full_name ?? 'N/A' }}"
@@ -752,6 +768,13 @@
             const notificationModal = document.getElementById('notification-modal');
             const modalMessage = document.getElementById('modal-message');
             const modalCloseBtn = document.getElementById('modal-close-btn');
+
+            // --- Variabel Autocomplete Utama (Main Search) ---
+            const addressInputWelcome = document.getElementById('address-input');
+            const latInputWelcome = document.getElementById('lat');
+            const lngInputWelcome = document.getElementById('lng');
+            const resultsListWelcome = document.getElementById('autocomplete-results');
+            const formWelcome = document.getElementById('location-form');
 
             let geocodeTimeout = null;
             let isLoading = false;
@@ -861,56 +884,7 @@
             });
             // END LOGIKA UNTUK LOCATION SEARCH MODAL
 
-            // Logika Infinite Scroll
-            if (normalServiceCards.length > cardsPerLoad) {
-                normalServiceCards.forEach((card, index) => {
-                    if (index >= cardsPerLoad) {
-                        card.classList.add('hidden');
-                    }
-                });
-
-                const loadMoreCards = () => {
-                    if (isLoading) return;
-                    isLoading = true;
-                    loadingIndicator.classList.remove('hidden');
-
-                    setTimeout(() => {
-                        const nextLimit = currentlyDisplayed + cardsPerLoad;
-                        for (let i = currentlyDisplayed; i < nextLimit; i++) {
-                            if (normalServiceCards[i]) {
-                                normalServiceCards[i].classList.remove('hidden');
-                            }
-                        }
-                        currentlyDisplayed = nextLimit;
-                        loadingIndicator.classList.add('hidden');
-                        isLoading = false;
-
-                        if (currentlyDisplayed >= normalServiceCards.length) {
-                            loadingIndicator.remove();
-                            window.removeEventListener('scroll', handleScroll);
-                        }
-                    }, 1000);
-                };
-
-                const handleScroll = () => {
-                    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 200) {
-                        loadMoreCards();
-                    }
-                };
-
-                window.addEventListener('scroll', handleScroll);
-            } else {
-                loadingIndicator.remove();
-            }
-
             // PENTING: Logika Autocomplete di welcome.blade.php (Main Search/Nearby)
-            // Menggunakan logika yang sama dengan modal lokasi, tetapi untuk input di body.
-            const addressInputWelcome = document.getElementById('address-input');
-            const latInputWelcome = document.getElementById('lat');
-            const lngInputWelcome = document.getElementById('lng');
-            const resultsListWelcome = document.getElementById('autocomplete-results');
-            const formWelcome = document.getElementById('location-form');
-
             if (addressInputWelcome) {
                 addressInputWelcome.addEventListener('input', () => {
                     clearTimeout(geocodeTimeout);
@@ -950,7 +924,7 @@
 
 
             document.addEventListener('click', (e) => {
-                if(addressInputWelcome) {
+                if(addressInputWelcome && resultsListWelcome) {
                     if (!addressInputWelcome.contains(e.target) && !resultsListWelcome.contains(e.target)) {
                         resultsListWelcome.style.display = 'none';
                     }
@@ -965,6 +939,50 @@
                             'Silakan pilih alamat yang valid dari daftar dropdown untuk mengisi koordinat.');
                     }
                 });
+            }
+
+            // Logika Infinite Scroll
+            if (normalServiceCards.length > cardsPerLoad) {
+                normalServiceCards.forEach((card, index) => {
+                    if (index >= cardsPerLoad) {
+                        card.classList.add('hidden');
+                    }
+                });
+
+                const loadMoreCards = () => {
+                    if (isLoading) return;
+                    isLoading = true;
+                    loadingIndicator.classList.remove('hidden');
+
+                    setTimeout(() => {
+                        const nextLimit = currentlyDisplayed + cardsPerLoad;
+                        for (let i = currentlyDisplayed; i < nextLimit; i++) {
+                            if (normalServiceCards[i]) {
+                                normalServiceCards[i].classList.remove('hidden');
+                            }
+                        }
+                        currentlyDisplayed = nextLimit;
+                        loadingIndicator.classList.add('hidden');
+                        isLoading = false;
+
+                        if (currentlyDisplayed >= normalServiceCards.length) {
+                            loadingIndicator.remove();
+                            window.removeEventListener('scroll', handleScroll);
+                        }
+                    }, 1000);
+                };
+
+                const handleScroll = () => {
+                    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 200) {
+                        loadMoreCards();
+                    }
+                };
+
+                window.addEventListener('scroll', handleScroll);
+            } else {
+                if(loadingIndicator) {
+                     loadingIndicator.remove();
+                }
             }
         });
     </script>

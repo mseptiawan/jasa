@@ -13,10 +13,32 @@
         </h1>
 
         @if ($orders->isEmpty())
-            <div class="bg-white p-8 rounded-lg text-center text-gray-500 border border-gray-200">
-                <p class="text-lg">Belum ada pesanan yang Anda buat atau terima.</p>
-                <p class="mt-2 text-gray-400">Silakan jelajahi layanan untuk memulai.</p>
+            {{-- START: EMPTY STATE DESIGN --}}
+            <div class="flex flex-col items-center justify-center p-12 rounded-xl bg-gray-50 border border-gray-200">
+                {{-- Placeholder untuk Gambar Ikan --}}
+                <div class="w-32 h-32 mb-4 text-gray-400">
+                    {{-- Ganti tag ini dengan URL ke gambar fish.png Anda. --}}
+                    <img src="{{ asset('images/fish.png') }}" alt="Stiker Ikan" class="w-full h-full object-contain">
+
+                </div>
+
+                <p class="text-xl font-semibold text-gray-700 mt-2 mb-1">
+                    Belum Ada Pesanan Aktif
+                </p>
+                <p class="text-gray-500 max-w-md text-center">
+                    @if ($user->role === 'customer')
+                        Sepertinya keranjang Anda masih kosong. Mari jelajahi berbagai layanan berkualitas dan buat pesanan pertama Anda!
+                    @elseif($user->role === 'seller')
+                        Belum ada pesanan baru yang masuk. Tingkatkan profil dan layanan Anda untuk menarik lebih banyak pembeli.
+                    @endif
+                </p>
+
+                {{-- Contoh tombol Call to Action (Opsional) --}}
+                <a href="#" class="mt-5 px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition duration-150">
+                    Jelajahi Layanan
+                </a>
             </div>
+            {{-- END: EMPTY STATE DESIGN --}}
         @else
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($orders as $order)
@@ -160,30 +182,60 @@
                                         Chat
                                     </button>
                                 </form>
-                            </div>
 
-                            {{-- Form Review --}}
-                            @if ($isCustomerOrder && strtolower($order->status) === 'completed' && $order->service)
-                                @php
-                                    $userReview = $order->service->reviews->where('customer_id', $userId)->first();
-                                @endphp
+                                {{-- Form Review --}}
+                                @if ($isCustomerOrder && strtolower($order->status) === 'completed' && $order->service)
+                                    @php
+                                        $userReview = $order->service->reviews->where('customer_id', $userId)->first();
+                                    @endphp
 
-                                @if (!$userReview)
-                                    <div class="bg-gray-100 p-4 rounded-lg mt-4">
-                                        <h4 class="font-bold text-gray-800 mb-2">Beri Ulasan</h4>
-                                        <form action="{{ route('reviews.store', $order->service->slug) }}"
-                                              method="POST">
-                                            @csrf
-                                            @method('PATCH')
-                                            <div class="mb-2">
-                                                <input type="hidden"
-                                                       name="rating"
-                                                       id="rating-input-{{ $order->id }}">
-                                                <div class="flex items-center space-x-1 rating-stars cursor-pointer"
-                                                     id="rating-container-{{ $order->id }}">
+                                    @if (!$userReview)
+                                        <div class="bg-gray-100 p-4 rounded-lg mt-4">
+                                            <h4 class="font-bold text-gray-800 mb-2">Beri Ulasan</h4>
+                                            <form action="{{ route('reviews.store', $order->service->slug) }}"
+                                                  method="POST">
+                                                @csrf
+                                                @method('PATCH')
+                                                <div class="mb-2">
+                                                    <input type="hidden"
+                                                           name="rating"
+                                                           id="rating-input-{{ $order->id }}">
+                                                    <div class="flex items-center space-x-1 rating-stars cursor-pointer"
+                                                         id="rating-container-{{ $order->id }}">
+                                                        @for ($i = 1; $i <= 5; $i++)
+                                                            <svg class="h-8 w-8 text-gray-400 star-icon"
+                                                                 data-rating="{{ $i }}"
+                                                                 fill="currentColor"
+                                                                 viewBox="0 0 20 20">
+                                                                <path
+                                                                      d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
+                                                                </path>
+                                                            </svg>
+                                                        @endfor
+                                                    </div>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label for="comment-{{ $order->id }}"
+                                                           class="block text-sm text-gray-700">Komentar</label>
+                                                    <textarea id="comment-{{ $order->id }}"
+                                                              name="comment"
+                                                              rows="2"
+                                                              class="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"></textarea>
+                                                </div>
+                                                <button type="submit"
+                                                        class="w-full px-4 py-2 mt-2 bg-gray-700 text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors">
+                                                    Kirim Ulasan
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @else
+                                        <div class="bg-gray-100 p-4 rounded-lg mt-4">
+                                            <h4 class="font-bold text-gray-800 mb-2">Ulasan Anda</h4>
+                                            <div class="flex items-center text-sm text-gray-600 mb-1">
+                                                <strong>Rating:</strong>
+                                                <div class="flex ml-1">
                                                     @for ($i = 1; $i <= 5; $i++)
-                                                        <svg class="h-8 w-8 text-gray-400 star-icon"
-                                                             data-rating="{{ $i }}"
+                                                        <svg class="w-4 h-4 {{ $i <= $userReview->rating ? 'text-yellow-400' : 'text-gray-300' }}"
                                                              fill="currentColor"
                                                              viewBox="0 0 20 20">
                                                             <path
@@ -193,42 +245,12 @@
                                                     @endfor
                                                 </div>
                                             </div>
-                                            <div class="mb-2">
-                                                <label for="comment-{{ $order->id }}"
-                                                       class="block text-sm text-gray-700">Komentar</label>
-                                                <textarea id="comment-{{ $order->id }}"
-                                                          name="comment"
-                                                          rows="2"
-                                                          class="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"></textarea>
-                                            </div>
-                                            <button type="submit"
-                                                    class="w-full px-4 py-2 mt-2 bg-gray-700 text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors">
-                                                Kirim Ulasan
-                                            </button>
-                                        </form>
-                                    </div>
-                                @else
-                                    <div class="bg-gray-100 p-4 rounded-lg mt-4">
-                                        <h4 class="font-bold text-gray-800 mb-2">Ulasan Anda</h4>
-                                        <div class="flex items-center text-sm text-gray-600 mb-1">
-                                            <strong>Rating:</strong>
-                                            <div class="flex ml-1">
-                                                @for ($i = 1; $i <= 5; $i++)
-                                                    <svg class="w-4 h-4 {{ $i <= $userReview->rating ? 'text-yellow-400' : 'text-gray-300' }}"
-                                                         fill="currentColor"
-                                                         viewBox="0 0 20 20">
-                                                        <path
-                                                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
-                                                        </path>
-                                                    </svg>
-                                                @endfor
-                                            </div>
+                                            <p class="text-sm text-gray-600"><strong>Komentar:</strong>
+                                                {{ $userReview->comment ?? '-' }}</p>
                                         </div>
-                                        <p class="text-sm text-gray-600"><strong>Komentar:</strong>
-                                            {{ $userReview->comment ?? '-' }}</p>
-                                    </div>
+                                    @endif
                                 @endif
-                            @endif
+                            </div>
                         </div>
                     </div>
                 @endforeach

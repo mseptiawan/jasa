@@ -4,7 +4,7 @@
         .text-primary { color: #2b3cd7; }
         .bg-primary { background-color: #2b3cd7; }
         .bg-accent { background-color: #ffd231; }
-        .text-accent { color: #ffd231; }
+        .text-accent { color: #ffffff; }
         .text-red-500 { color: #ef4444; }
         .text-green-600 { color: #16a34a; }
         /* Pastikan tidak ada box-shadow pada elemen utama */

@@ -19,7 +19,7 @@
         }
 
         .bg-accent {
-            background-color: #ffd231; /* Diambil dari dashboard.blade.php */
+            background-color: #ffd231; /* Diambil dari dashboard.blade.blade.php */
         }
 
         .text-accent {
@@ -291,12 +291,12 @@
                 {{-- Detail Tambahan (Kategori/Subkategori) --}}
                 <div class="space-y-2">
                     <p class="text-sm font-semibold text-gray-700 p-2 bg-gray-100 rounded flex items-center">
-                        {{-- Icon Rumah (Home Icon) --}}
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-gray-600 mr-1 flex-shrink-0">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.162-.439 1.602 0l8.954 8.955M18.75 12h.008v.008h-.008V12Zm-12 0h.008v.008h-.008V12Zm-2.25 5.25h16.5a1.5 1.5 0 0 0 1.5-1.5V10.5a1.5 1.5 0 0 0-1.5-1.5h-16.5a1.5 1.5 0 0 0-1.5 1.5v5.25a1.5 1.5 0 0 0 1.5 1.5Z" />
-                        </svg>
+                        {{-- MENGGANTI IKON SVG DENGAN GAMBAR PNG --}}
+                        <img src="{{ asset('images/image-home.png') }}"
+                             alt="Kategori"
+                             class="w-4 h-4 object-contain mr-1 flex-shrink-0">
 
-                        / <span class="font-normal text-primary ml-1">{{ $service->subcategory->category->name ?? '-' }}</span>
+                        <span class="font-normal text-primary">{{ $service->subcategory->category->name ?? '-' }}</span>
                         / <span class="font-normal text-primary ml-1">{{ $service->subcategory->name ?? '-' }}</span>
                     </p>
                 </div>
@@ -685,7 +685,7 @@
                         const index = parseInt(indicator.dataset.index);
                         showImage(index);
                     });
-                }
+                });
 
                 // Event listener untuk tombol navigasi
                 if (prevBtn) {

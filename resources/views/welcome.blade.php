@@ -3,18 +3,26 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
     <title>JasaReceh - Service Finder</title>
-    <link rel="icon" type="image/x-icon" href="{{ asset('logo-JasaReceh.ico') }}">
+    <link rel="icon"
+          type="image/x-icon"
+          href="{{ asset('logo-JasaReceh.ico') }}">
 
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
 
     {{-- Link CSS Swiper --}}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
     <style>
         body {
@@ -55,6 +63,7 @@
         #autocomplete-results li:hover {
             background-color: #eef2ff;
         }
+
         #autocomplete-results-modal li:hover {
             background-color: #eef2ff;
         }
@@ -127,7 +136,8 @@
         }
 
         /* Input terdekat (address-input) height */
-        #address-input, .nearby-input {
+        #address-input,
+        .nearby-input {
             height: 52px;
         }
 
@@ -168,11 +178,12 @@
 
     {{-- START: MODALS (Disalin dari dashboard.blade.php) --}}
     <div id="notification-modal"
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden transition-opacity duration-300">
+         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden transition-opacity duration-300">
         <div class="bg-white rounded-lg shadow-xl p-6 w-11/12 max-w-sm text-center">
-            <p id="modal-message" class="mb-4 text-gray-700"></p>
+            <p id="modal-message"
+               class="mb-4 text-gray-700"></p>
             <button id="modal-close-btn"
-                class="bg-primary text-white font-bold py-2 px-6 rounded-lg hover:opacity-90 transition-opacity">
+                    class="bg-primary text-white font-bold py-2 px-6 rounded-lg hover:opacity-90 transition-opacity">
                 OK
             </button>
         </div>
@@ -180,30 +191,39 @@
 
     {{-- START: Price Filter Modal (Pop-up) --}}
     <div id="price-modal"
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden transition-opacity duration-300">
+         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden transition-opacity duration-300">
         <div class="bg-white rounded-lg shadow-xl p-6 w-11/12 max-w-md">
             <h3 class="text-xl font-extrabold mb-4 text-gray-900">Atur Rentang Harga</h3>
             {{-- Form ini di welcome hanya placeholder karena filter lanjutan di welcome tidak diperlukan --}}
             <form id="price-form-modal">
                 <div class="mb-4">
-                    <label for="price_min_modal" class="block text-sm font-semibold text-gray-700 mb-2">Harga
+                    <label for="price_min_modal"
+                           class="block text-sm font-semibold text-gray-700 mb-2">Harga
                         Minimum (Rp)</label>
-                    <input type="number" id="price_min_modal" name="price_min" placeholder="e.g. 50000"
-                        class="w-full border border-gray-300 rounded-lg px-4 py-2 font-semibold focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                        value="{{ request('price_min') }}">
+                    <input type="number"
+                           id="price_min_modal"
+                           name="price_min"
+                           placeholder="e.g. 50000"
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2 font-semibold focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                           value="{{ request('price_min') }}">
                 </div>
                 <div class="mb-6">
-                    <label for="price_max_modal" class="block text-sm font-semibold text-gray-700 mb-2">Harga
+                    <label for="price_max_modal"
+                           class="block text-sm font-semibold text-gray-700 mb-2">Harga
                         Maksimum (Rp)</label>
-                    <input type="number" id="price_max_modal" name="price_max" placeholder="e.g. 500000"
-                        class="w-full border border-gray-300 rounded-lg px-4 py-2 font-semibold focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                        value="{{ request('price_max') }}">
+                    <input type="number"
+                           id="price_max_modal"
+                           name="price_max"
+                           placeholder="e.g. 500000"
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2 font-semibold focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                           value="{{ request('price_max') }}">
                 </div>
                 <div class="flex justify-end space-x-3">
-                    <button type="button" id="price-modal-reset"
-                        class="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition font-bold">Reset</button>
+                    <button type="button"
+                            id="price-modal-reset"
+                            class="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition font-bold">Reset</button>
                     <button type="submit"
-                        class="bg-primary text-white font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity">
+                            class="bg-primary text-white font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity">
                         Terapkan
                     </button>
                 </div>
@@ -214,43 +234,71 @@
 
     {{-- START: LOCATION SEARCH MODAL --}}
     <div id="location-search-modal"
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden transition-opacity duration-300">
+         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden transition-opacity duration-300">
         <div class="bg-white rounded-lg shadow-xl p-6 w-11/12 max-w-lg relative">
             <div class="flex justify-between items-start mb-4">
                 <h3 class="text-xl font-extrabold text-gray-900">Cari Layanan di Lokasi Anda</h3>
-                <button type="button" id="location-modal-close-x"
-                    class="text-gray-400 hover:text-gray-600 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                <button type="button"
+                        id="location-modal-close-x"
+                        class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="h-6 w-6"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke="currentColor"
+                         stroke-width="2">
+                        <path stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
 
-            <form id="location-form-modal" action="{{ route('services.nearby') }}" method="get" class="flex flex-col">
+            <form id="location-form-modal"
+                  action="{{ route('services.nearby') }}"
+                  method="get"
+                  class="flex flex-col">
                 <div class="relative flex-grow">
-                    <label for="address-input-modal" class="block text-sm font-semibold text-gray-700 mb-2">Masukkan
+                    <label for="address-input-modal"
+                           class="block text-sm font-semibold text-gray-700 mb-2">Masukkan
                         Alamat</label>
-                    <input type="text" id="address-input-modal" placeholder="Ketik alamat Anda..."
-                        class="w-full p-3 border border-gray-300 rounded-lg font-semibold focus:ring-2 focus:ring-primary focus:border-transparent transition bg-gray-50"
-                        autocomplete="off" required>
-                    <input type="hidden" name="lat" id="lat-modal">
-                    <input type="hidden" name="lng" id="lng-modal">
+                    <input type="text"
+                           id="address-input-modal"
+                           placeholder="Ketik alamat Anda..."
+                           class="w-full p-3 border border-gray-300 rounded-lg font-semibold focus:ring-2 focus:ring-primary focus:border-transparent transition bg-gray-50"
+                           autocomplete="off"
+                           required>
+                    <input type="hidden"
+                           name="lat"
+                           id="lat-modal">
+                    <input type="hidden"
+                           name="lng"
+                           id="lng-modal">
                     <ul id="autocomplete-results-modal"
                         class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-b-lg shadow-lg max-h-60 overflow-y-auto z-10 list-none p-0 m-0 hidden">
                     </ul>
                 </div>
 
                 <div class="mt-6 flex justify-end space-x-3">
-                    <button type="button" id="location-modal-close-button"
-                        class="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition font-bold">Batal</button>
+                    <button type="button"
+                            id="location-modal-close-button"
+                            class="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition font-bold">Batal</button>
                     <button type="submit"
-                        class="bg-primary text-white font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="mr-2">
+                            class="bg-primary text-white font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             width="20"
+                             height="20"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="2"
+                             stroke-linecap="round"
+                             stroke-linejoin="round"
+                             class="mr-2">
                             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                            <circle cx="12" cy="10" r="3"></circle>
+                            <circle cx="12"
+                                    cy="10"
+                                    r="3"></circle>
                         </svg>
                         Cari
                     </button>
@@ -264,14 +312,17 @@
     {{-- START: Header (Logo + Auth Links) - Dipertahankan dari welcome.blade.php --}}
     <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-sm w-full border-b border-gray-200">
         <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center py-3 px-4 sm:px-6 lg:px-8 gap-4">
-            <a href="{{ url('/') }}" class="order-1">
-                <img src="{{ asset('images/logo-JasaReceh.png') }}" alt="JasaReceh" class="h-10 w-auto">
+            <a href="{{ url('/') }}"
+               class="order-1">
+                <img src="{{ asset('images/logo-JasaReceh.png') }}"
+                     alt="JasaReceh"
+                     class="h-10 w-auto">
             </a>
             <div class="flex items-center space-x-8 order-2 md:order-3">
                 <a href="{{ route('login') }}"
-                    class="animated-underline text-gray-700 hover:text-primary font-semibold transition-colors">Login</a>
+                   class="animated-underline text-gray-700 hover:text-primary font-semibold transition-colors">Login</a>
                 <a href="{{ route('register') }}"
-                    class="animated-underline text-accent hover:text-yellow-400 font-semibold transition-colors">Register</a>
+                   class="animated-underline text-accent hover:text-yellow-400 font-semibold transition-colors">Register</a>
             </div>
         </div>
     </header>
@@ -290,10 +341,50 @@
             if (!isset($services)) {
                 // DATA DUMMY SERVICE jika $services tidak ada (untuk mencegah error)
                 $services = collect([
-                    (object) ['title' => 'Jasa Desain Logo Cepat', 'price' => 50000, 'discount_price' => 45000, 'is_highlight' => true, 'highlight_until' => now()->addDays(5), 'avg_rating' => 4.5, 'description' => 'Kami mendesain logo profesional dalam 24 jam.', 'images' => json_encode(['dummy-image.jpg']), 'user' => (object)['full_name' => 'Designer Pro', 'profile_photo' => 'dummy-profile.jpg']],
-                    (object) ['title' => 'Perbaikan AC Kilat', 'price' => 150000, 'discount_price' => 0, 'is_highlight' => false, 'highlight_until' => null, 'avg_rating' => 4.8, 'description' => 'Teknisi berpengalaman untuk perbaikan AC rumah.', 'images' => json_encode(['dummy-image.jpg']), 'user' => (object)['full_name' => 'Teknisi AC', 'profile_photo' => 'dummy-profile.jpg']],
-                    (object) ['title' => 'Les Privat Matematika', 'price' => 75000, 'discount_price' => 60000, 'is_highlight' => true, 'highlight_until' => now()->addDays(2), 'avg_rating' => 4.2, 'description' => 'Bimbingan belajar matematika untuk SD-SMA.', 'images' => json_encode(['dummy-image.jpg']), 'user' => (object)['full_name' => 'Guru Cerdas', 'profile_photo' => 'dummy-profile.jpg']],
-                    (object) ['title' => 'Jasa Penerjemah Dokumen', 'price' => 120000, 'discount_price' => 0, 'is_highlight' => false, 'highlight_until' => null, 'avg_rating' => 3.9, 'description' => 'Penerjemahan dokumen resmi bahasa Inggris ke Indonesia.', 'images' => json_encode(['dummy-image.jpg']), 'user' => (object)['full_name' => 'Translater Pro', 'profile_photo' => 'dummy-profile.jpg']],
+                    (object) [
+                        'title' => 'Jasa Desain Logo Cepat',
+                        'price' => 50000,
+                        'discount_price' => 45000,
+                        'is_highlight' => true,
+                        'highlight_until' => now()->addDays(5),
+                        'avg_rating' => 4.5,
+                        'description' => 'Kami mendesain logo profesional dalam 24 jam.',
+                        'images' => json_encode(['dummy-image.jpg']),
+                        'user' => (object) ['full_name' => 'Designer Pro', 'profile_photo' => 'dummy-profile.jpg'],
+                    ],
+                    (object) [
+                        'title' => 'Perbaikan AC Kilat',
+                        'price' => 150000,
+                        'discount_price' => 0,
+                        'is_highlight' => false,
+                        'highlight_until' => null,
+                        'avg_rating' => 4.8,
+                        'description' => 'Teknisi berpengalaman untuk perbaikan AC rumah.',
+                        'images' => json_encode(['dummy-image.jpg']),
+                        'user' => (object) ['full_name' => 'Teknisi AC', 'profile_photo' => 'dummy-profile.jpg'],
+                    ],
+                    (object) [
+                        'title' => 'Les Privat Matematika',
+                        'price' => 75000,
+                        'discount_price' => 60000,
+                        'is_highlight' => true,
+                        'highlight_until' => now()->addDays(2),
+                        'avg_rating' => 4.2,
+                        'description' => 'Bimbingan belajar matematika untuk SD-SMA.',
+                        'images' => json_encode(['dummy-image.jpg']),
+                        'user' => (object) ['full_name' => 'Guru Cerdas', 'profile_photo' => 'dummy-profile.jpg'],
+                    ],
+                    (object) [
+                        'title' => 'Jasa Penerjemah Dokumen',
+                        'price' => 120000,
+                        'discount_price' => 0,
+                        'is_highlight' => false,
+                        'highlight_until' => null,
+                        'avg_rating' => 3.9,
+                        'description' => 'Penerjemahan dokumen resmi bahasa Inggris ke Indonesia.',
+                        'images' => json_encode(['dummy-image.jpg']),
+                        'user' => (object) ['full_name' => 'Translater Pro', 'profile_photo' => 'dummy-profile.jpg'],
+                    ],
                 ]);
             }
 
@@ -358,7 +449,8 @@
 
             // Sisanya adalah layanan normal
             $normalServices = $services->reject(
-                fn($s) => ($s->is_highlight && $s->highlight_until && now()->lte($s->highlight_until)) || $popularServices->contains($s)
+                fn($s) => ($s->is_highlight && $s->highlight_until && now()->lte($s->highlight_until)) ||
+                    $popularServices->contains($s),
             );
         @endphp
 
@@ -374,10 +466,12 @@
             <div class="swiper-wrapper">
                 @foreach ($banners as $banner)
                     <div class="swiper-slide min-h-32">
-                        <a href="{{ $banner['link'] }}" class="block h-full">
-                            <img src="{{ asset('images/' . $banner['image']) }}" alt="{{ $banner['alt'] }}"
-                                class="w-full h-full object-cover rounded-xl"
-                                onerror="this.onerror=null; this.src='{{ asset('images/default-banner.png') }}';">
+                        <a href="{{ $banner['link'] }}"
+                           class="block h-full">
+                            <img src="{{ asset('images/' . $banner['image']) }}"
+                                 alt="{{ $banner['alt'] }}"
+                                 class="w-full h-full object-cover rounded-xl"
+                                 onerror="this.onerror=null; this.src='{{ asset('images/default-banner.png') }}';">
                         </a>
                     </div>
                 @endforeach
@@ -385,17 +479,29 @@
             <div class="swiper-pagination !bottom-2"></div>
 
             <div id="swiper-button-prev-custom"
-                class="swiper-button-prev !left-4 !w-10 !h-10 bg-white/70 rounded-full flex items-center justify-center backdrop-blur-sm shadow-md transition-opacity hover:opacity-100 opacity-80 cursor-pointer z-10 hidden md:flex">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
-                    stroke="#2b3cd7" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                 class="swiper-button-prev !left-4 !w-10 !h-10 bg-white/70 rounded-full flex items-center justify-center backdrop-blur-sm shadow-md transition-opacity hover:opacity-100 opacity-80 cursor-pointer z-10 hidden md:flex">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     fill="none"
+                     viewBox="0 0 24 24"
+                     stroke-width="2.5"
+                     stroke="#2b3cd7"
+                     class="w-6 h-6">
+                    <path stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M15.75 19.5L8.25 12l7.5-7.5" />
                 </svg>
             </div>
             <div id="swiper-button-next-custom"
-                class="swiper-button-next !right-4 !w-10 !h-10 bg-white/70 rounded-full flex items-center justify-center backdrop-blur-sm shadow-md transition-opacity hover:opacity-100 opacity-80 cursor-pointer z-10 hidden md:flex">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
-                    stroke="#2b3cd7" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                 class="swiper-button-next !right-4 !w-10 !h-10 bg-white/70 rounded-full flex items-center justify-center backdrop-blur-sm shadow-md transition-opacity hover:opacity-100 opacity-80 cursor-pointer z-10 hidden md:flex">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     fill="none"
+                     viewBox="0 0 24 24"
+                     stroke-width="2.5"
+                     stroke="#2b3cd7"
+                     class="w-6 h-6">
+                    <path stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                 </svg>
             </div>
         </div>
@@ -407,18 +513,24 @@
             {{-- DAFTAR KATEGORI (Scrollable) --}}
             <div class="flex flex-nowrap overflow-x-auto gap-2 mb-6 pb-2 no-scrollbar">
                 <a href="{{ route('home') }}"
-                    class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-colors duration-200 flex-shrink-0
+                   class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-colors duration-200 flex-shrink-0
                    {{ !request('category') ? 'bg-primary text-accent' : 'bg-gray-100 text-gray-700 hover:bg-primary hover:text-white' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="h-4 w-4"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke="currentColor"
+                         stroke-width="2">
+                        <path stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                     Semua
                 </a>
 
                 @foreach ($categories as $cat)
                     <a href="{{ route('home', ['category' => $cat->id]) }}"
-                        class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-colors duration-200 flex-shrink-0
+                       class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-colors duration-200 flex-shrink-0
                         {{ request('category') == $cat->id ? 'bg-primary text-accent' : 'bg-gray-100 text-gray-700 hover:bg-primary hover:text-white' }}">
                         @php echo $categoryIcons[$cat->name] ?? $categoryIcons['default']; @endphp
                         <span>{{ $cat->name }}</span>
@@ -433,18 +545,31 @@
 
                 {{-- Container untuk Search Bar Kata Kunci --}}
                 <div class="flex-grow relative">
-                    <form action="{{ route('home') }}" method="GET" id="main-search-form" class="relative">
-                        <p class="text-gray-600 font-semibold mb-2">Cari berdasarkan kata kunci atau temukan layanan di dekat Anda.</p>
+                    <form action="{{ route('home') }}"
+                          method="GET"
+                          id="main-search-form"
+                          class="relative">
+                        <p class="text-gray-600 font-semibold mb-2">Cari berdasarkan kata kunci atau temukan layanan di
+                            dekat Anda.</p>
                         <div class="search-container">
-                            <input type="text" name="search" id="main-search-input" placeholder="Cari layanan apa pun..."
-                                value="{{ request('search') }}"
-                                class="w-full py-2 pl-4 border border-gray-300 rounded-lg bg-gray-50 font-semibold focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                                autocomplete="off">
-                            <button type="submit" class="search-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            <input type="text"
+                                   name="search"
+                                   id="main-search-input"
+                                   placeholder="Cari layanan apa pun..."
+                                   value="{{ request('search') }}"
+                                   class="w-full py-2 pl-4 border border-gray-300 rounded-lg bg-gray-50 font-semibold focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                                   autocomplete="off">
+                            <button type="submit"
+                                    class="search-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     class="h-5 w-5"
+                                     fill="none"
+                                     viewBox="0 0 24 24"
+                                     stroke="currentColor"
+                                     stroke-width="2">
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
                             </button>
                         </div>
@@ -454,13 +579,22 @@
                 {{-- Tombol Pencarian Lokasi Terdekat --}}
                 <div class="flex flex-col items-center">
                     <p class="text-gray-600 font-semibold mb-2 text-center whitespace-nowrap">Terdekat</p>
-                    <button type="button" id="open-location-modal"
-                        class="bg-primary text-white font-extrabold rounded-lg shadow-md hover:opacity-90 transition-all flex items-center justify-center w-12 h-12 flex-shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round">
+                    <button type="button"
+                            id="open-location-modal"
+                            class="bg-primary text-white font-extrabold rounded-lg shadow-md hover:opacity-90 transition-all flex items-center justify-center w-12 h-12 flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             width="24"
+                             height="24"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="2"
+                             stroke-linecap="round"
+                             stroke-linejoin="round">
                             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                            <circle cx="12" cy="10" r="3"></circle>
+                            <circle cx="12"
+                                    cy="10"
+                                    r="3"></circle>
                         </svg>
                         <span class="sr-only">Cari Layanan Terdekat</span>
                     </button>
@@ -485,26 +619,27 @@
                                     : asset('images/profile-user.png');
                         @endphp
                         <div
-                            class="bg-accent/20 rounded-lg overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 border-2 border-accent relative shadow-xl">
+                             class="bg-accent/20 rounded-lg overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 border-2 border-accent relative shadow-xl">
 
                             <div class="relative bg-white">
-                                <a href="#">
+                                <a href="{{ route('services.show', $service->slug) }}">
                                     @if ($mainImage)
                                         {{-- MODIFIKASI TINGGI GAMBAR --}}
-                                        <img src="{{ $mainImage }}" alt="{{ $service->title }}"
-                                            class="w-full h-32 sm:h-40 object-cover">
+                                        <img src="{{ $mainImage }}"
+                                             alt="{{ $service->title }}"
+                                             class="w-full h-32 sm:h-40 object-cover">
                                     @else
                                         <div
-                                            class="w-full h-32 sm:h-40 bg-gray-200 flex items-center justify-center text-gray-500">
+                                             class="w-full h-32 sm:h-40 bg-gray-200 flex items-center justify-center text-gray-500">
                                             Tidak Ada Gambar</div>
                                     @endif
                                 </a>
                                 <span
-                                    class="absolute top-2 left-2 bg-accent text-gray-900 text-xs font-extrabold px-3 py-1 rounded-full">UNGGULAN</span>
+                                      class="absolute top-2 left-2 bg-accent text-gray-900 text-xs font-extrabold px-3 py-1 rounded-full">UNGGULAN</span>
                             </div>
                             <div class="p-4">
-                                <a href="#"
-                                    class="block font-bold text-lg mb-2 text-gray-900 hover:text-primary truncate transition-colors">{{ $service->title }}</a>
+                                <a href="{{ route('services.show', $service->slug) }}"
+                                   class="block font-bold text-lg mb-2 text-gray-900 hover:text-primary truncate transition-colors">{{ $service->title }}</a>
                                 @if ($service->discount_price && $service->discount_price > 0)
                                     <p class="text-lg font-bold text-red-600 mb-1">
                                         Rp {{ number_format($service->discount_price, 0, ',', '.') }}
@@ -526,8 +661,8 @@
                                 <div class="flex items-center gap-2 text-sm text-gray-600 mb-3">
                                     @if ($profilePhoto)
                                         <img src="{{ $profilePhoto }}"
-                                            alt="{{ $service->user->full_name ?? 'N/A' }}"
-                                            class="w-7 h-7 rounded-full object-cover">
+                                             alt="{{ $service->user->full_name ?? 'N/A' }}"
+                                             class="w-7 h-7 rounded-full object-cover">
                                     @else
                                         <div class="w-7 h-7 rounded-full bg-gray-300"></div>
                                     @endif
@@ -536,9 +671,10 @@
                                 <div class="flex items-center">
                                     @for ($i = 1; $i <= 5; $i++)
                                         <svg class="w-5 h-5 {{ $i <= round($service->avg_rating) ? 'text-yellow-400' : 'text-gray-300' }}"
-                                            fill="currentColor" viewBox="0 0 20 20">
+                                             fill="currentColor"
+                                             viewBox="0 0 20 20">
                                             <path
-                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
+                                                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
                                             </path>
                                         </svg>
                                     @endfor
@@ -566,22 +702,23 @@
                                     : asset('images/profile-user.png');
                         @endphp
                         <div
-                            class="bg-white rounded-lg border border-gray-200 overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 relative shadow-lg">
+                             class="bg-white rounded-lg border border-gray-200 overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 relative shadow-lg">
 
-                            <a href="#">
+                            <a href="{{ route('services.show', $service->slug) }}">
                                 @if ($mainImage)
                                     {{-- MODIFIKASI TINGGI GAMBAR --}}
-                                    <img src="{{ $mainImage }}" alt="{{ $service->title }}"
-                                        class="w-full h-32 sm:h-40 object-cover">
+                                    <img src="{{ $mainImage }}"
+                                         alt="{{ $service->title }}"
+                                         class="w-full h-32 sm:h-40 object-cover">
                                 @else
                                     <div
-                                        class="w-full h-32 sm:h-40 bg-gray-200 flex items-center justify-center text-gray-500">
+                                         class="w-full h-32 sm:h-40 bg-gray-200 flex items-center justify-center text-gray-500">
                                         Tidak Ada Gambar</div>
                                 @endif
                             </a>
                             <div class="p-4">
-                                <a href="#"
-                                    class="block font-bold text-lg mb-2 text-gray-900 hover:text-primary truncate transition-colors">{{ $service->title }}</a>
+                                <a href="{{ route('services.show', $service->slug) }}"
+                                   class="block font-bold text-lg mb-2 text-gray-900 hover:text-primary truncate transition-colors">{{ $service->title }}</a>
                                 @if ($service->discount_price && $service->discount_price > 0)
                                     <p class="text-lg font-bold text-red-600 mb-1">
                                         Rp {{ number_format($service->discount_price, 0, ',', '.') }}
@@ -603,8 +740,8 @@
                                 <div class="flex items-center gap-2 text-sm text-gray-600 mb-3">
                                     @if ($profilePhoto)
                                         <img src="{{ $profilePhoto }}"
-                                            alt="{{ $service->user->full_name ?? 'N/A' }}"
-                                            class="w-7 h-7 rounded-full object-cover">
+                                             alt="{{ $service->user->full_name ?? 'N/A' }}"
+                                             class="w-7 h-7 rounded-full object-cover">
                                     @else
                                         <div class="w-7 h-7 rounded-full bg-gray-300"></div>
                                     @endif
@@ -613,9 +750,10 @@
                                 <div class="flex items-center">
                                     @for ($i = 1; $i <= 5; $i++)
                                         <svg class="w-5 h-5 {{ $i <= round($service->avg_rating) ? 'text-yellow-400' : 'text-gray-300' }}"
-                                            fill="currentColor" viewBox="0 0 20 20">
+                                             fill="currentColor"
+                                             viewBox="0 0 20 20">
                                             <path
-                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
+                                                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
                                             </path>
                                         </svg>
                                     @endfor
@@ -635,7 +773,7 @@
         <section>
             <h2 class="text-2xl font-extrabold mb-5 text-gray-900">Semua Layanan</h2>
             <div id="normal-services-grid"
-                class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                 class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 @forelse($normalServices as $service)
                     @php
                         $images = json_decode($service->images, true);
@@ -646,21 +784,22 @@
                                 : asset('images/profile-user.png');
                     @endphp
                     <div
-                        class="normal-service-card bg-white rounded-lg border border-gray-200 overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 relative">
-
-                        <a href="#">
+                         class="normal-service-card bg-white rounded-lg border border-gray-200 overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 relative">
+                        <a href="{{ route('services.show', $service->slug) }}">
                             @if ($mainImage)
                                 {{-- MODIFIKASI TINGGI GAMBAR --}}
-                                <img src="{{ $mainImage }}" alt="{{ $service->title }}"
-                                    class="w-full h-32 sm:h-40 object-cover">
+                                <img src="{{ $mainImage }}"
+                                     alt="{{ $service->title }}"
+                                     class="w-full h-32 sm:h-40 object-cover">
                             @else
-                                <div class="w-full h-32 sm:h-40 bg-gray-200 flex items-center justify-center text-gray-500">
+                                <div
+                                     class="w-full h-32 sm:h-40 bg-gray-200 flex items-center justify-center text-gray-500">
                                     Tidak Ada Gambar</div>
                             @endif
                         </a>
                         <div class="p-4">
-                            <a href="#"
-                                class="block font-bold text-lg mb-2 text-gray-900 hover:text-primary truncate transition-colors">{{ $service->title }}</a>
+                            <a href="{{ route('services.show', $service->slug) }}"
+                               class="block font-bold text-lg mb-2 text-gray-900 hover:text-primary truncate transition-colors">{{ $service->title }}</a>
                             @if ($service->discount_price && $service->discount_price > 0)
                                 <p class="text-lg font-bold text-red-600 mb-1">
                                     Rp {{ number_format($service->discount_price, 0, ',', '.') }}
@@ -681,8 +820,9 @@
 
                             <div class="flex items-center gap-2 text-sm text-gray-600 mb-3">
                                 @if ($profilePhoto)
-                                    <img src="{{ $profilePhoto }}" alt="{{ $service->user->full_name ?? 'N/A' }}"
-                                        class="w-7 h-7 rounded-full object-cover">
+                                    <img src="{{ $profilePhoto }}"
+                                         alt="{{ $service->user->full_name ?? 'N/A' }}"
+                                         class="w-7 h-7 rounded-full object-cover">
                                 @else
                                     <div class="w-7 h-7 rounded-full bg-gray-300"></div>
                                 @endif
@@ -691,9 +831,10 @@
                             <div class="flex items-center">
                                 @for ($i = 1; $i <= 5; $i++)
                                     <svg class="w-5 h-5 {{ $i <= round($service->avg_rating) ? 'text-yellow-400' : 'text-gray-300' }}"
-                                        fill="currentColor" viewBox="0 0 20 20">
+                                         fill="currentColor"
+                                         viewBox="0 0 20 20">
                                         <path
-                                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
+                                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
                                         </path>
                                     </svg>
                                 @endfor
@@ -701,11 +842,12 @@
                         </div>
                     </div>
                 @empty
-                    <p class="col-span-full text-center text-gray-500 py-10 font-bold">Tidak ada layanan yang tersedia saat ini.</p>
+                    <p class="col-span-full text-center text-gray-500 py-10 font-bold">Tidak ada layanan yang tersedia
+                        saat ini.</p>
                 @endforelse
             </div>
             <div id="loading-indicator"
-                class="w-full flex justify-center items-center py-8 gap-3 text-gray-600">
+                 class="w-full flex justify-center items-center py-8 gap-3 text-gray-600">
                 <div class="loader"></div>
                 <span class="font-bold">Memuat layanan lainnya...</span>
             </div>
@@ -812,10 +954,10 @@
             });
 
             if (locationModalCloseXBtn) {
-                 locationModalCloseXBtn.addEventListener('click', hideLocationModal);
+                locationModalCloseXBtn.addEventListener('click', hideLocationModal);
             }
             if (locationModalCloseButton) {
-                 locationModalCloseButton.addEventListener('click', hideLocationModal);
+                locationModalCloseButton.addEventListener('click', hideLocationModal);
             }
 
             locationSearchModal.addEventListener('click', (e) => {
@@ -845,7 +987,8 @@
                                     li.textContent = item.display_name;
                                     li.className = 'p-3 cursor-pointer';
                                     li.addEventListener('click', () => {
-                                        addressInputModal.value = item.display_name;
+                                        addressInputModal.value = item
+                                            .display_name;
                                         latInputModal.value = item.lat;
                                         lngInputModal.value = item.lon;
                                         resultsListModal.style.display = 'none';
@@ -868,9 +1011,11 @@
             // Sembunyikan hasil autocomplete jika mengklik di luar input/modal
             document.addEventListener('click', (e) => {
                 const isClickInsideModal = locationSearchModal.contains(e.target);
-                const isClickOnInputOrResults = addressInputModal.contains(e.target) || resultsListModal.contains(e.target);
+                const isClickOnInputOrResults = addressInputModal.contains(e.target) || resultsListModal
+                    .contains(e.target);
 
-                if (locationSearchModal.classList.contains('hidden') || (isClickInsideModal && !isClickOnInputOrResults)) {
+                if (locationSearchModal.classList.contains('hidden') || (isClickInsideModal && !
+                        isClickOnInputOrResults)) {
                     resultsListModal.style.display = 'none';
                 }
             });
@@ -906,10 +1051,12 @@
                                         li.textContent = item.display_name;
                                         li.className = 'p-3 cursor-pointer';
                                         li.addEventListener('click', () => {
-                                            addressInputWelcome.value = item.display_name;
+                                            addressInputWelcome.value = item
+                                                .display_name;
                                             latInputWelcome.value = item.lat;
                                             lngInputWelcome.value = item.lon;
-                                            resultsListWelcome.style.display = 'none';
+                                            resultsListWelcome.style.display =
+                                                'none';
                                         });
                                         resultsListWelcome.appendChild(li);
                                     });
@@ -924,19 +1071,20 @@
 
 
             document.addEventListener('click', (e) => {
-                if(addressInputWelcome && resultsListWelcome) {
+                if (addressInputWelcome && resultsListWelcome) {
                     if (!addressInputWelcome.contains(e.target) && !resultsListWelcome.contains(e.target)) {
                         resultsListWelcome.style.display = 'none';
                     }
                 }
             });
 
-            if(formWelcome) {
+            if (formWelcome) {
                 formWelcome.addEventListener('submit', (e) => {
                     if (!latInputWelcome.value || !lngInputWelcome.value) {
                         e.preventDefault();
                         showModal(
-                            'Silakan pilih alamat yang valid dari daftar dropdown untuk mengisi koordinat.');
+                            'Silakan pilih alamat yang valid dari daftar dropdown untuk mengisi koordinat.'
+                        );
                     }
                 });
             }
@@ -980,8 +1128,8 @@
 
                 window.addEventListener('scroll', handleScroll);
             } else {
-                if(loadingIndicator) {
-                     loadingIndicator.remove();
+                if (loadingIndicator) {
+                    loadingIndicator.remove();
                 }
             }
         });

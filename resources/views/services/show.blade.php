@@ -3,27 +3,33 @@
     <style>
         body {
             font-family: 'Montserrat', sans-serif;
-            background-color: #f8fafc; /* Diambil dari dashboard.blade.php */
+            background-color: #f8fafc;
+            /* Diambil dari dashboard.blade.php */
         }
 
         .bg-primary {
-            background-color: #2b3cd7; /* Diambil dari dashboard.blade.php */
+            background-color: #2b3cd7;
+            /* Diambil dari dashboard.blade.php */
         }
 
         .text-primary {
-            color: #2b3cd7; /* Diambil dari dashboard.blade.php */
+            color: #2b3cd7;
+            /* Diambil dari dashboard.blade.php */
         }
 
         .border-primary {
-            border-color: #2b3cd7; /* Diambil dari dashboard.blade.php */
+            border-color: #2b3cd7;
+            /* Diambil dari dashboard.blade.php */
         }
 
         .bg-accent {
-            background-color: #ffd231; /* Diambil dari dashboard.blade.blade.php */
+            background-color: #ffd231;
+            /* Diambil dari dashboard.blade.blade.php */
         }
 
         .text-accent {
-            color: #ffd231; /* Diambil dari dashboard.blade.php */
+            color: #ffd231;
+            /* Diambil dari dashboard.blade.php */
         }
 
         .text-green-600 {
@@ -35,7 +41,8 @@
         }
 
         .text-red-500 {
-            color: #ef4444; /* Diambil dari dashboard.blade.php */
+            color: #ef4444;
+            /* Diambil dari dashboard.blade.php */
         }
 
         /* Custom Scrollbar for reviews */
@@ -60,8 +67,10 @@
 
         /* Pastikan SVG yang di-inject bisa diwarnai dan diukur */
         .social-icon-wrapper svg {
-            width: 1rem; /* setara dengan w-4 */
-            height: 1rem; /* setara dengan h-4 */
+            width: 1rem;
+            /* setara dengan w-4 */
+            height: 1rem;
+            /* setara dengan h-4 */
             color: currentColor;
         }
 
@@ -70,30 +79,38 @@
             background-color: #ffffff;
             border: 1px solid #e5e7eb;
             overflow: hidden;
-            border-radius: 0.5rem; /* rounded-lg */
+            border-radius: 0.5rem;
+            /* rounded-lg */
             transition: transform 0.3s ease-in-out;
             /* TANPA SHADOW */
         }
 
         .normal-service-card:hover {
-            transform: translateY(-4px); /* hover:-translate-y-1 */
+            transform: translateY(-4px);
+            /* hover:-translate-y-1 */
         }
 
         /* START: Custom CSS for Toast Notification (Success Style) */
         #toast-notification {
             position: fixed;
-            bottom: 1.5rem; /* md:right-4 */
-            right: 1.5rem; /* md:bottom-4 */
+            bottom: 1.5rem;
+            /* md:right-4 */
+            right: 1.5rem;
+            /* md:bottom-4 */
             z-index: 100;
             max-width: 320px;
             /* Flex box di Toast */
             display: flex;
             align-items: center;
-            padding: 0.75rem 1rem; /* py-3 px-4 */
-            border-radius: 0.375rem; /* rounded-md */
+            padding: 0.75rem 1rem;
+            /* py-3 px-4 */
+            border-radius: 0.375rem;
+            /* rounded-md */
             background-color: #fff;
-            border: 1px solid #d1d5db; /* border-gray-300 */
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* shadow-lg */
+            border: 1px solid #d1d5db;
+            /* border-gray-300 */
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            /* shadow-lg */
             /* Animasi masuk/keluar */
             opacity: 0;
             visibility: hidden;
@@ -108,11 +125,15 @@
         }
 
         .toast-icon {
-            width: 1.25rem; /* w-5 */
-            height: 1.25rem; /* h-5 */
-            color: #10b981; /* Tailwind green-500 for Success */
+            width: 1.25rem;
+            /* w-5 */
+            height: 1.25rem;
+            /* h-5 */
+            color: #10b981;
+            /* Tailwind green-500 for Success */
             flex-shrink: 0;
-            margin-right: 0.5rem; /* mr-2 */
+            margin-right: 0.5rem;
+            /* mr-2 */
         }
 
         .toast-text-container {
@@ -120,34 +141,57 @@
         }
 
         .toast-title {
-            font-weight: 600; /* font-semibold */
+            font-weight: 600;
+            /* font-semibold */
             color: #10b981;
-            font-size: 0.875rem; /* text-sm */
+            font-size: 0.875rem;
+            /* text-sm */
         }
 
         .toast-message {
-            color: #4b5563; /* text-gray-600 */
-            font-size: 0.875rem; /* text-sm */
+            color: #4b5563;
+            /* text-gray-600 */
+            font-size: 0.875rem;
+            /* text-sm */
         }
+
         /* END: Custom CSS for Toast Notification */
     </style>
 
     {{-- START: Toast Notification (Non-Modal, Hilang Otomatis) --}}
-    <div id="toast-notification" role="alert">
+    <div id="toast-notification"
+         role="alert">
         <div class="toast-icon">
-             {{-- Success Icon --}}
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            {{-- Success Icon --}}
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 fill="none"
+                 viewBox="0 0 24 24"
+                 stroke-width="2.5"
+                 stroke="currentColor">
+                <path stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
         </div>
         <div class="toast-text-container">
-            <p class="toast-title" id="toast-title">Berhasil!</p>
-            <p class="toast-message" id="toast-message">Layanan telah ditambahkan ke keranjang.</p>
+            <p class="toast-title"
+               id="toast-title">Berhasil!</p>
+            <p class="toast-message"
+               id="toast-message">Layanan telah ditambahkan ke keranjang.</p>
         </div>
         {{-- Close Button (Opsional, tapi bagus untuk kontrol pengguna) --}}
-        <button type="button" class="ml-3 text-gray-400 hover:text-gray-900 transition-colors" onclick="hideToast()">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        <button type="button"
+                class="ml-3 text-gray-400 hover:text-gray-900 transition-colors"
+                onclick="hideToast()">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 class="w-4 h-4"
+                 fill="none"
+                 viewBox="0 0 24 24"
+                 stroke="currentColor"
+                 stroke-width="2">
+                <path stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M6 18 18 6M6 6l12 12" />
             </svg>
         </button>
     </div>
@@ -156,7 +200,7 @@
     <div class="container mx-auto p-4 md:p-8 max-w-7xl">
         {{-- Kembali ke Halaman Sebelumnya --}}
         <div class="mb-6">
-            <a href="{{ url()->previous() }}"
+            <a href="{{ route('home') }}"
                class="text-gray-500 hover:text-primary transition-colors flex items-center gap-2 font-medium">
                 <svg xmlns="http://www.w3.org/2000/svg"
                      class="h-5 w-5"
@@ -185,9 +229,9 @@
                                 $images = json_decode($service->images, true);
                             @endphp
                             <img id="main-image"
-                                src="{{ asset('storage/' . $images[0]) }}"
-                                alt="{{ $service->title }}"
-                                class="image-display">
+                                 src="{{ asset('storage/' . $images[0]) }}"
+                                 alt="{{ $service->title }}"
+                                 class="image-display">
 
                             {{-- Navigasi Gambar --}}
                             @if (count($images) > 1)
@@ -220,7 +264,7 @@
                             @endif
                         @else
                             <div
-                                class="w-full h-auto min-h-[500px] bg-gray-200 flex items-center justify-center text-gray-500 rounded-lg">
+                                 class="w-full h-auto min-h-[500px] bg-gray-200 flex items-center justify-center text-gray-500 rounded-lg">
                                 Tidak Ada Gambar</div>
                         @endif
                     </div>
@@ -264,11 +308,12 @@
                                      fill="currentColor"
                                      viewBox="0 0 20 20">
                                     <path
-                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
+                                          d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
                                     </path>
                                 </svg>
                             @endfor
-                            <span class="text-sm font-bold text-yellow-500 ml-2">({{ number_format($avgRating, 1) }})</span>
+                            <span
+                                  class="text-sm font-bold text-yellow-500 ml-2">({{ number_format($avgRating, 1) }})</span>
                         </div>
                         <span class="text-gray-500 ml-3 text-sm">({{ $reviewCount }} ulasan)</span>
                     </div>
@@ -276,7 +321,8 @@
                     @if ($service->discount_price && $service->discount_price > 0)
                         <p class="text-xl font-bold text-red-600 mb-1">
                             Rp {{ number_format($service->discount_price, 0, ',', '.') }}
-                            <span class="text-xs font-normal bg-red-100 text-red-500 px-2 py-0.5 rounded-full ml-2">Diskon!</span>
+                            <span
+                                  class="text-xs font-normal bg-red-100 text-red-500 px-2 py-0.5 rounded-full ml-2">Diskon!</span>
                         </p>
                         <p class="text-sm text-gray-500 line-through mb-3">
                             Rp {{ number_format($service->price, 0, ',', '.') }}
@@ -297,7 +343,8 @@
                              alt="Kategori"
                              class="w-4 h-4 object-contain mr-1 flex-shrink-0">
 
-                        <span class="font-normal text-primary">{{ $service->subcategory->category->name ?? '-' }}</span>
+                        <span
+                              class="font-normal text-primary">{{ $service->subcategory->category->name ?? '-' }}</span>
                         / <span class="font-normal text-primary ml-1">{{ $service->subcategory->name ?? '-' }}</span>
                     </p>
                 </div>
@@ -313,7 +360,8 @@
                         {{ $service->user->full_name ?? 'N/A' }}</p>
                     <p class="text-xs text-gray-500 truncate mb-3">{{ $service->user->email ?? 'N/A' }}</p>
 
-                    <p class="text-sm text-gray-700 italic mb-4 max-w-xs mx-auto">"{{ $service->user->bio ?? 'Bio belum tersedia.' }}"
+                    <p class="text-sm text-gray-700 italic mb-4 max-w-xs mx-auto">
+                        "{{ $service->user->bio ?? 'Bio belum tersedia.' }}"
                     </p>
 
                     <h3 class="font-bold text-gray-800 mb-2 border-t pt-3">Kontak & Jaringan</h3>
@@ -330,8 +378,15 @@
                                         {!! file_get_contents($linkSvgPath) !!}
                                     </span>
                                 @else
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.102 1.101" />
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="h-4 w-4 text-primary"
+                                         fill="none"
+                                         viewBox="0 0 24 24"
+                                         stroke="currentColor"
+                                         stroke-width="2">
+                                        <path stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.102 1.101" />
                                     </svg>
                                 @endif
                                 <span class="ml-1 text-xs font-semibold">Website</span>
@@ -349,8 +404,12 @@
                                         {!! file_get_contents($linkedinSvgPath) !!}
                                     </span>
                                 @else
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.761s.784-1.76 1.75-1.76 1.75.79 1.75 1.76-.783 1.761-1.75 1.761zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="h-4 w-4 text-primary"
+                                         viewBox="0 0 24 24"
+                                         fill="currentColor">
+                                        <path
+                                              d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.761s.784-1.76 1.75-1.76 1.75.79 1.75 1.76-.783 1.761-1.75 1.761zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                                     </svg>
                                 @endif
                                 <span class="ml-1 text-xs font-semibold">LinkedIn</span>
@@ -368,10 +427,24 @@
                                         {!! file_get_contents($instagramSvgPath) !!}
                                     </span>
                                 @else
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                                        <path d="M15 12c0 1.657-1.343 3-3 3s-3-1.343-3-3 1.343-3 3-3 3 1.343 3 3z"></path>
-                                        <line x1="16.5" y1="7.5" x2="16.5" y2="7.5"></line>
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="h-4 w-4 text-primary"
+                                         fill="none"
+                                         viewBox="0 0 24 24"
+                                         stroke="currentColor"
+                                         stroke-width="2">
+                                        <rect x="2"
+                                              y="2"
+                                              width="20"
+                                              height="20"
+                                              rx="5"
+                                              ry="5"></rect>
+                                        <path d="M15 12c0 1.657-1.343 3-3 3s-3-1.343-3-3 1.343-3 3-3 3 1.343 3 3z">
+                                        </path>
+                                        <line x1="16.5"
+                                              y1="7.5"
+                                              x2="16.5"
+                                              y2="7.5"></line>
                                     </svg>
                                 @endif
                                 <span class="ml-1 text-xs font-semibold">Instagram</span>
@@ -381,7 +454,7 @@
 
                     {{-- START: TOMBOL HUBUNGI PENJUAL (LOKASI BARU) --}}
                     <div class="mt-4 pt-4 border-t border-gray-200">
-                        @if (auth()->check() && auth()->id() !== $service->user_id)
+                        @if (auth()->id() !== $service->user_id)
                             {{-- TOMBOL HUBUNGI PENJUAL (LOGGED IN) --}}
                             <a href="{{ route('conversations.start') }}"
                                onclick="event.preventDefault(); document.getElementById('start-chat-{{ $service->id }}').submit();"
@@ -400,37 +473,17 @@
                             </a>
 
                             <form id="start-chat-{{ $service->id }}"
-                                action="{{ route('conversations.start') }}"
-                                method="POST"
-                                class="hidden">
+                                  action="{{ route('conversations.start') }}"
+                                  method="POST"
+                                  class="hidden">
                                 @csrf
                                 <input type="hidden"
-                                    name="seller_id"
-                                    value="{{ $service->user->id }}" />
+                                       name="seller_id"
+                                       value="{{ $service->user->id }}" />
                                 <input type="hidden"
-                                    name="product_id"
-                                    value="{{ $service->id }}" />
+                                       name="product_id"
+                                       value="{{ $service->id }}" />
                             </form>
-                        @else
-                            @if (!auth()->check() || auth()->id() !== $service->user_id)
-                                {{-- TOMBOL TAMBAH KE KERANJANG (LOGIN PROMPT) --}}
-                                <a href="{{ route('login') }}"
-                                   class="w-full flex items-center justify-center gap-2 bg-accent text-primary font-bold py-3 px-4 rounded-lg hover:bg-accent/80 transition-colors duration-300 text-base">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                                    </svg>
-                                    Tambahkan ke Keranjang (Login)
-                                </a>
-
-                                {{-- TOMBOL PESAN SEKARANG (LOGIN PROMPT) --}}
-                                <a href="{{ route('login') }}"
-                                   class="w-full flex items-center justify-center gap-2 bg-primary text-white font-bold py-3 px-4 rounded-lg hover:bg-primary/80 transition-colors duration-300 text-base">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                                    </svg>
-                                    Pesan Sekarang (Login)
-                                </a>
-                            @endif
                         @endif
                     </div>
                     {{-- END: TOMBOL HUBUNGI PENJUAL (LOKASI BARU) --}}
@@ -442,11 +495,15 @@
                 <div class="space-y-4 pt-4 border-t border-gray-200">
                     <h2 class="text-xl font-bold text-gray-800">Spesifikasi</h2>
                     <ul class="text-gray-700 space-y-3 text-base">
-                        <li class="flex items-center gap-2 border-b pb-2"><span class="font-semibold w-32">Jenis Pekerjaan:</span>
-                            <span class="text-primary font-bold">{{ $service->job_type ?? '-' }}</span></li>
-                        <li class="flex items-center gap-2 border-b pb-2"><span class="font-semibold w-32">Pengalaman:</span>
+                        <li class="flex items-center gap-2 border-b pb-2"><span class="font-semibold w-32">Jenis
+                                Pekerjaan:</span>
+                            <span class="text-primary font-bold">{{ $service->job_type ?? '-' }}</span>
+                        </li>
+                        <li class="flex items-center gap-2 border-b pb-2"><span
+                                  class="font-semibold w-32">Pengalaman:</span>
                             {{ $service->experience ?? '-' }}</li>
-                        <li class="flex items-center gap-2 border-b pb-2"><span class="font-semibold w-32">Alamat:</span>
+                        <li class="flex items-center gap-2 border-b pb-2"><span
+                                  class="font-semibold w-32">Alamat:</span>
                             {{ $service->address ?? '-' }}</li>
                         <li class="flex items-center gap-2"><span class="font-semibold w-32">Tipe Layanan:</span>
                             <span class="text-primary font-bold">{{ ucfirst($service->service_type ?? '-') }}</span>
@@ -458,8 +515,13 @@
                 {{-- Jaminan Kualitas --}}
                 <div class="p-4 bg-primary/10 rounded-lg border border-primary/20 text-primary">
                     <p class="font-bold mb-2 flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             class="h-5 w-5"
+                             viewBox="0 0 20 20"
+                             fill="currentColor">
+                            <path fill-rule="evenodd"
+                                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                  clip-rule="evenodd" />
                         </svg>
                         Jaminan Kualitas
                     </p>
@@ -467,11 +529,12 @@
                         Jika ada masalah, hubungi Layanan Pelanggan kami untuk bantuan.</p>
                 </div>
 
-                {{-- Tombol Aksi (Tinggal Tambahkan ke Keranjang & Pesan Sekarang) --}}
+
                 <div class="pt-4 space-y-4 border-t border-gray-200">
                     @if (auth()->check() && auth()->id() !== $service->user_id)
                         {{-- TOMBOL TAMBAH KE KERANJANG --}}
-                        <form id="add-to-cart-form" action="{{ route('cart.add', $service->slug) }}"
+                        <form id="add-to-cart-form"
+                              action="{{ route('cart.add', $service->slug) }}"
                               method="POST">
                             @csrf
                             <input type="hidden"
@@ -479,18 +542,32 @@
                                    value="1">
                             <button type="submit"
                                     class="w-full flex items-center justify-center gap-2 bg-accent text-primary font-bold py-3 px-4 rounded-lg hover:bg-accent/80 transition-colors duration-300 text-base">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     class="h-5 w-5"
+                                     fill="none"
+                                     viewBox="0 0 24 24"
+                                     stroke="currentColor"
+                                     stroke-width="2">
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                                 </svg>
                                 Tambahkan ke Keranjang
                             </button>
                         </form>
 
-                        {{-- TOMBOL PESAN SEKARANG --}}
+
                         <a href="{{ route('orders.create', ['service' => $service->slug]) }}"
                            class="w-full flex items-center justify-center gap-2 bg-primary text-white font-bold py-3 px-4 rounded-lg hover:bg-primary/80 transition-colors duration-300 text-base">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="h-5 w-5"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke="currentColor"
+                                 stroke-width="2">
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
                             Pesan Sekarang
                         </a>
@@ -499,17 +576,31 @@
                             {{-- TOMBOL TAMBAH KE KERANJANG (LOGIN PROMPT) --}}
                             <a href="{{ route('login') }}"
                                class="w-full flex items-center justify-center gap-2 bg-accent text-primary font-bold py-3 px-4 rounded-lg hover:bg-accent/80 transition-colors duration-300 text-base">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     class="h-5 w-5"
+                                     fill="none"
+                                     viewBox="0 0 24 24"
+                                     stroke="currentColor"
+                                     stroke-width="2">
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                                 </svg>
                                 Tambahkan ke Keranjang (Login)
                             </a>
 
-                            {{-- TOMBOL PESAN SEKARANG (LOGIN PROMPT) --}}
+
                             <a href="{{ route('login') }}"
                                class="w-full flex items-center justify-center gap-2 bg-primary text-white font-bold py-3 px-4 rounded-lg hover:bg-primary/80 transition-colors duration-300 text-base">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     class="h-5 w-5"
+                                     fill="none"
+                                     viewBox="0 0 24 24"
+                                     stroke="currentColor"
+                                     stroke-width="2">
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                                 </svg>
                                 Pesan Sekarang (Login)
                             </a>
@@ -544,15 +635,18 @@
                             @if ($mainImage)
                                 {{-- MODIFIKASI TINGGI GAMBAR: h-32 di mobile --}}
                                 <img src="{{ $mainImage }}"
-                                    alt="{{ $otherService->title }}"
-                                    class="w-full h-32 sm:h-40 object-cover">
+                                     alt="{{ $otherService->title }}"
+                                     class="w-full h-32 sm:h-40 object-cover">
                             @else
-                                <div class="w-full h-32 sm:h-40 bg-gray-200 flex items-center justify-center text-gray-500">
+                                <div
+                                     class="w-full h-32 sm:h-40 bg-gray-200 flex items-center justify-center text-gray-500">
                                     Tidak Ada Gambar</div>
                             @endif
                         </div>
                         <div class="p-4">
-                            <p class="font-bold text-lg mb-1 text-gray-900 truncate hover:text-primary transition-colors">{{ $otherService->title }}</p>
+                            <p
+                               class="font-bold text-lg mb-1 text-gray-900 truncate hover:text-primary transition-colors">
+                                {{ $otherService->title }}</p>
 
                             @if ($otherService->discount_price && $otherService->discount_price > 0)
                                 <p class="text-lg font-bold text-red-600 mb-1">
@@ -574,17 +668,18 @@
 
                             <div class="flex items-center gap-2 text-sm text-gray-600 mb-3">
                                 <img src="{{ $profilePhoto }}"
-                                    alt="{{ $otherService->user->full_name ?? 'N/A' }}"
-                                    class="w-7 h-7 rounded-full object-cover">
+                                     alt="{{ $otherService->user->full_name ?? 'N/A' }}"
+                                     class="w-7 h-7 rounded-full object-cover">
                                 <span
-                                    class="text-gray-700 font-semibold">{{ $otherService->user->full_name ?? 'N/A' }}</span>
+                                      class="text-gray-700 font-semibold">{{ $otherService->user->full_name ?? 'N/A' }}</span>
                             </div>
                             <div class="flex items-center">
                                 @for ($i = 1; $i <= 5; $i++)
                                     <svg class="w-5 h-5 {{ $i <= round($avgRating) ? 'text-yellow-400' : 'text-gray-300' }}"
-                                        fill="currentColor" viewBox="0 0 20 20">
+                                         fill="currentColor"
+                                         viewBox="0 0 20 20">
                                         <path
-                                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
+                                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
                                         </path>
                                     </svg>
                                 @endfor
@@ -713,41 +808,45 @@
                     hideToast(); // Sembunyikan toast sebelumnya
 
                     fetch(url, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    })
-                    .then(response => {
-                        // Coba parse JSON
-                        const contentType = response.headers.get("content-type");
-                        if (contentType && contentType.indexOf("application/json") !== -1) {
-                            return response.json();
-                        }
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => {
+                            // Coba parse JSON
+                            const contentType = response.headers.get("content-type");
+                            if (contentType && contentType.indexOf("application/json") !== -1) {
+                                return response.json();
+                            }
 
-                        // Jika bukan JSON, dan status OK, asumsikan berhasil
-                        if (response.ok) {
-                            return { success: true, message: 'Layanan berhasil ditambahkan ke keranjang.' };
-                        }
+                            // Jika bukan JSON, dan status OK, asumsikan berhasil
+                            if (response.ok) {
+                                return {
+                                    success: true,
+                                    message: 'Layanan berhasil ditambahkan ke keranjang.'
+                                };
+                            }
 
-                        // Jika status bukan OK, lempar error
-                        throw new Error('Terjadi kesalahan saat menambahkan ke keranjang.');
-                    })
-                    .then(data => {
-                        // Tampilkan Toast berdasarkan respons
-                        if (data.success) {
-                            showToast(data.message || 'Layanan berhasil ditambahkan ke keranjang.');
-                        } else {
-                            // Tampilkan notifikasi gagal
-                            showToast(data.message || 'Gagal menambahkan layanan ke keranjang.', false);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        // Tampilkan notifikasi error
-                        showToast('Terjadi kesalahan koneksi atau server.', false);
-                    });
+                            // Jika status bukan OK, lempar error
+                            throw new Error('Terjadi kesalahan saat menambahkan ke keranjang.');
+                        })
+                        .then(data => {
+                            // Tampilkan Toast berdasarkan respons
+                            if (data.success) {
+                                showToast(data.message || 'Layanan berhasil ditambahkan ke keranjang.');
+                            } else {
+                                // Tampilkan notifikasi gagal
+                                showToast(data.message || 'Gagal menambahkan layanan ke keranjang.',
+                                    false);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            // Tampilkan notifikasi error
+                            showToast('Terjadi kesalahan koneksi atau server.', false);
+                        });
                 });
             }
         });
